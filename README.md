@@ -1,8 +1,8 @@
 # DASH Benchmarking
-Results of the DASH library benchmarks, executed on different HPC systems. The goal of this collection is compare the performance of DASH on different systems and over time.
+Results of the DASH library benchmarks, executed on different HPC systems. The goal of this collection is to compare the performance of DASH on different systems and over time.
 
 ## Minimal Requirements
-A main aspect of benchmarks is the repeatability. Hence information on the build environment, as well as the runtime and the system have to be provided.
+A main aspect of benchmarking is the repeatability. Hence information on the build environment, as well as the runtime and the system have to be provided.
 These include at least (but are not limited to) the following:
 
 - System
@@ -15,4 +15,4 @@ These include at least (but are not limited to) the following:
 Currently benchmark results are available for the following systems:
 
 - LRZ SuperMUC phase2 (TODO)
-- NM Projekt03
+- LMU / NM Projekt03
