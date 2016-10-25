@@ -1,0 +1,19 @@
+Allocating            734.003.200 Elem.  =      2.800 MB on       28 unit(s) =        100 MB per unit -- SUCCESS!
+Allocating          1.468.006.400 Elem.  =      5.600 MB on       28 unit(s) =        200 MB per unit -- SUCCESS!
+Allocating          2.202.009.600 Elem.  =      8.400 MB on       28 unit(s) =        300 MB per unit -- SUCCESS!
+Allocating          2.936.012.800 Elem.  =     11.200 MB on       28 unit(s) =        400 MB per unit -- SUCCESS!
+Allocating          3.670.016.000 Elem.  =     14.000 MB on       28 unit(s) =        500 MB per unit -- SUCCESS!
+Allocating          4.404.019.200 Elem.  =     16.800 MB on       28 unit(s) =        600 MB per unit -- SUCCESS!
+Allocating          5.138.022.400 Elem.  =     19.600 MB on       28 unit(s) =        700 MB per unit -- SUCCESS!
+Allocating          5.872.025.600 Elem.  =     22.400 MB on       28 unit(s) =        800 MB per unit -- SUCCESS!
+Allocating          6.606.028.800 Elem.  =     25.200 MB on       28 unit(s) =        900 MB per unit -- SUCCESS!
+Allocating          7.340.032.000 Elem.  =     28.000 MB on       28 unit(s) =      1.000 MB per unit -- SUCCESS!
+Allocating          8.074.035.200 Elem.  =     30.800 MB on       28 unit(s) =      1.100 MB per unit -- SUCCESS!
+Allocating          8.808.038.400 Elem.  =     33.600 MB on       28 unit(s) =      1.200 MB per unit
+===================================================================================
+=   BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES
+=   PID 8935 RUNNING AT projekt03
+=   EXIT CODE: 7
+=   CLEANING UP REMAINING PROCESSES
+=   YOU CAN IGNORE THE BELOW CLEANUP MESSAGES
+===================================================================================

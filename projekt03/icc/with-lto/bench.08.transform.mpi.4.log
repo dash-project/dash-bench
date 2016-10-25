@@ -1,0 +1,221 @@
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                                 bench.08.transform
+--   date                                                 Tue Oct 25 18:44:29 2016
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   MIC_LD_LIBRARY_PATH /opt/intel/compilers_and_libraries_2016.3.210/linux/mpi/mic/lib:/opt/intel/compilers_and_libraries_2016.3.210/linux/compiler/lib/mic:/opt/intel/compilers_and_libraries_2016.3.210/linux/ipp/lib/mic:/opt/intel/mic/coi/device-linux-release/lib:/opt/intel/mic/myo/lib:/opt/intel/compilers_and_libraries_2016.3.210/linux/mkl/lib/mic:/opt/intel/compilers_and_libraries_2016.3.210/linux/tbb/lib/mic
+--   I_MPI_MPIRUN                                                           mpirun
+--   MIC_LIBRARY_PATH /opt/intel/compilers_and_libraries_2016.3.210/linux/mpi/mic/lib:/opt/intel/compilers_and_libraries_2016.3.210/linux/compiler/lib/mic:/opt/intel/compilers_and_libraries_2016.3.210/linux/tbb/lib/mic
+--   I_MPI_ROOT            /opt/intel/compilers_and_libraries_2016.3.210/linux/mpi
+--   I_MPI_INFO_NUMA_NODE_NUM                                                    2
+--   I_MPI_INFO_NUMA_NODE_DIST                                         10,20,20,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                               mic0:1
+--   I_MPI_PERHOST                                                        allcores
+--   I_MPI_HYDRA_UUID                         fa260000-652d-de38-b33f-050000017f00
+--   I_MPI_PM                                                                hydra
+--   I_MPI_RANK_CMD                                      ./bench.08.transform.mpi 
+--   I_MPI_CMD                               mpirun -n 4 ./bench.08.transform.mpi 
+--   I_MPI_INFO_STATE                                                            0
+--   I_MPI_INFO_MODE                                                           775
+--   I_MPI_INFO_VEND                                                             1
+--   I_MPI_INFO_FLGB                                                           641
+--   I_MPI_INFO_FLGC                                                    2143216639
+--   I_MPI_INFO_FLGD                                                   -1075053569
+--   I_MPI_INFO_FLGCEXT                                                          0
+--   I_MPI_INFO_FLGDEXT                                                          0
+--   I_MPI_INFO_DESC                                                    1342177285
+--   I_MPI_INFO_BRAND                                            Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                                E5-2630L v2 
+--   I_MPI_INFO_C_NAME                                                     Unknown
+--   I_MPI_INFO_SIGN                                                        198372
+--   I_MPI_INFO_LCPU                                                            24
+--   I_MPI_INFO_PACK               0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1
+--   I_MPI_INFO_CORE               0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5
+--   I_MPI_INFO_THREAD             0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,16,17,18,19,20,21,0,1,2,3,4,5,16,17,18,19,20,21
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,16,17,18,19,20,21,0,1,2,3,4,5,16,17,18,19,20,21
+--   I_MPI_INFO_CACHE3             0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1
+--   I_MPI_INFO_CACHES                                                           3
+--   I_MPI_INFO_CACHE_SHARE                                                 2,2,32
+--   I_MPI_INFO_CACHE_SIZE                                   32768,262144,15728640
+--   I_MPI_INFO_NC                                                              12
+--   I_MPI_INFO_NP                                                               2
+--   I_MPI_PIN_MAPPING                                           4:0 0,1 3,2 6,3 9
+--   I_MPI_PIN_INFO                                                x0,1,2,12,13,14
+--   I_MPI_EXT_MPI_CALLS_9983                                       0x7f24027504a0
+--   I_MPI_THREAD_LEVEL                                                          1
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                                      4
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_HDF5                                                            1
+--   DASH_ENABLE_MKL                                                             1
+--   DASH_ENABLE_HWLOC                                                           1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                   intelmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    projekt03                            .0.0.0.0.0.0.0.0        0    0    0
+--   1    projekt03                            .0.0.0.0.0.1.0.0        0    3    6
+--   2    projekt03                            .0.0.1.0.0.0.0.0        1    6   12
+--   3    projekt03                            .0.0.1.0.0.1.0.0        1   11   22
+----------------------------------------------------------------------------------
+-- Runtime arguments
+--   -smin      8000000                                               initial size
+--   -sb              2                                                  size base
+--   -rmax         2560                                            initial repeats
+--   -rmin           10                                               min. repeats
+--   -rb              2                                                  rep. base
+--   -i               8                                                 iterations
+--   -v               0                                                     verify
+----------------------------------------------------------------------------------
+-- Data Partitioning
+--   global     8000000                                              cpu  mbw  ldw
+--   u:   0     2000000                                             1.00 1.00 1.00
+--   u:   1     2000000                                             1.00 1.00 1.00
+--   u:   2     2000000                                             1.00 1.00 1.00
+--   u:   3     2000000                                             1.00 1.00 1.00
+----------------------------------------------------------------------------------
+-- Team Locality Domains
+--  # scope:   GLOBAL (level 0)
+--  # rel.idx: 0
+--  # nodes:   1
+--  # units:   { 0, 1, 2, 3 }
+--  # domains: 1
+--  # '-- [0]: (.0)
+--  #          scope:   NODE (level 1)
+--  #          rel.idx: 0
+--  #          units:   { 0, 1, 2, 3 }
+--  #          domains: 1
+--  #          '-- [0]: (.0.0)
+--  #                   scope:   MODULE (level 2)
+--  #                   rel.idx: 0
+--  #                   units:   { 0, 1, 2, 3 }
+--  #                   domains: 2
+--  #                   |-- [0]: (.0.0.0)
+--  #                   |        scope:   NUMA (level 3)
+--  #                   |        rel.idx: 0
+--  #                   |        units:   { 0, 1 }
+--  #                   |        domains: 1
+--  #                   |        '-- [0]: (.0.0.0.0)
+--  #                   |                 scope:   PACKAGE (level 4)
+--  #                   |                 rel.idx: 0
+--  #                   |                 units:   { 0, 1 }
+--  #                   |                 domains: 1
+--  #                   |                 '-- [0]: (.0.0.0.0.0)
+--  #                   |                          scope:   CACHE (level 5)
+--  #                   |                          rel.idx: 0
+--  #                   |                          units:   { 0, 1 }
+--  #                   |                          domains: 2
+--  #                   |                          |-- [0]: (.0.0.0.0.0.0)
+--  #                   |                          |        scope:   CACHE (level 6)
+--  #                   |                          |        rel.idx: 0
+--  #                   |                          |        units:   { 0 }
+--  #                   |                          |        domains: 1
+--  #                   |                          |        '-- [0]: (.0.0.0.0.0.0.0)
+--  #                   |                          |                 scope:   CACHE (level 7)
+--  #                   |                          |                 rel.idx: 0
+--  #                   |                          |                 units:   { 0 }
+--  #                   |                          |                 domains: 1
+--  #                   |                          |                 '-- [0]: (.0.0.0.0.0.0.0.0)
+--  #                   |                          |                          scope:   CORE (level 8)
+--  #                   |                          |                          rel.idx: 0
+--  #                   |                          |                          units:   { 0 }
+--  #                   |                          |                                   unit id:   0  (in team 0, global: 0)
+--  #                   |                          |                                   domain:    .0.0.0.0.0.0.0.0
+--  #                   |                          |                                   host:      projekt03
+--  #                   |                          |                                   hwinfo:    dart_hwinfo_t(numa_id:0 num_numa:2 num_cores:3 cpu_id:0 threads(1...2) cpu_mhz(1200...2800) mem_mbps:1235)
+--  #                   |                          '-- [1]: (.0.0.0.0.0.1)
+--  #                   |                                   scope:   CACHE (level 6)
+--  #                   |                                   rel.idx: 1
+--  #                   |                                   units:   { 1 }
+--  #                   |                                   domains: 1
+--  #                   |                                   '-- [0]: (.0.0.0.0.0.1.0)
+--  #                   |                                            scope:   CACHE (level 7)
+--  #                   |                                            rel.idx: 0
+--  #                   |                                            units:   { 1 }
+--  #                   |                                            domains: 1
+--  #                   |                                            '-- [0]: (.0.0.0.0.0.1.0.0)
+--  #                   |                                                     scope:   CORE (level 8)
+--  #                   |                                                     rel.idx: 0
+--  #                   |                                                     units:   { 1 }
+--  #                   |                                                              unit id:   1  (in team 0, global: 1)
+--  #                   |                                                              domain:    .0.0.0.0.0.1.0.0
+--  #                   |                                                              host:      projekt03
+--  #                   |                                                              hwinfo:    dart_hwinfo_t(numa_id:0 num_numa:2 num_cores:3 cpu_id:6 threads(1...2) cpu_mhz(1200...2800) mem_mbps:1235)
+--  #                   '-- [1]: (.0.0.1)
+--  #                            scope:   NUMA (level 3)
+--  #                            rel.idx: 1
+--  #                            units:   { 2, 3 }
+--  #                            domains: 1
+--  #                            '-- [0]: (.0.0.1.0)
+--  #                                     scope:   PACKAGE (level 4)
+--  #                                     rel.idx: 0
+--  #                                     units:   { 2, 3 }
+--  #                                     domains: 1
+--  #                                     '-- [0]: (.0.0.1.0.0)
+--  #                                              scope:   CACHE (level 5)
+--  #                                              rel.idx: 0
+--  #                                              units:   { 2, 3 }
+--  #                                              domains: 2
+--  #                                              |-- [0]: (.0.0.1.0.0.0)
+--  #                                              |        scope:   CACHE (level 6)
+--  #                                              |        rel.idx: 0
+--  #                                              |        units:   { 2 }
+--  #                                              |        domains: 1
+--  #                                              |        '-- [0]: (.0.0.1.0.0.0.0)
+--  #                                              |                 scope:   CACHE (level 7)
+--  #                                              |                 rel.idx: 0
+--  #                                              |                 units:   { 2 }
+--  #                                              |                 domains: 1
+--  #                                              |                 '-- [0]: (.0.0.1.0.0.0.0.0)
+--  #                                              |                          scope:   CORE (level 8)
+--  #                                              |                          rel.idx: 0
+--  #                                              |                          units:   { 2 }
+--  #                                              |                                   unit id:   2  (in team 0, global: 2)
+--  #                                              |                                   domain:    .0.0.1.0.0.0.0.0
+--  #                                              |                                   host:      projekt03
+--  #                                              |                                   hwinfo:    dart_hwinfo_t(numa_id:1 num_numa:2 num_cores:3 cpu_id:12 threads(1...2) cpu_mhz(1200...2800) mem_mbps:1235)
+--  #                                              '-- [1]: (.0.0.1.0.0.1)
+--  #                                                       scope:   CACHE (level 6)
+--  #                                                       rel.idx: 1
+--  #                                                       units:   { 3 }
+--  #                                                       domains: 1
+--  #                                                       '-- [0]: (.0.0.1.0.0.1.0)
+--  #                                                                scope:   CACHE (level 7)
+--  #                                                                rel.idx: 0
+--  #                                                                units:   { 3 }
+--  #                                                                domains: 1
+--  #                                                                '-- [0]: (.0.0.1.0.0.1.0.0)
+--  #                                                                         scope:   CORE (level 8)
+--  #                                                                         rel.idx: 0
+--  #                                                                         units:   { 3 }
+--  #                                                                                  unit id:   3  (in team 0, global: 3)
+--  #                                                                                  domain:    .0.0.1.0.0.1.0.0
+--  #                                                                                  host:      projekt03
+--  #                                                                                  hwinfo:    dart_hwinfo_t(numa_id:1 num_numa:2 num_cores:3 cpu_id:22 threads(1...2) cpu_mhz(1200...2800) mem_mbps:1235)
+----------------------------------------------------------------------------------
+units, mpi.impl, repeats,       size,  time.s, time.min.us, time.med.us, time.max.us, time.sdv.us, total.s,   mkeys/s
+    4, intelmpi,    2560,    8000000,    8.63,     3228.00,     3276.00,    15273.00,      492.61,   13.02,   2262.26
+    4, intelmpi,    1280,   16000000,    8.39,     6436.00,     6540.00,    25135.00,      520.14,   13.12,   2328.41
+    4, intelmpi,     640,   32000000,    8.38,    12625.00,    13048.00,    51591.00,     1524.49,   13.28,   2331.02
+    4, intelmpi,     320,   64000000,    8.38,    25751.00,    25996.00,   110713.00,     4732.93,   13.56,   2329.43
+    4, intelmpi,     160,  128000000,    8.43,    51224.00,    51679.00,   228535.00,    13945.65,   14.15,   2316.33
+    4, intelmpi,      80,  256000000,    8.50,    99474.00,   102672.00,   421174.00,    35435.41,   15.28,   2296.58
+    4, intelmpi,      40,  512000000,    8.61,   197665.00,   198406.00,   813174.00,    95762.40,   17.93,   2267.50
+    4, intelmpi,      20, 1024000000,   11.01,   483762.00,   484486.00,  1804021.00,   287565.79,   19.73,   1773.78

@@ -1,0 +1,108 @@
+------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                            bench.03.gups
+--   date                                       Tue Oct 25 17:56:11 2016
+------------------------------------------------------------------------
+-- MPI Environment Flags
+--   MIC_LD_LIBRARY_PATH /opt/intel/compilers_and_libraries_2016.3.210/linux/mpi/mic/lib:/opt/intel/compilers_and_libraries_2016.3.210/linux/compiler/lib/mic:/opt/intel/compilers_and_libraries_2016.3.210/linux/ipp/lib/mic:/opt/intel/mic/coi/device-linux-release/lib:/opt/intel/mic/myo/lib:/opt/intel/compilers_and_libraries_2016.3.210/linux/mkl/lib/mic:/opt/intel/compilers_and_libraries_2016.3.210/linux/tbb/lib/mic
+--   I_MPI_MPIRUN                                                 mpirun
+--   MIC_LIBRARY_PATH /opt/intel/compilers_and_libraries_2016.3.210/linux/mpi/mic/lib:/opt/intel/compilers_and_libraries_2016.3.210/linux/compiler/lib/mic:/opt/intel/compilers_and_libraries_2016.3.210/linux/tbb/lib/mic
+--   I_MPI_ROOT  /opt/intel/compilers_and_libraries_2016.3.210/linux/mpi
+--   I_MPI_INFO_NUMA_NODE_NUM                                          2
+--   I_MPI_INFO_NUMA_NODE_DIST                               10,20,20,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                     mic0:1
+--   I_MPI_PERHOST                                              allcores
+--   I_MPI_HYDRA_UUID               ae230000-5c18-0e8c-b23f-050000017f00
+--   I_MPI_PM                                                      hydra
+--   I_MPI_RANK_CMD                                 ./bench.03.gups.mpi 
+--   I_MPI_CMD                         mpirun -n 28 ./bench.03.gups.mpi 
+--   I_MPI_INFO_STATE                                                  0
+--   I_MPI_INFO_MODE                                                 775
+--   I_MPI_INFO_VEND                                                   1
+--   I_MPI_INFO_FLGB                                                 641
+--   I_MPI_INFO_FLGC                                          2143216639
+--   I_MPI_INFO_FLGD                                         -1075053569
+--   I_MPI_INFO_FLGCEXT                                                0
+--   I_MPI_INFO_FLGDEXT                                                0
+--   I_MPI_INFO_DESC                                          1342177285
+--   I_MPI_INFO_BRAND                                  Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                      E5-2630L v2 
+--   I_MPI_INFO_C_NAME                                           Unknown
+--   I_MPI_INFO_SIGN                                              198372
+--   I_MPI_INFO_LCPU                                                  24
+--   I_MPI_INFO_PACK     0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1
+--   I_MPI_INFO_CORE     0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5
+--   I_MPI_INFO_THREAD   0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,16,17,18,19,20,21,0,1,2,3,4,5,16,17,18,19,20,21
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,16,17,18,19,20,21,0,1,2,3,4,5,16,17,18,19,20,21
+--   I_MPI_INFO_CACHE3   0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1
+--   I_MPI_INFO_CACHES                                                 3
+--   I_MPI_INFO_CACHE_SHARE                                       2,2,32
+--   I_MPI_INFO_CACHE_SIZE                         32768,262144,15728640
+--   I_MPI_INFO_NC                                                    12
+--   I_MPI_INFO_NP                                                     2
+--   I_MPI_PIN_MAPPING 28:0 0,1 12,2 1,3 13,4 2,5 14,6 3,7 15,8 4,9 16,10 5,11 17,12 6,13 18,14 7,15 19,16 8,17 20,18 9,19 21,20 10,21 22,22 11,23 23,24 0,25 12,26 1,27 13
+--   I_MPI_PIN_INFO                                                    0
+--   I_MPI_EXT_MPI_CALLS_9139                             0x7fa42e1c94a0
+--   I_MPI_THREAD_LEVEL                                                1
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                           28
+------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_HDF5                                                  1
+--   DASH_ENABLE_MKL                                                   1
+--   DASH_ENABLE_HWLOC                                                 1
+--   DASH_ENABLE_PAPI                                                  1
+--   DASH_ENABLE_NUMA                                                  1
+--   DASH_ENABLE_OPENMP                                                1
+--   DASH_ENABLE_MPI_SHWIN                                             1
+------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                         intelmpi
+--   Host system identifier                                      default
+--   PAPI                                                        enabled
+--   hwloc                                                       enabled
+--   libnuma                                                     enabled
+--   MPI shared windows                                          enabled
+--   BLAS                                                       disabled
+--   LAPACK                                                     disabled
+--   Intel MKL                                                   enabled
+--   ScaLAPACK                                                  disabled
+------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                       domain               NUMA core  CPU
+--   0    projekt03                  .0.0.2.0.0.6.0.0        0    0    0
+--   1    projekt03                  .0.0.2.0.0.6.0.0        0    0    1
+--   2    projekt03                  .0.0.2.0.0.7.0.0        0    1    2
+--   3    projekt03                  .0.0.2.0.0.7.0.0        0    1    3
+--   4    projekt03                  .0.0.2.0.0.2.0.0        0    2    4
+--   5    projekt03                  .0.0.2.0.0.2.0.0        0    2    5
+--   6    projekt03                  .0.0.2.0.0.3.0.0        0    3    6
+--   7    projekt03                  .0.0.2.0.0.3.0.0        0    3    7
+--   8    projekt03                  .0.0.2.0.0.4.0.0        0    4    8
+--   9    projekt03                  .0.0.2.0.0.4.0.0        0    4    9
+--   10   projekt03                  .0.0.2.0.0.5.0.0        0    5   10
+--   11   projekt03                  .0.0.2.0.0.5.0.0        0    5   11
+--   12   projekt03                  .0.0.1.0.0.0.0.0        1    6   12
+--   13   projekt03                  .0.0.1.0.0.0.0.0        1    6   13
+--   14   projekt03                  .0.0.1.0.0.1.0.0        1    7   14
+--   15   projekt03                  .0.0.1.0.0.1.0.0        1    7   15
+--   16   projekt03                  .0.0.1.0.0.2.0.0        1    8   16
+--   17   projekt03                  .0.0.1.0.0.2.0.0        1    8   17
+--   18   projekt03                  .0.0.1.0.0.3.0.0        1    9   18
+--   19   projekt03                  .0.0.1.0.0.3.0.0        1    9   19
+--   20   projekt03                  .0.0.1.0.0.4.0.0        1   10   20
+--   21   projekt03                  .0.0.1.0.0.4.0.0        1   10   21
+--   22   projekt03                  .0.0.1.0.0.5.0.0        1   11   22
+--   23   projekt03                  .0.0.1.0.0.5.0.0        1   11   23
+--   24   projekt03                  .0.0.2.0.0.6.0.0        0    0    0
+--   25   projekt03                  .0.0.2.0.0.6.0.0        0    0    1
+--   26   projekt03                  .0.0.2.0.0.7.0.0        0    1    2
+--   27   projekt03                  .0.0.2.0.0.7.0.0        0    1    3
+------------------------------------------------------------------------
+-- Runtime arguments
+--   -sb       33554432                                        size base
+--   -rb              1                                        rep. base
+--   -verify          0                                     verification
+------------------------------------------------------------------------
+ units,        size, mpi.impl,    mb.total,     mb.unit,   updates.m,   init.s,   time.s,   lat.us,     gups, verified,   errors
+    28,    33554432, intelmpi,      256.00,        9.14,        0.13,   0.1371,   2.5603,   0.5341,  0.05242,       no,        0
