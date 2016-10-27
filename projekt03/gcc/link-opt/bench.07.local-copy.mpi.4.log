@@ -1,0 +1,118 @@
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                                bench.07.local-copy
+--   date                                                 Wed Oct 26 18:28:20 2016
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   I_MPI_MPIRUN                                                           mpirun
+--   I_MPI_ROOT            /opt/intel/compilers_and_libraries_2016.3.210/linux/mpi
+--   I_MPI_INFO_NUMA_NODE_NUM                                                    2
+--   I_MPI_INFO_NUMA_NODE_DIST                                         10,20,20,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                               mic0:1
+--   I_MPI_PERHOST                                                        allcores
+--   I_MPI_HYDRA_UUID                         914a0000-be31-ed1c-c73f-050000017f00
+--   I_MPI_PM                                                                hydra
+--   I_MPI_RANK_CMD                                     ./bench.07.local-copy.mpi 
+--   I_MPI_CMD                              mpirun -n 4 ./bench.07.local-copy.mpi 
+--   I_MPI_INFO_STATE                                                            0
+--   I_MPI_INFO_MODE                                                           775
+--   I_MPI_INFO_VEND                                                             1
+--   I_MPI_INFO_FLGB                                                           641
+--   I_MPI_INFO_FLGC                                                    2143216639
+--   I_MPI_INFO_FLGD                                                   -1075053569
+--   I_MPI_INFO_FLGCEXT                                                          0
+--   I_MPI_INFO_FLGDEXT                                                          0
+--   I_MPI_INFO_DESC                                                    1342177285
+--   I_MPI_INFO_BRAND                                            Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                                E5-2630L v2 
+--   I_MPI_INFO_C_NAME                                                     Unknown
+--   I_MPI_INFO_SIGN                                                        198372
+--   I_MPI_INFO_LCPU                                                            24
+--   I_MPI_INFO_PACK               0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1
+--   I_MPI_INFO_CORE               0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5,0,1,2,3,4,5
+--   I_MPI_INFO_THREAD             0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,16,17,18,19,20,21,0,1,2,3,4,5,16,17,18,19,20,21
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,16,17,18,19,20,21,0,1,2,3,4,5,16,17,18,19,20,21
+--   I_MPI_INFO_CACHE3             0,0,0,0,0,0,1,1,1,1,1,1,0,0,0,0,0,0,1,1,1,1,1,1
+--   I_MPI_INFO_CACHES                                                           3
+--   I_MPI_INFO_CACHE_SHARE                                                 2,2,32
+--   I_MPI_INFO_CACHE_SIZE                                   32768,262144,15728640
+--   I_MPI_INFO_NC                                                              12
+--   I_MPI_INFO_NP                                                               2
+--   I_MPI_PIN_MAPPING                                           4:0 0,1 3,2 6,3 9
+--   I_MPI_PIN_INFO                                                x0,1,2,12,13,14
+--   I_MPI_EXT_MPI_CALLS_19094                                      0x7fda375134a0
+--   I_MPI_THREAD_LEVEL                                                          1
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                                      4
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_HDF5                                                            1
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                   intelmpi
+--   Host system identifier                                                default
+--   PAPI                                                                 disabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                            disabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    projekt03                            .0.0.0.0.0.0.0.0        0    0    0
+--   1    projekt03                            .0.0.0.0.0.1.0.0        0    3    6
+--   2    projekt03                            .0.0.1.0.0.0.0.0        1    6   12
+--   3    projekt03                            .0.0.1.0.0.1.0.0        1   11   23
+----------------------------------------------------------------------------------
+-- Runtime arguments
+--   -smin           64                                         initial block size
+--   -sb              4                                            block size base
+--   -rmax       524288                                            initial repeats
+--   -rmin            1                                               min, repeats
+--   -rb              4                                                  rep. base
+--   -i               8                                                 iterations
+--   -verify          0                                               verification
+--   -lo              0                                                 local only
+--   -fcache          0                                      no copying from cache
+----------------------------------------------------------------------------------
+units, mpi.impl,  scenario,   copy.type,  src.u, dest.u, init.u, repeats,  block.n, block.kb, init.s,  copy.s, copy.min.us, copy.med.us, copy.max.us, copy.sdv.us, time.s,     mb/s
+    4, intelmpi,     local,   std::copy,      2,      2,      2,  524288,       64,        0,   2.67, 0.49653,        0.00,        1.00,       25.00,        0.54,   6.12,   515.58
+    4, intelmpi,     local,   std::copy,      2,      2,      2,  131072,      256,        2,   1.12, 0.13478,        0.00,        1.00,       23.00,        0.53,   1.98,  1899.36
+    4, intelmpi,     local,   std::copy,      2,      2,      2,   32768,     1024,        8,   0.73, 0.04568,        1.00,        1.00,       22.00,        0.78,   0.96,  5604.45
+    4, intelmpi,     local,   std::copy,      2,      2,      2,    8192,     4096,       32,   0.63, 0.02408,        2.00,        3.00,       20.00,        0.96,   0.70, 10630.79
+    4, intelmpi,     local,   std::copy,      2,      2,      2,    2048,    16384,      128,   0.60, 0.02043,        9.00,       10.00,       27.00,        1.37,   0.64, 12531.21
+    4, intelmpi,     local,   std::copy,      2,      2,      2,     512,    65536,      512,   0.60, 0.02166,       41.00,       42.00,       72.00,        3.16,   0.62, 11817.93
+    4, intelmpi,     local,   std::copy,      2,      2,      2,     128,   262144,     2048,   0.60, 0.06939,      527.00,      544.00,      806.00,       25.00,   0.67,  3689.13
+    4, intelmpi,     local,   std::copy,      2,      2,      2,      32,  1048576,     8192,   0.60, 0.09621,     2929.00,     2947.00,     4871.00,      335.02,   0.71,  2660.85
+    4, intelmpi,     local,  dash::copy,      2,      2,      2,  524288,       64,        0,   2.72, 1.65623,        2.00,        3.00,      151.00,        0.91,   7.59,   154.57
+    4, intelmpi,     local,  dash::copy,      2,      2,      2,  131072,      256,        2,   1.13, 0.42933,        2.00,        3.00,       25.00,        0.92,   2.35,   596.28
+    4, intelmpi,     local,  dash::copy,      2,      2,      2,   32768,     1024,        8,   0.72, 0.12358,        3.00,        4.00,       23.00,        1.06,   1.05,  2071.58
+    4, intelmpi,     local,  dash::copy,      2,      2,      2,    8192,     4096,       32,   0.61, 0.04581,        5.00,        5.00,       24.00,        1.28,   0.71,  5588.06
+    4, intelmpi,     local,  dash::copy,      2,      2,      2,    2048,    16384,      128,   0.59, 0.02762,       12.00,       13.00,       32.00,        1.76,   0.63,  9269.32
+    4, intelmpi,     local,  dash::copy,      2,      2,      2,     512,    65536,      512,   0.58, 0.02396,       45.00,       46.00,       78.00,        3.28,   0.61, 10686.70
+    4, intelmpi,     local,  dash::copy,      2,      2,      2,     128,   262144,     2048,   0.58, 0.06936,      527.00,      543.00,      777.00,       22.27,   0.65,  3690.99
+    4, intelmpi,     local,  dash::copy,      2,      2,      2,      32,  1048576,     8192,   0.59, 0.09166,     2819.00,     2833.00,     3813.00,      170.69,   0.69,  2793.05
+    4, intelmpi,  socket.b,  dash::copy,      2,      0,      0,  524288,       64,        0,   2.92, 1.04746,        1.00,        2.00,      141.00,        0.76,   6.64,   244.40
+    4, intelmpi,  socket.b,  dash::copy,      2,      0,      0,  131072,      256,        2,   1.15, 0.29232,        2.00,        2.00,       24.00,        0.82,   2.11,   875.74
+    4, intelmpi,  socket.b,  dash::copy,      2,      0,      0,   32768,     1024,        8,   0.74, 0.11065,        2.00,        3.00,       25.00,        0.97,   1.02,  2313.60
+    4, intelmpi,  socket.b,  dash::copy,      2,      0,      0,    8192,     4096,       32,   0.64, 0.05269,        5.00,        6.00,       26.00,        1.30,   0.74,  4858.61
+    4, intelmpi,  socket.b,  dash::copy,      2,      0,      0,    2048,    16384,      128,   0.63, 0.04767,       21.00,       23.00,       53.00,        2.91,   0.69,  5370.37
+    4, intelmpi,  socket.b,  dash::copy,      2,      0,      0,     512,    65536,      512,   0.60, 0.04515,       85.00,       87.00,      192.00,        6.16,   0.65,  5670.11
+    4, intelmpi,  socket.b,  dash::copy,      2,      0,      0,     128,   262144,     2048,   0.60, 0.07344,      555.00,      569.00,     1017.00,       47.61,   0.67,  3485.98
+    4, intelmpi,  socket.b,  dash::copy,      2,      0,      0,      32,  1048576,     8192,   0.60, 0.09469,     2815.00,     2839.00,     6694.00,      670.88,   0.70,  2703.62
+    4, intelmpi, rmt.async,  dash::copy,      2,      2,      0,  524288,       64,        0,   2.73, 1.70891,        2.00,        3.00,       36.00,        0.95,   7.65,   149.80
+    4, intelmpi, rmt.async,  dash::copy,      2,      2,      0,  131072,      256,        2,   1.13, 0.44715,        3.00,        3.00,       22.00,        1.01,   2.37,   572.51
+    4, intelmpi, rmt.async,  dash::copy,      2,      2,      0,   32768,     1024,        8,   0.72, 0.12616,        3.00,        4.00,       25.00,        1.07,   1.05,  2029.09
+    4, intelmpi, rmt.async,  dash::copy,      2,      2,      0,    8192,     4096,       32,   0.62, 0.04618,        5.00,        6.00,       23.00,        1.06,   0.71,  5543.29
+    4, intelmpi, rmt.async,  dash::copy,      2,      2,      0,    2048,    16384,      128,   0.59, 0.02791,       12.00,       13.00,       30.00,        1.83,   0.63,  9173.65
+    4, intelmpi, rmt.async,  dash::copy,      2,      2,      0,     512,    65536,      512,   0.58, 0.02409,       45.00,       46.00,       68.00,        3.19,   0.61, 10627.70
+    4, intelmpi, rmt.async,  dash::copy,      2,      2,      0,     128,   262144,     2048,   0.58, 0.06910,      465.00,      543.00,      553.00,       10.31,   0.65,  3704.99
+    4, intelmpi, rmt.async,  dash::copy,      2,      2,      0,      32,  1048576,     8192,   0.59, 0.09069,     2815.00,     2834.00,     2844.00,        6.06,   0.69,  2822.74
+Benchmark finished

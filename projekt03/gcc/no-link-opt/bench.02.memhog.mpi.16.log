@@ -1,0 +1,28 @@
+Allocating            419.430.400 Elem.  =      1.600 MB on       16 unit(s) =        100 MB per unit -- SUCCESS!
+Allocating            838.860.800 Elem.  =      3.200 MB on       16 unit(s) =        200 MB per unit -- SUCCESS!
+Allocating          1.258.291.200 Elem.  =      4.800 MB on       16 unit(s) =        300 MB per unit -- SUCCESS!
+Allocating          1.677.721.600 Elem.  =      6.400 MB on       16 unit(s) =        400 MB per unit -- SUCCESS!
+Allocating          2.097.152.000 Elem.  =      8.000 MB on       16 unit(s) =        500 MB per unit -- SUCCESS!
+Allocating          2.516.582.400 Elem.  =      9.600 MB on       16 unit(s) =        600 MB per unit -- SUCCESS!
+Allocating          2.936.012.800 Elem.  =     11.200 MB on       16 unit(s) =        700 MB per unit -- SUCCESS!
+Allocating          3.355.443.200 Elem.  =     12.800 MB on       16 unit(s) =        800 MB per unit -- SUCCESS!
+Allocating          3.774.873.600 Elem.  =     14.400 MB on       16 unit(s) =        900 MB per unit -- SUCCESS!
+Allocating          4.194.304.000 Elem.  =     16.000 MB on       16 unit(s) =      1.000 MB per unit -- SUCCESS!
+Allocating          4.613.734.400 Elem.  =     17.600 MB on       16 unit(s) =      1.100 MB per unit -- SUCCESS!
+Allocating          5.033.164.800 Elem.  =     19.200 MB on       16 unit(s) =      1.200 MB per unit -- SUCCESS!
+Allocating          5.452.595.200 Elem.  =     20.800 MB on       16 unit(s) =      1.300 MB per unit -- SUCCESS!
+Allocating          5.872.025.600 Elem.  =     22.400 MB on       16 unit(s) =      1.400 MB per unit -- SUCCESS!
+Allocating          6.291.456.000 Elem.  =     24.000 MB on       16 unit(s) =      1.500 MB per unit -- SUCCESS!
+Allocating          6.710.886.400 Elem.  =     25.600 MB on       16 unit(s) =      1.600 MB per unit -- SUCCESS!
+Allocating          7.130.316.800 Elem.  =     27.200 MB on       16 unit(s) =      1.700 MB per unit -- SUCCESS!
+Allocating          7.549.747.200 Elem.  =     28.800 MB on       16 unit(s) =      1.800 MB per unit -- SUCCESS!
+Allocating          7.969.177.600 Elem.  =     30.400 MB on       16 unit(s) =      1.900 MB per unit -- SUCCESS!
+Allocating          8.388.608.000 Elem.  =     32.000 MB on       16 unit(s) =      2.000 MB per unit -- SUCCESS!
+Allocating          8.808.038.400 Elem.  =     33.600 MB on       16 unit(s) =      2.100 MB per unit
+===================================================================================
+=   BAD TERMINATION OF ONE OF YOUR APPLICATION PROCESSES
+=   PID 22928 RUNNING AT projekt03
+=   EXIT CODE: 7
+=   CLEANING UP REMAINING PROCESSES
+=   YOU CAN IGNORE THE BELOW CLEANUP MESSAGES
+===================================================================================

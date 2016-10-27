@@ -1,0 +1,3 @@
+NUNITS; REPEAT;  unit0 [sec];  local [sec];    neigh [sec]
+       8;     100;       4.4e-05;       1.3e-05;       1.6e-05
+       8;     400;         3e-05;       3.5e-05;       3.6e-05
