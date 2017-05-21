@@ -1,0 +1,1215 @@
+
+-------------------------------------------DART----------------------------------
+
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Fri May 19 12:17:04 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   I_MPI_INFO_NUMA_NODE_NUM                                                    4
+--   I_MPI_INFO_NUMA_NODE_DIST     10,21,31,31,21,10,31,31,31,31,10,21,31,31,21,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                             mlx5_0:0
+--   I_MPI_PERHOST                                                        allcores
+--   I_MPI_DAPL_UD                                                          enable
+--   I_MPI_FABRICS                                                        shm:dapl
+--   I_MPI_PIN_DOMAIN                                                         auto
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_JOB_FAST_STARTUP                                                      0
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_OFA_ADAPTER_NAME                                                 mlx5_0
+--   I_MPI_FABRICS_LIST                                               dapl,ofa,tcp
+--   I_MPI_FALLBACK                                                         enable
+--   I_MPI_DAPL_UD_PROVIDER                                       ofa-v2-mlx5_0-1u
+--   KMP_AFFINITY                                   granularity=thread,compact,1,0
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   I_MPI_HYDRA_BOOTSTRAP                                                   slurm
+--   OMP_NUM_THREADS                                                             1
+--   I_MPI_ROOT                                      /lrz/sys/intel/impi/5.1.3.181
+--   I_MPI_HYDRA_UUID                         e7310000-aa24-5ad2-dd4f-05004b610a9c
+--   I_MPI_PM                                                                hydra
+--   I_MPI_RANK_CMD                          ./dart/osu_dart_put_latency -s flush 
+--   I_MPI_CMD                       mpiexec ./dart/osu_dart_put_latency -s flush 
+--   I_MPI_INFO_STATE                                                            0
+--   I_MPI_INFO_MODE                                                           263
+--   I_MPI_INFO_VEND                                                             1
+--   I_MPI_INFO_FLGB                                                         14251
+--   I_MPI_INFO_FLGC                                                    2147417087
+--   I_MPI_INFO_FLGD                                                   -1075053569
+--   I_MPI_INFO_FLGCEXT                                                          0
+--   I_MPI_INFO_FLGDEXT                                                          0
+--   I_MPI_INFO_DESC                                                    1342177285
+--   I_MPI_INFO_BRAND                                            Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                                 E5-2697 v3 
+--   I_MPI_INFO_C_NAME                                                     Unknown
+--   I_MPI_INFO_SIGN                                                        198386
+--   I_MPI_INFO_LCPU                                                            28
+--   I_MPI_INFO_PACK       0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CORE 0,1,2,3,4,5,6,8,9,10,11,12,13,14,0,1,2,3,4,5,6,8,9,10,11,12,13,14
+--   I_MPI_INFO_THREAD     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE3     0,0,0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3
+--   I_MPI_INFO_CACHES                                                           3
+--   I_MPI_INFO_CACHE_SHARE                                                 2,2,16
+--   I_MPI_INFO_CACHE_SIZE                                   32768,262144,18350080
+--   I_MPI_INFO_NC                                                              28
+--   I_MPI_INFO_NP                                                               2
+--   I_MPI_PIN_MAPPING 28:0 0,1 1,2 2,3 3,4 4,5 5,6 6,7 7,8 8,9 9,10 10,11 11,12 12,13 13,14 14,15 15,16 16,17 17,18 18,19 19,20 20,21 21,22 22,23 23,24 24,25 25,26 26,27 27
+--   I_MPI_PIN_INFO                                                             x0
+--   I_MPI_EXT_MPI_CALLS_12795                                      0x2b00b82bf4a0
+--   I_MPI_THREAD_LEVEL                                                          3
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                                     28
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                        intelmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                   intelmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r02c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r02c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r02c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r02c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r02c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r02c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r02c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r02c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r02c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r02c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r02c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r02c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r02c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r02c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r02c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r02c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r02c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r02c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r02c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r02c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r02c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r02c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r02c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r02c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r02c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r02c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r02c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r02c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r03c01s09                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r03c01s09                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r03c01s09                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r03c01s09                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r03c01s09                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r03c01s09                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r03c01s09                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r03c01s09                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r03c01s09                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r03c01s09                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r03c01s09                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r03c01s09                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r03c01s09                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r03c01s09                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r03c01s09                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r03c01s09                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r03c01s09                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r03c01s09                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r03c01s09                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r03c01s09                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r03c01s09                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r03c01s09                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r03c01s09                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r03c01s09                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r03c01s09                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r03c01s09                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r03c01s09                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r03c01s09                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         1.17
+1                       231.24
+2                       230.06
+4                       230.16
+8                       229.94
+16                      230.03
+32                      231.28
+64                      231.23
+128                     231.22
+256                     230.15
+512                     231.32
+1024                    230.39
+2048                    232.03
+4096                    231.89
+8192                    232.63
+16384                   464.84
+32768                   466.07
+65536                   466.41
+131072                  469.98
+262144                  479.56
+524288                  499.39
+1048576                 535.44
+2097152                 836.89
+4194304                1438.93
+8388608                2638.34
+16777216               5045.70
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Fri May 19 12:17:44 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   I_MPI_INFO_NUMA_NODE_NUM                                                    4
+--   I_MPI_INFO_NUMA_NODE_DIST     10,21,31,31,21,10,31,31,31,31,10,21,31,31,21,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                             mlx5_0:0
+--   I_MPI_PERHOST                                                        allcores
+--   I_MPI_DAPL_UD                                                          enable
+--   I_MPI_FABRICS                                                        shm:dapl
+--   I_MPI_PIN_DOMAIN                                                         auto
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_JOB_FAST_STARTUP                                                      0
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_OFA_ADAPTER_NAME                                                 mlx5_0
+--   I_MPI_FABRICS_LIST                                               dapl,ofa,tcp
+--   I_MPI_FALLBACK                                                         enable
+--   I_MPI_DAPL_UD_PROVIDER                                       ofa-v2-mlx5_0-1u
+--   KMP_AFFINITY                                   granularity=thread,compact,1,0
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   I_MPI_HYDRA_BOOTSTRAP                                                   slurm
+--   OMP_NUM_THREADS                                                             1
+--   I_MPI_ROOT                                      /lrz/sys/intel/impi/5.1.3.181
+--   I_MPI_HYDRA_UUID                         41320000-5ed9-c5d4-dd4f-05004b610a9c
+--   I_MPI_PM                                                                hydra
+--   I_MPI_RANK_CMD                    ./dart/osu_dart_put_latency -s flush_local 
+--   I_MPI_CMD                 mpiexec ./dart/osu_dart_put_latency -s flush_local 
+--   I_MPI_INFO_STATE                                                            0
+--   I_MPI_INFO_MODE                                                           263
+--   I_MPI_INFO_VEND                                                             1
+--   I_MPI_INFO_FLGB                                                         14251
+--   I_MPI_INFO_FLGC                                                    2147417087
+--   I_MPI_INFO_FLGD                                                   -1075053569
+--   I_MPI_INFO_FLGCEXT                                                          0
+--   I_MPI_INFO_FLGDEXT                                                          0
+--   I_MPI_INFO_DESC                                                    1342177285
+--   I_MPI_INFO_BRAND                                            Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                                 E5-2697 v3 
+--   I_MPI_INFO_C_NAME                                                     Unknown
+--   I_MPI_INFO_SIGN                                                        198386
+--   I_MPI_INFO_LCPU                                                            28
+--   I_MPI_INFO_PACK       0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CORE 0,1,2,3,4,5,6,8,9,10,11,12,13,14,0,1,2,3,4,5,6,8,9,10,11,12,13,14
+--   I_MPI_INFO_THREAD     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE3     0,0,0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3
+--   I_MPI_INFO_CACHES                                                           3
+--   I_MPI_INFO_CACHE_SHARE                                                 2,2,16
+--   I_MPI_INFO_CACHE_SIZE                                   32768,262144,18350080
+--   I_MPI_INFO_NC                                                              28
+--   I_MPI_INFO_NP                                                               2
+--   I_MPI_PIN_MAPPING 28:0 0,1 1,2 2,3 3,4 4,5 5,6 6,7 7,8 8,9 9,10 10,11 11,12 12,13 13,14 14,15 15,16 16,17 17,18 18,19 19,20 20,21 21,22 22,23 23,24 24,25 25,26 26,27 27
+--   I_MPI_PIN_INFO                                                             x0
+--   I_MPI_EXT_MPI_CALLS_12887                                      0x2add43f464a0
+--   I_MPI_THREAD_LEVEL                                                          3
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                                     28
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                        intelmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                   intelmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r02c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r02c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r02c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r02c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r02c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r02c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r02c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r02c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r02c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r02c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r02c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r02c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r02c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r02c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r02c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r02c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r02c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r02c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r02c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r02c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r02c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r02c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r02c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r02c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r02c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r02c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r02c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r02c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r03c01s09                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r03c01s09                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r03c01s09                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r03c01s09                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r03c01s09                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r03c01s09                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r03c01s09                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r03c01s09                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r03c01s09                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r03c01s09                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r03c01s09                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r03c01s09                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r03c01s09                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r03c01s09                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r03c01s09                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r03c01s09                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r03c01s09                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r03c01s09                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r03c01s09                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r03c01s09                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r03c01s09                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r03c01s09                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r03c01s09                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r03c01s09                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r03c01s09                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r03c01s09                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r03c01s09                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r03c01s09                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush_local
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         1.10
+1                       233.36
+2                       233.22
+4                       233.31
+8                       233.44
+16                      232.94
+32                      234.19
+64                      233.16
+128                     233.43
+256                     232.85
+512                     232.89
+1024                    232.96
+2048                    233.35
+4096                    234.34
+8192                    235.23
+16384                   470.31
+32768                   469.66
+65536                   473.23
+131072                  476.44
+262144                  484.70
+524288                  502.14
+1048576                 542.25
+2097152                 845.69
+4194304                1455.88
+8388608                2670.54
+16777216               5091.03
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Fri May 19 12:18:25 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   I_MPI_INFO_NUMA_NODE_NUM                                                    4
+--   I_MPI_INFO_NUMA_NODE_DIST     10,21,31,31,21,10,31,31,31,31,10,21,31,31,21,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                             mlx5_0:0
+--   I_MPI_PERHOST                                                        allcores
+--   I_MPI_DAPL_UD                                                          enable
+--   I_MPI_FABRICS                                                        shm:dapl
+--   I_MPI_PIN_DOMAIN                                                         auto
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_JOB_FAST_STARTUP                                                      0
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_OFA_ADAPTER_NAME                                                 mlx5_0
+--   I_MPI_FABRICS_LIST                                               dapl,ofa,tcp
+--   I_MPI_FALLBACK                                                         enable
+--   I_MPI_DAPL_UD_PROVIDER                                       ofa-v2-mlx5_0-1u
+--   KMP_AFFINITY                                   granularity=thread,compact,1,0
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   I_MPI_HYDRA_BOOTSTRAP                                                   slurm
+--   OMP_NUM_THREADS                                                             1
+--   I_MPI_ROOT                                      /lrz/sys/intel/impi/5.1.3.181
+--   I_MPI_HYDRA_UUID                         9e320000-c0be-30d7-dd4f-05004b610a9c
+--   I_MPI_PM                                                                hydra
+--   I_MPI_RANK_CMD                     ./dart/osu_dart_put_latency -s req_handle 
+--   I_MPI_CMD                  mpiexec ./dart/osu_dart_put_latency -s req_handle 
+--   I_MPI_INFO_STATE                                                            0
+--   I_MPI_INFO_MODE                                                           263
+--   I_MPI_INFO_VEND                                                             1
+--   I_MPI_INFO_FLGB                                                         14251
+--   I_MPI_INFO_FLGC                                                    2147417087
+--   I_MPI_INFO_FLGD                                                   -1075053569
+--   I_MPI_INFO_FLGCEXT                                                          0
+--   I_MPI_INFO_FLGDEXT                                                          0
+--   I_MPI_INFO_DESC                                                    1342177285
+--   I_MPI_INFO_BRAND                                            Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                                 E5-2697 v3 
+--   I_MPI_INFO_C_NAME                                                     Unknown
+--   I_MPI_INFO_SIGN                                                        198386
+--   I_MPI_INFO_LCPU                                                            28
+--   I_MPI_INFO_PACK       0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CORE 0,1,2,3,4,5,6,8,9,10,11,12,13,14,0,1,2,3,4,5,6,8,9,10,11,12,13,14
+--   I_MPI_INFO_THREAD     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE3     0,0,0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3
+--   I_MPI_INFO_CACHES                                                           3
+--   I_MPI_INFO_CACHE_SHARE                                                 2,2,16
+--   I_MPI_INFO_CACHE_SIZE                                   32768,262144,18350080
+--   I_MPI_INFO_NC                                                              28
+--   I_MPI_INFO_NP                                                               2
+--   I_MPI_PIN_MAPPING 28:0 0,1 1,2 2,3 3,4 4,5 5,6 6,7 7,8 8,9 9,10 10,11 11,12 12,13 13,14 14,15 15,16 16,17 17,18 18,19 19,20 20,21 21,22 22,23 23,24 24,25 25,26 26,27 27
+--   I_MPI_PIN_INFO                                                             x0
+--   I_MPI_EXT_MPI_CALLS_12982                                      0x2afc62e904a0
+--   I_MPI_THREAD_LEVEL                                                          3
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                                     28
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                        intelmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                   intelmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r02c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r02c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r02c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r02c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r02c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r02c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r02c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r02c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r02c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r02c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r02c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r02c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r02c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r02c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r02c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r02c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r02c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r02c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r02c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r02c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r02c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r02c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r02c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r02c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r02c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r02c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r02c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r02c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r03c01s09                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r03c01s09                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r03c01s09                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r03c01s09                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r03c01s09                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r03c01s09                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r03c01s09                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r03c01s09                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r03c01s09                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r03c01s09                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r03c01s09                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r03c01s09                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r03c01s09                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r03c01s09                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r03c01s09                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r03c01s09                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r03c01s09                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r03c01s09                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r03c01s09                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r03c01s09                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r03c01s09                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r03c01s09                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r03c01s09                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r03c01s09                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r03c01s09                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r03c01s09                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r03c01s09                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r03c01s09                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_handle
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.35
+1                       231.11
+2                       231.41
+4                       231.35
+8                       232.57
+16                      232.28
+32                      231.45
+64                      232.42
+128                     232.40
+256                     231.51
+512                     231.33
+1024                    231.52
+2048                    231.98
+4096                    233.79
+8192                    234.51
+16384                   467.24
+32768                   467.19
+65536                   470.26
+131072                  475.45
+262144                  486.65
+524288                  508.15
+1048576                 551.65
+2097152                 872.49
+4194304                1515.01
+8388608                2792.25
+16777216               5343.16
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Fri May 19 12:19:06 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   I_MPI_INFO_NUMA_NODE_NUM                                                    4
+--   I_MPI_INFO_NUMA_NODE_DIST     10,21,31,31,21,10,31,31,31,31,10,21,31,31,21,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                             mlx5_0:0
+--   I_MPI_PERHOST                                                        allcores
+--   I_MPI_DAPL_UD                                                          enable
+--   I_MPI_FABRICS                                                        shm:dapl
+--   I_MPI_PIN_DOMAIN                                                         auto
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_JOB_FAST_STARTUP                                                      0
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_OFA_ADAPTER_NAME                                                 mlx5_0
+--   I_MPI_FABRICS_LIST                                               dapl,ofa,tcp
+--   I_MPI_FALLBACK                                                         enable
+--   I_MPI_DAPL_UD_PROVIDER                                       ofa-v2-mlx5_0-1u
+--   KMP_AFFINITY                                   granularity=thread,compact,1,0
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   I_MPI_HYDRA_BOOTSTRAP                                                   slurm
+--   OMP_NUM_THREADS                                                             1
+--   I_MPI_ROOT                                      /lrz/sys/intel/impi/5.1.3.181
+--   I_MPI_HYDRA_UUID                         f7320000-f226-9bd9-dd4f-05004b610a9c
+--   I_MPI_PM                                                                hydra
+--   I_MPI_RANK_CMD                          ./dart/osu_dart_get_latency -s flush 
+--   I_MPI_CMD                       mpiexec ./dart/osu_dart_get_latency -s flush 
+--   I_MPI_INFO_STATE                                                            0
+--   I_MPI_INFO_MODE                                                           263
+--   I_MPI_INFO_VEND                                                             1
+--   I_MPI_INFO_FLGB                                                         14251
+--   I_MPI_INFO_FLGC                                                    2147417087
+--   I_MPI_INFO_FLGD                                                   -1075053569
+--   I_MPI_INFO_FLGCEXT                                                          0
+--   I_MPI_INFO_FLGDEXT                                                          0
+--   I_MPI_INFO_DESC                                                    1342177285
+--   I_MPI_INFO_BRAND                                            Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                                 E5-2697 v3 
+--   I_MPI_INFO_C_NAME                                                     Unknown
+--   I_MPI_INFO_SIGN                                                        198386
+--   I_MPI_INFO_LCPU                                                            28
+--   I_MPI_INFO_PACK       0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CORE 0,1,2,3,4,5,6,8,9,10,11,12,13,14,0,1,2,3,4,5,6,8,9,10,11,12,13,14
+--   I_MPI_INFO_THREAD     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE3     0,0,0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3
+--   I_MPI_INFO_CACHES                                                           3
+--   I_MPI_INFO_CACHE_SHARE                                                 2,2,16
+--   I_MPI_INFO_CACHE_SIZE                                   32768,262144,18350080
+--   I_MPI_INFO_NC                                                              28
+--   I_MPI_INFO_NP                                                               2
+--   I_MPI_PIN_MAPPING 28:0 0,1 1,2 2,3 3,4 4,5 5,6 6,7 7,8 8,9 9,10 10,11 11,12 12,13 13,14 14,15 15,16 16,17 17,18 18,19 19,20 20,21 21,22 22,23 23,24 24,25 25,26 26,27 27
+--   I_MPI_PIN_INFO                                                             x0
+--   I_MPI_EXT_MPI_CALLS_13073                                      0x2b17970434a0
+--   I_MPI_THREAD_LEVEL                                                          3
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                                     28
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                        intelmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                   intelmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r02c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r02c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r02c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r02c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r02c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r02c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r02c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r02c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r02c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r02c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r02c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r02c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r02c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r02c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r02c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r02c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r02c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r02c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r02c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r02c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r02c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r02c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r02c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r02c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r02c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r02c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r02c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r02c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r03c01s09                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r03c01s09                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r03c01s09                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r03c01s09                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r03c01s09                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r03c01s09                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r03c01s09                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r03c01s09                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r03c01s09                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r03c01s09                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r03c01s09                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r03c01s09                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r03c01s09                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r03c01s09                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r03c01s09                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r03c01s09                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r03c01s09                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r03c01s09                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r03c01s09                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r03c01s09                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r03c01s09                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r03c01s09                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r03c01s09                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r03c01s09                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r03c01s09                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r03c01s09                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r03c01s09                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r03c01s09                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         1.18
+1                       233.32
+2                       232.85
+4                       233.19
+8                       232.87
+16                      232.76
+32                      232.77
+64                      232.81
+128                     233.29
+256                     233.28
+512                     233.23
+1024                    232.79
+2048                    233.85
+4096                    234.04
+8192                    234.77
+16384                   247.79
+32768                   274.83
+65536                   277.26
+131072                  283.56
+262144                  318.65
+524288                  367.35
+1048576                 470.63
+2097152                 691.05
+4194304                1165.43
+8388608                2053.05
+16777216               3910.23
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Fri May 19 12:19:47 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   I_MPI_INFO_NUMA_NODE_NUM                                                    4
+--   I_MPI_INFO_NUMA_NODE_DIST     10,21,31,31,21,10,31,31,31,31,10,21,31,31,21,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                             mlx5_0:0
+--   I_MPI_PERHOST                                                        allcores
+--   I_MPI_DAPL_UD                                                          enable
+--   I_MPI_FABRICS                                                        shm:dapl
+--   I_MPI_PIN_DOMAIN                                                         auto
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_JOB_FAST_STARTUP                                                      0
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_OFA_ADAPTER_NAME                                                 mlx5_0
+--   I_MPI_FABRICS_LIST                                               dapl,ofa,tcp
+--   I_MPI_FALLBACK                                                         enable
+--   I_MPI_DAPL_UD_PROVIDER                                       ofa-v2-mlx5_0-1u
+--   KMP_AFFINITY                                   granularity=thread,compact,1,0
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   I_MPI_HYDRA_BOOTSTRAP                                                   slurm
+--   OMP_NUM_THREADS                                                             1
+--   I_MPI_ROOT                                      /lrz/sys/intel/impi/5.1.3.181
+--   I_MPI_HYDRA_UUID                         54330000-99a5-10dc-dd4f-05004b610a9c
+--   I_MPI_PM                                                                hydra
+--   I_MPI_RANK_CMD                    ./dart/osu_dart_get_latency -s flush_local 
+--   I_MPI_CMD                 mpiexec ./dart/osu_dart_get_latency -s flush_local 
+--   I_MPI_INFO_STATE                                                            0
+--   I_MPI_INFO_MODE                                                           263
+--   I_MPI_INFO_VEND                                                             1
+--   I_MPI_INFO_FLGB                                                         14251
+--   I_MPI_INFO_FLGC                                                    2147417087
+--   I_MPI_INFO_FLGD                                                   -1075053569
+--   I_MPI_INFO_FLGCEXT                                                          0
+--   I_MPI_INFO_FLGDEXT                                                          0
+--   I_MPI_INFO_DESC                                                    1342177285
+--   I_MPI_INFO_BRAND                                            Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                                 E5-2697 v3 
+--   I_MPI_INFO_C_NAME                                                     Unknown
+--   I_MPI_INFO_SIGN                                                        198386
+--   I_MPI_INFO_LCPU                                                            28
+--   I_MPI_INFO_PACK       0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CORE 0,1,2,3,4,5,6,8,9,10,11,12,13,14,0,1,2,3,4,5,6,8,9,10,11,12,13,14
+--   I_MPI_INFO_THREAD     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE3     0,0,0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3
+--   I_MPI_INFO_CACHES                                                           3
+--   I_MPI_INFO_CACHE_SHARE                                                 2,2,16
+--   I_MPI_INFO_CACHE_SIZE                                   32768,262144,18350080
+--   I_MPI_INFO_NC                                                              28
+--   I_MPI_INFO_NP                                                               2
+--   I_MPI_PIN_MAPPING 28:0 0,1 1,2 2,3 3,4 4,5 5,6 6,7 7,8 8,9 9,10 10,11 11,12 12,13 13,14 14,15 15,16 16,17 17,18 18,19 19,20 20,21 21,22 22,23 23,24 24,25 25,26 26,27 27
+--   I_MPI_PIN_INFO                                                             x0
+--   I_MPI_EXT_MPI_CALLS_13160                                      0x2b562899f4a0
+--   I_MPI_THREAD_LEVEL                                                          3
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                                     28
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                        intelmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                   intelmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r02c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r02c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r02c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r02c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r02c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r02c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r02c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r02c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r02c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r02c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r02c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r02c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r02c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r02c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r02c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r02c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r02c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r02c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r02c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r02c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r02c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r02c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r02c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r02c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r02c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r02c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r02c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r02c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r03c01s09                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r03c01s09                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r03c01s09                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r03c01s09                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r03c01s09                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r03c01s09                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r03c01s09                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r03c01s09                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r03c01s09                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r03c01s09                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r03c01s09                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r03c01s09                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r03c01s09                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r03c01s09                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r03c01s09                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r03c01s09                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r03c01s09                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r03c01s09                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r03c01s09                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r03c01s09                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r03c01s09                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r03c01s09                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r03c01s09                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r03c01s09                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r03c01s09                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r03c01s09                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r03c01s09                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r03c01s09                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush_local
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         1.10
+1                       235.72
+2                       235.79
+4                       235.71
+8                       234.78
+16                      235.87
+32                      235.72
+64                      235.78
+128                     235.11
+256                     235.80
+512                     235.00
+1024                    235.74
+2048                    236.15
+4096                    237.51
+8192                    237.77
+16384                   268.11
+32768                   292.84
+65536                   295.65
+131072                  305.94
+262144                  334.42
+524288                  386.81
+1048576                 495.58
+2097152                 720.28
+4194304                1167.42
+8388608                2081.04
+16777216               3860.19
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Fri May 19 12:20:28 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   I_MPI_INFO_NUMA_NODE_NUM                                                    4
+--   I_MPI_INFO_NUMA_NODE_DIST     10,21,31,31,21,10,31,31,31,31,10,21,31,31,21,10
+--   I_MPI_INFO_NUMA_NODE_MAP                                             mlx5_0:0
+--   I_MPI_PERHOST                                                        allcores
+--   I_MPI_DAPL_UD                                                          enable
+--   I_MPI_FABRICS                                                        shm:dapl
+--   I_MPI_PIN_DOMAIN                                                         auto
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_JOB_FAST_STARTUP                                                      0
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   I_MPI_OFA_ADAPTER_NAME                                                 mlx5_0
+--   I_MPI_FABRICS_LIST                                               dapl,ofa,tcp
+--   I_MPI_FALLBACK                                                         enable
+--   I_MPI_DAPL_UD_PROVIDER                                       ofa-v2-mlx5_0-1u
+--   KMP_AFFINITY                                   granularity=thread,compact,1,0
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   I_MPI_HYDRA_BOOTSTRAP                                                   slurm
+--   OMP_NUM_THREADS                                                             1
+--   I_MPI_ROOT                                      /lrz/sys/intel/impi/5.1.3.181
+--   I_MPI_HYDRA_UUID                         b1330000-17e4-85de-dd4f-05004b610a9c
+--   I_MPI_PM                                                                hydra
+--   I_MPI_RANK_CMD                     ./dart/osu_dart_get_latency -s req_handle 
+--   I_MPI_CMD                  mpiexec ./dart/osu_dart_get_latency -s req_handle 
+--   I_MPI_INFO_STATE                                                            0
+--   I_MPI_INFO_MODE                                                           263
+--   I_MPI_INFO_VEND                                                             1
+--   I_MPI_INFO_FLGB                                                         14251
+--   I_MPI_INFO_FLGC                                                    2147417087
+--   I_MPI_INFO_FLGD                                                   -1075053569
+--   I_MPI_INFO_FLGCEXT                                                          0
+--   I_MPI_INFO_FLGDEXT                                                          0
+--   I_MPI_INFO_DESC                                                    1342177285
+--   I_MPI_INFO_BRAND                                            Intel(R) Xeon(R) 
+--   I_MPI_INFO_SERIAL                                                 E5-2697 v3 
+--   I_MPI_INFO_C_NAME                                                     Unknown
+--   I_MPI_INFO_SIGN                                                        198386
+--   I_MPI_INFO_LCPU                                                            28
+--   I_MPI_INFO_PACK       0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,1,1,1,1,1,1,1,1,1,1,1,1,1
+--   I_MPI_INFO_CORE 0,1,2,3,4,5,6,8,9,10,11,12,13,14,0,1,2,3,4,5,6,8,9,10,11,12,13,14
+--   I_MPI_INFO_THREAD     0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+--   I_MPI_INFO_CACHE1 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE2 0,1,2,3,4,5,6,8,9,10,11,12,13,14,16,17,18,19,20,21,22,24,25,26,27,28,29,30
+--   I_MPI_INFO_CACHE3     0,0,0,0,0,0,0,1,1,1,1,1,1,1,2,2,2,2,2,2,2,3,3,3,3,3,3,3
+--   I_MPI_INFO_CACHES                                                           3
+--   I_MPI_INFO_CACHE_SHARE                                                 2,2,16
+--   I_MPI_INFO_CACHE_SIZE                                   32768,262144,18350080
+--   I_MPI_INFO_NC                                                              28
+--   I_MPI_INFO_NP                                                               2
+--   I_MPI_PIN_MAPPING 28:0 0,1 1,2 2,3 3,4 4,5 5,6 6,7 7,8 8,9 9,10 10,11 11,12 12,13 13,14 14,15 15,16 16,17 17,18 18,19 19,20 20,21 21,22 22,23 23,24 24,25 25,26 26,27 27
+--   I_MPI_PIN_INFO                                                             x0
+--   I_MPI_EXT_MPI_CALLS_13258                                      0x2b05d26634a0
+--   I_MPI_THREAD_LEVEL                                                          3
+--   I_MPI_NUMBER_OF_MPI_PROCESSES_PER_NODE                                     28
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                        intelmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                   intelmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r02c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r02c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r02c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r02c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r02c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r02c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r02c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r02c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r02c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r02c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r02c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r02c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r02c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r02c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r02c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r02c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r02c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r02c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r02c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r02c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r02c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r02c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r02c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r02c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r02c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r02c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r02c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r02c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r03c01s09                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r03c01s09                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r03c01s09                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r03c01s09                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r03c01s09                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r03c01s09                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r03c01s09                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r03c01s09                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r03c01s09                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r03c01s09                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r03c01s09                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r03c01s09                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r03c01s09                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r03c01s09                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r03c01s09                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r03c01s09                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r03c01s09                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r03c01s09                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r03c01s09                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r03c01s09                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r03c01s09                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r03c01s09                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r03c01s09                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r03c01s09                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r03c01s09                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r03c01s09                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r03c01s09                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r03c01s09                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_handle
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.36
+1                       235.28
+2                       236.65
+4                       236.87
+8                       236.50
+16                      236.66
+32                      235.51
+64                      236.78
+128                     236.70
+256                     235.39
+512                     236.67
+1024                    235.66
+2048                    236.05
+4096                    236.46
+8192                    238.67
+16384                   268.15
+32768                   278.41
+65536                   291.42
+131072                  300.19
+262144                  335.33
+524288                  378.77
+1048576                 484.29
+2097152                 714.59
+4194304                1159.36
+8388608                2073.80
+16777216               3866.44
+
+-----------------------------------------MPI------------------------------------
+
+# OSU MPI_Put Latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush
+# Target unit {id: 55, host: mpp2r03c01s09 }
+# Size          Latency (us)
+0                       0.07
+1                     236.37
+2                     232.83
+4                     235.67
+8                     231.88
+16                    232.82
+32                    231.88
+64                    232.81
+128                   231.95
+256                   232.60
+512                   233.45
+1024                  233.33
+2048                  233.42
+4096                  233.99
+8192                  235.06
+16384                 471.31
+32768                 471.63
+65536                 471.81
+131072                476.44
+262144                488.49
+524288                506.97
+1048576               543.63
+2097152               850.26
+4194304              1461.29
+8388608              2691.17
+16777216             5131.75
+# OSU MPI_Put Latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush_local
+# Target unit {id: 55, host: mpp2r03c01s09 }
+# Size          Latency (us)
+0                       0.08
+1                     235.43
+2                     232.30
+4                     235.54
+8                     233.46
+16                    235.52
+32                    232.60
+64                    235.58
+128                   233.67
+256                   232.80
+512                   233.63
+1024                  232.82
+2048                  235.30
+4096                  236.89
+8192                  237.92
+16384                 471.02
+32768                 471.40
+65536                 476.51
+131072                478.38
+262144                489.53
+524288                503.34
+1048576               541.02
+2097152               845.41
+4194304              1461.38
+8388608              2681.94
+16777216             5111.04
+# OSU MPI_Put Latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: (null)
+# Target unit {id: 55, host: mpp2r03c01s09 }
+# Size          Latency (us)
+0                       0.16
+1                     235.01
+2                     231.98
+4                     232.02
+8                     232.09
+16                    231.06
+32                    231.03
+64                    232.22
+128                   231.07
+256                   232.41
+512                   231.10
+1024                  231.36
+2048                  231.66
+4096                  233.13
+8192                  233.31
+16384                 465.50
+32768                 468.63
+65536                 473.75
+131072                474.24
+262144                484.10
+524288                500.35
+1048576               540.24
+2097152               843.18
+4194304              1455.32
+8388608              2675.58
+16777216             5097.84
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush
+# Size          Latency (us)
+0                       0.07
+1                     237.33
+2                     234.99
+4                     233.93
+8                     233.93
+16                    233.96
+32                    234.00
+64                    233.98
+128                   235.05
+256                   233.88
+512                   233.93
+1024                  235.19
+2048                  234.26
+4096                  235.86
+8192                  237.12
+16384                 262.21
+32768                 287.40
+65536                 288.68
+131072                299.62
+262144                329.66
+524288                380.73
+1048576               476.56
+2097152               706.46
+4194304              1187.98
+8388608              2085.21
+16777216             3738.81
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush_local
+# Size          Latency (us)
+0                       0.08
+1                     235.67
+2                     232.68
+4                     232.50
+8                     232.59
+16                    231.67
+32                    232.77
+64                    231.68
+128                   231.70
+256                   231.64
+512                   232.64
+1024                  232.90
+2048                  232.28
+4096                  232.61
+8192                  235.42
+16384                 261.35
+32768                 285.82
+65536                 290.29
+131072                303.69
+262144                330.05
+524288                379.89
+1048576               487.29
+2097152               690.33
+4194304              1125.36
+8388608              2006.06
+16777216             3802.35
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: (null)
+# Size          Latency (us)
+0                       0.41
+1                     236.21
+2                     234.45
+4                     234.26
+8                     233.04
+16                    234.39
+32                    234.29
+64                    234.39
+128                   234.41
+256                   234.34
+512                   234.44
+1024                  234.25
+2048                  234.58
+4096                  235.36
+8192                  237.54
+16384                 262.47
+32768                 285.42
+65536                 289.19
+131072                303.34
+262144                331.09
+524288                378.05
+1048576               484.58
+2097152               715.34
+4194304              1162.34
+8388608              2125.21
+16777216             3730.11

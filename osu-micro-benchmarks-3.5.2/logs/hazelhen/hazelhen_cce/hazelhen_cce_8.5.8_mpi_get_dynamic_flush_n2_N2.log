@@ -1,0 +1,31 @@
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush
+# Size          Latency (us)
+0                       0.98
+1                       1.51
+2                       1.51
+4                       1.49
+8                       1.49
+16                      1.47
+32                      1.47
+64                      1.47
+128                     1.50
+256                     1.54
+512                     1.58
+1024                    1.69
+2048                    1.97
+4096                    2.21
+8192                    3.05
+16384                   4.09
+32768                   6.58
+65536                  21.85
+131072                 28.12
+262144                 36.00
+524288                 63.25
+1048576               115.46
+2097152               217.14
+4194304               417.74
+8388608               821.96
+16777216             2291.47
+Application 7485019 resources: utime ~2s, stime ~1s, Rss ~6356, inblocks ~9122, outblocks ~20204

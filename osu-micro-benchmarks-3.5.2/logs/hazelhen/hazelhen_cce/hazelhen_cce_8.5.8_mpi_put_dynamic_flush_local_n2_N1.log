@@ -1,0 +1,32 @@
+# OSU MPI_Put Latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush_local
+# Target unit {id: 1, host: nid04580 }
+# Size          Latency (us)
+0                       0.05
+1                       8.58
+2                       8.64
+4                       8.70
+8                       8.14
+16                      8.84
+32                      9.13
+64                      8.16
+128                     8.75
+256                     8.55
+512                     8.49
+1024                   10.49
+2048                   11.40
+4096                   10.46
+8192                   16.39
+16384                  15.17
+32768                  16.88
+65536                  23.75
+131072                 29.52
+262144                128.06
+524288                109.68
+1048576               229.94
+2097152               321.50
+4194304               671.48
+8388608              1665.69
+16777216             5019.31
+Application 7485058 resources: utime ~4s, stime ~2s, Rss ~6628, inblocks ~18210, outblocks ~40424

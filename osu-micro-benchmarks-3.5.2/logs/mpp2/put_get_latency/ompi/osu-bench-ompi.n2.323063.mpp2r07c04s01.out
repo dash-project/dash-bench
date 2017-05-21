@@ -1,0 +1,2022 @@
+
+----------------------------------DART--------------------------------------------
+
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Sat May 20 17:24:00 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                             osu_dart_put_latency
+--   OMPI_ARGV                                                            -s flush
+--   OMPI_MCA_orte_precondition_transports       962377f132501338-e971471260f11022
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1266155520.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:34266;ud://776017.382.1
+--   OMPI_MCA_orte_hnp_uri 1266155520.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:34266;ud://776017.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1266155521
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/19320/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         1.07
+1                         5.07
+2                         5.06
+4                         5.07
+8                         5.06
+16                        5.12
+32                        5.11
+64                        5.17
+128                       5.29
+256                       5.88
+512                       6.17
+1024                      6.32
+2048                      6.75
+4096                      7.41
+8192                      8.77
+16384                    11.36
+32768                    11.62
+65536                    16.77
+131072                   26.75
+262144                   46.90
+524288                   87.04
+1048576                 167.58
+2097152                 328.86
+4194304                 650.27
+8388608                1292.73
+16777216               2577.76
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Sat May 20 17:24:09 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                             osu_dart_put_latency
+--   OMPI_ARGV                                                      -s flush_local
+--   OMPI_MCA_orte_precondition_transports       e77f47037073a2e1-084948344f734773
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1248788480.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:51279;ud://777122.382.1
+--   OMPI_MCA_orte_hnp_uri 1248788480.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:51279;ud://777122.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1248788481
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/19055/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush_local
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.81
+1                         4.79
+2                         4.78
+4                         4.83
+8                         4.83
+16                        4.83
+32                        4.81
+64                        4.92
+128                       4.84
+256                       5.55
+512                       5.70
+1024                      6.02
+2048                      6.31
+4096                      7.05
+8192                      8.44
+16384                    10.93
+32768                    11.32
+65536                    16.26
+131072                   26.40
+262144                   46.56
+524288                   86.64
+1048576                 167.29
+2097152                 328.31
+4194304                 649.89
+8388608                1292.39
+16777216               2577.38
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Sat May 20 17:24:18 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                             osu_dart_put_latency
+--   OMPI_ARGV                                                       -s req_handle
+--   OMPI_MCA_orte_precondition_transports       6bc93273e21adbbe-45bd8127bb6c8491
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1230962688.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:54596;ud://778227.382.1
+--   OMPI_MCA_orte_hnp_uri 1230962688.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:54596;ud://778227.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1230962689
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/18783/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_handle
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.64
+1                         5.03
+2                         5.02
+4                         5.02
+8                         5.02
+16                        5.04
+32                        5.06
+64                        5.08
+128                       5.11
+256                       5.78
+512                       5.78
+1024                      6.16
+2048                      6.50
+4096                      7.19
+8192                      8.66
+16384                    11.20
+32768                    11.37
+65536                    16.69
+131072                   26.68
+262144                   46.69
+524288                   86.85
+1048576                 167.21
+2097152                 328.64
+4194304                 649.96
+8388608                1292.67
+16777216               2577.58
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Sat May 20 17:24:27 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                             osu_dart_get_latency
+--   OMPI_ARGV                                                            -s flush
+--   OMPI_MCA_orte_precondition_transports       61c5231e30ee5541-09f191ce08bbf3d2
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1212678144.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:50120;ud://779332.382.1
+--   OMPI_MCA_orte_hnp_uri 1212678144.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:50120;ud://779332.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1212678145
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/18504/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         1.11
+1                         5.86
+2                         5.59
+4                         5.78
+8                         5.80
+16                        5.51
+32                        5.68
+64                        5.71
+128                       5.82
+256                       6.11
+512                       6.67
+1024                      6.57
+2048                      7.02
+4096                      7.80
+8192                      8.92
+16384                    11.23
+32768                    12.18
+65536                    17.37
+131072                   27.34
+262144                   47.47
+524288                   87.60
+1048576                 167.82
+2097152                 328.91
+4194304                 650.29
+8388608                1292.87
+16777216               2578.24
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Sat May 20 17:24:36 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                             osu_dart_get_latency
+--   OMPI_ARGV                                                      -s flush_local
+--   OMPI_MCA_orte_precondition_transports       2a7cd4f824407377-8019831c9b45d393
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1329135616.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:32804;ud://780437.382.1
+--   OMPI_MCA_orte_hnp_uri 1329135616.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:32804;ud://780437.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1329135617
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/20281/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush_local
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.81
+1                         5.39
+2                         5.39
+4                         5.39
+8                         5.41
+16                        5.27
+32                        5.25
+64                        5.35
+128                       5.50
+256                       5.78
+512                       5.91
+1024                      6.25
+2048                      6.61
+4096                      7.39
+8192                      8.58
+16384                    10.85
+32768                    12.07
+65536                    16.98
+131072                   27.00
+262144                   47.11
+524288                   87.19
+1048576                 167.56
+2097152                 328.53
+4194304                 649.89
+8388608                1292.31
+16777216               2577.77
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Sat May 20 17:24:45 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                             osu_dart_get_latency
+--   OMPI_ARGV                                                       -s req_handle
+--   OMPI_MCA_orte_precondition_transports       1c20f958fcf653aa-79739040e876fb60
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1311309824.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:33631;ud://781542.382.1
+--   OMPI_MCA_orte_hnp_uri 1311309824.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:33631;ud://781542.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1311309825
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/20009/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DASH_ENABLE_MKL                                                             1
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MPI_SHWIN                                                       1
+--   DASH_ENABLE_NUMA                                                            1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                    enabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_handle
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.65
+1                         5.68
+2                         5.61
+4                         5.51
+8                         5.52
+16                        5.60
+32                        5.56
+64                        5.56
+128                       5.57
+256                       5.98
+512                       6.08
+1024                      6.47
+2048                      6.73
+4096                      7.57
+8192                      8.86
+16384                    11.33
+32768                    12.22
+65536                    19.50
+131072                   27.38
+262144                   47.22
+524288                   87.38
+1048576                 167.77
+2097152                 328.80
+4194304                 650.15
+8388608                1292.59
+16777216               2578.18
+
+-------------------------------------------DART NO SHARED WINDOWS -----------------
+
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Sat May 20 17:24:54 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                       osu_dart_put_latency_noshw
+--   OMPI_ARGV                                                            -s flush
+--   OMPI_MCA_orte_precondition_transports       9d919229c72d08f6-882676b5fd1466ac
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1293549568.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:34182;ud://782647.382.1
+--   OMPI_MCA_orte_hnp_uri 1293549568.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:34182;ud://782647.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1293549569
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/19738/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MKL                                                             1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_NUMA                                                            1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                   disabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         1.07
+1                         5.01
+2                         5.00
+4                         4.99
+8                         4.99
+16                        5.02
+32                        5.16
+64                        5.17
+128                       5.26
+256                       5.82
+512                       6.08
+1024                      6.10
+2048                      6.58
+4096                      7.39
+8192                      8.73
+16384                    11.13
+32768                    11.54
+65536                    16.80
+131072                   26.77
+262144                   46.77
+524288                   86.95
+1048576                 167.35
+2097152                 328.69
+4194304                 650.12
+8388608                1292.65
+16777216               2577.70
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Sat May 20 17:25:03 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                       osu_dart_put_latency_noshw
+--   OMPI_ARGV                                                      -s flush_local
+--   OMPI_MCA_orte_precondition_transports       5fe0b515b7ae9068-fdfa054004a06e6b
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1275789312.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:35312;ud://783752.382.1
+--   OMPI_MCA_orte_hnp_uri 1275789312.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:35312;ud://783752.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1275789313
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/19467/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MKL                                                             1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_NUMA                                                            1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                   disabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush_local
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.80
+1                         4.65
+2                         4.68
+4                         4.72
+8                         4.65
+16                        4.67
+32                        4.71
+64                        4.73
+128                       4.89
+256                       5.50
+512                       5.78
+1024                      5.92
+2048                      6.36
+4096                      6.97
+8192                      8.34
+16384                    10.90
+32768                    11.20
+65536                    16.24
+131072                   26.23
+262144                   46.33
+524288                   86.60
+1048576                 166.84
+2097152                 328.46
+4194304                 649.76
+8388608                1292.17
+16777216               2577.47
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Put Latency Test
+--   date                                                 Sat May 20 17:25:12 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                       osu_dart_put_latency_noshw
+--   OMPI_ARGV                                                       -s req_handle
+--   OMPI_MCA_orte_precondition_transports       e05f718f65d98e6e-e298acd27c8c5187
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1407516672.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:42361;ud://784857.382.1
+--   OMPI_MCA_orte_hnp_uri 1407516672.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:42361;ud://784857.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1407516673
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/21477/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MKL                                                             1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_NUMA                                                            1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                   disabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_handle
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.64
+1                         5.04
+2                         5.12
+4                         5.08
+8                         5.06
+16                        5.06
+32                        5.06
+64                        5.08
+128                       5.11
+256                       5.74
+512                       5.86
+1024                      6.50
+2048                      6.55
+4096                      7.20
+8192                      8.61
+16384                    11.22
+32768                    11.38
+65536                    16.48
+131072                   26.48
+262144                   46.57
+524288                   86.68
+1048576                 167.13
+2097152                 328.69
+4194304                 650.04
+8388608                1292.64
+16777216               2577.52
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Sat May 20 17:25:21 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                       osu_dart_get_latency_noshw
+--   OMPI_ARGV                                                            -s flush
+--   OMPI_MCA_orte_precondition_transports       b27a5d7fe990d774-412ae01605e5020c
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1389756416.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:44353;ud://785962.382.1
+--   OMPI_MCA_orte_hnp_uri 1389756416.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:44353;ud://785962.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1389756417
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/21206/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MKL                                                             1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_NUMA                                                            1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                   disabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         1.10
+1                         5.83
+2                         5.83
+4                         5.86
+8                         5.83
+16                        5.81
+32                        5.88
+64                        5.88
+128                       5.97
+256                       6.21
+512                       6.36
+1024                      6.45
+2048                      6.91
+4096                      7.77
+8192                      8.83
+16384                    10.76
+32768                    11.79
+65536                    16.75
+131072                   26.88
+262144                   46.94
+524288                   87.03
+1048576                 167.42
+2097152                 328.74
+4194304                 650.20
+8388608                1292.66
+16777216               2577.57
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Sat May 20 17:25:30 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                       osu_dart_get_latency_noshw
+--   OMPI_ARGV                                                      -s flush_local
+--   OMPI_MCA_orte_precondition_transports       579b5ee00c493610-06346539f6451f35
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1371996160.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:42864;ud://787067.382.1
+--   OMPI_MCA_orte_hnp_uri 1371996160.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:42864;ud://787067.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1371996161
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/20935/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MKL                                                             1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_NUMA                                                            1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                   disabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_flush_local
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.79
+1                         5.40
+2                         5.42
+4                         5.42
+8                         5.41
+16                        5.46
+32                        5.45
+64                        5.47
+128                       5.55
+256                       5.80
+512                       5.89
+1024                      6.02
+2048                      6.53
+4096                      7.33
+8192                      8.22
+16384                    10.29
+32768                    11.28
+65536                    16.45
+131072                   26.30
+262144                   46.56
+524288                   86.70
+1048576                 167.05
+2097152                 328.31
+4194304                 649.87
+8388608                1292.32
+16777216               2577.29
+----------------------------------------------------------------------------------
+-- Benchmark
+--   identifier                                          OSU DART_Get Latency Test
+--   date                                                 Sat May 20 17:25:39 2017
+----------------------------------------------------------------------------------
+-- MPI Environment Flags
+--   OMPI_MCA_shmem_mmap_relocate_backing_file                                  -1
+--   OMPI_MCA_rmaps_base_mapping_policy                                       core
+--   OMPI_MCA_pmix                                                     ^s1,s2,cray
+--   OMPI_COMMAND                                       osu_dart_get_latency_noshw
+--   OMPI_ARGV                                                       -s req_handle
+--   OMPI_MCA_orte_precondition_transports       57fd8bd4e8b23787-169e3e242fcbb0e8
+--   MIC_LD_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LD_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   MIC_LIBRARY_PATH /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic
+--   MIC_LIBRARY_PATH_modshare /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/compiler/lib/mic:1:/lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/lib/mic:1
+--   OMP_NUM_THREADS                                                             1
+--   OMPI_MCA_orte_local_daemon_uri 1354170368.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:37635;ud://788172.382.1
+--   OMPI_MCA_orte_hnp_uri 1354170368.0;usock;tcp://10.0.2.37,10.0.10.37,10.0.10.37:37635;ud://788172.382.1
+--   OMPI_MCA_mpi_yield_when_idle                                                0
+--   OMPI_MCA_orte_app_num                                                       0
+--   OMPI_UNIVERSE_SIZE                                                         56
+--   OMPI_MCA_orte_num_nodes                                                     2
+--   OMPI_MCA_shmem_RUNTIME_QUERY_hint                                        mmap
+--   OMPI_MCA_orte_bound_at_launch                                               1
+--   OMPI_MCA_ess                                                              pmi
+--   OMPI_MCA_orte_ess_num_procs                                                56
+--   OMPI_COMM_WORLD_SIZE                                                       56
+--   OMPI_COMM_WORLD_LOCAL_SIZE                                                 28
+--   OMPI_MCA_orte_tmpdir_base               /gpfs/scratch/ug201/ru68ceb2/ru68ceb2
+--   OMPI_NUM_APP_CTX                                                            1
+--   OMPI_FIRST_RANKS                                                            0
+--   OMPI_APP_CTX_NUM_PROCS                                                     56
+--   OMPI_MCA_initial_wdir /home/hpc/ug201/ru68ceb2/workspaces/osu-micro-benchmarks-5.3.2
+--   OMPI_MCA_orte_launch                                                        1
+--   OMPI_MCA_ess_base_jobid                                            1354170369
+--   OMPI_MCA_ess_base_vpid                                                      0
+--   OMPI_COMM_WORLD_RANK                                                        0
+--   OMPI_COMM_WORLD_LOCAL_RANK                                                  0
+--   OMPI_COMM_WORLD_NODE_RANK                                                   0
+--   OMPI_MCA_orte_ess_node_rank                                                 0
+--   OMPI_FILE_LOCATION /gpfs/scratch/ug201/ru68ceb2/ru68ceb2/openmpi-sessions-3453021@mpp2r07c04s01_0/20663/1/0
+----------------------------------------------------------------------------------
+-- DASH Environment Flags
+--   DART_MPI_IMPL                                                         openmpi
+--   DASH_ENABLE_MKL                                                             1
+--   DASH_ENABLE_PAPI                                                            1
+--   DASH_ENABLE_HWLOC                                                           1
+--   DASH_ENABLE_OPENMP                                                          1
+--   DASH_ENABLE_NUMA                                                            1
+----------------------------------------------------------------------------------
+-- DASH Configuration
+--   MPI implementation                                                    openmpi
+--   Host system identifier                                                default
+--   PAPI                                                                  enabled
+--   hwloc                                                                 enabled
+--   libnuma                                                               enabled
+--   MPI shared windows                                                   disabled
+--   BLAS                                                                 disabled
+--   LAPACK                                                               disabled
+--   Intel MKL                                                             enabled
+--   ScaLAPACK                                                            disabled
+----------------------------------------------------------------------------------
+-- Process Pinning
+--   unit host                                 domain               NUMA core  CPU
+--   0    mpp2r07c04s01                        .0.0.0.0.0.0.0.0        0    0    0
+--   1    mpp2r07c04s01                        .0.0.0.0.0.1.0.0        0    1    1
+--   2    mpp2r07c04s01                        .0.0.0.0.0.2.0.0        0    2    2
+--   3    mpp2r07c04s01                        .0.0.0.0.0.3.0.0        0    3    3
+--   4    mpp2r07c04s01                        .0.0.0.0.0.4.0.0        0    4    4
+--   5    mpp2r07c04s01                        .0.0.0.0.0.5.0.0        0    5    5
+--   6    mpp2r07c04s01                        .0.0.0.0.0.6.0.0        0    6    6
+--   7    mpp2r07c04s01                        .0.0.0.1.0.0.0.0        1    7    7
+--   8    mpp2r07c04s01                        .0.0.0.1.0.1.0.0        1    8    8
+--   9    mpp2r07c04s01                        .0.0.0.1.0.2.0.0        1    9    9
+--   10   mpp2r07c04s01                        .0.0.0.1.0.3.0.0        1   10   10
+--   11   mpp2r07c04s01                        .0.0.0.1.0.4.0.0        1   11   11
+--   12   mpp2r07c04s01                        .0.0.0.1.0.5.0.0        1   12   12
+--   13   mpp2r07c04s01                        .0.0.0.1.0.6.0.0        1   13   13
+--   14   mpp2r07c04s01                        .0.0.1.0.0.0.0.0        2   14   14
+--   15   mpp2r07c04s01                        .0.0.1.0.0.1.0.0        2   15   15
+--   16   mpp2r07c04s01                        .0.0.1.0.0.2.0.0        2   16   16
+--   17   mpp2r07c04s01                        .0.0.1.0.0.3.0.0        2   17   17
+--   18   mpp2r07c04s01                        .0.0.1.0.0.4.0.0        2   18   18
+--   19   mpp2r07c04s01                        .0.0.1.0.0.5.0.0        2   19   19
+--   20   mpp2r07c04s01                        .0.0.1.0.0.6.0.0        2   20   20
+--   21   mpp2r07c04s01                        .0.0.1.1.0.0.0.0        3   21   21
+--   22   mpp2r07c04s01                        .0.0.1.1.0.1.0.0        3   22   22
+--   23   mpp2r07c04s01                        .0.0.1.1.0.2.0.0        3   23   23
+--   24   mpp2r07c04s01                        .0.0.1.1.0.3.0.0        3   24   24
+--   25   mpp2r07c04s01                        .0.0.1.1.0.4.0.0        3   25   25
+--   26   mpp2r07c04s01                        .0.0.1.1.0.5.0.0        3   26   26
+--   27   mpp2r07c04s01                        .0.0.1.1.0.6.0.0        3   27   27
+--   28   mpp2r07c04s02                        .1.0.0.0.0.0.0.0        0    0    0
+--   29   mpp2r07c04s02                        .1.0.0.0.0.1.0.0        0    1    1
+--   30   mpp2r07c04s02                        .1.0.0.0.0.2.0.0        0    2    2
+--   31   mpp2r07c04s02                        .1.0.0.0.0.3.0.0        0    3    3
+--   32   mpp2r07c04s02                        .1.0.0.0.0.4.0.0        0    4    4
+--   33   mpp2r07c04s02                        .1.0.0.0.0.5.0.0        0    5    5
+--   34   mpp2r07c04s02                        .1.0.0.0.0.6.0.0        0    6    6
+--   35   mpp2r07c04s02                        .1.0.0.1.0.0.0.0        1    7    7
+--   36   mpp2r07c04s02                        .1.0.0.1.0.1.0.0        1    8    8
+--   37   mpp2r07c04s02                        .1.0.0.1.0.2.0.0        1    9    9
+--   38   mpp2r07c04s02                        .1.0.0.1.0.3.0.0        1   10   10
+--   39   mpp2r07c04s02                        .1.0.0.1.0.4.0.0        1   11   11
+--   40   mpp2r07c04s02                        .1.0.0.1.0.5.0.0        1   12   12
+--   41   mpp2r07c04s02                        .1.0.0.1.0.6.0.0        1   13   13
+--   42   mpp2r07c04s02                        .1.0.1.0.0.0.0.0        2   14   14
+--   43   mpp2r07c04s02                        .1.0.1.0.0.1.0.0        2   15   15
+--   44   mpp2r07c04s02                        .1.0.1.0.0.2.0.0        2   16   16
+--   45   mpp2r07c04s02                        .1.0.1.0.0.3.0.0        2   17   17
+--   46   mpp2r07c04s02                        .1.0.1.0.0.4.0.0        2   18   18
+--   47   mpp2r07c04s02                        .1.0.1.0.0.5.0.0        2   19   19
+--   48   mpp2r07c04s02                        .1.0.1.0.0.6.0.0        2   20   20
+--   49   mpp2r07c04s02                        .1.0.1.1.0.0.0.0        3   21   21
+--   50   mpp2r07c04s02                        .1.0.1.1.0.1.0.0        3   22   22
+--   51   mpp2r07c04s02                        .1.0.1.1.0.2.0.0        3   23   23
+--   52   mpp2r07c04s02                        .1.0.1.1.0.3.0.0        3   24   24
+--   53   mpp2r07c04s02                        .1.0.1.1.0.4.0.0        3   25   25
+--   54   mpp2r07c04s02                        .1.0.1.1.0.5.0.0        3   26   26
+--   55   mpp2r07c04s02                        .1.0.1.1.0.6.0.0        3   27   27
+----------------------------------------------------------------------------------
+# Window creation: dart_team_memalloc_aligned
+# Synchronization: dart_handle
+# Target Unit { id: 55 }
+# Size            Latency (us)
+0                         0.65
+1                         5.70
+2                         5.68
+4                         5.71
+8                         5.69
+16                        5.71
+32                        5.71
+64                        5.76
+128                       5.80
+256                       5.96
+512                       6.16
+1024                      6.27
+2048                      6.72
+4096                      7.41
+8192                      8.44
+16384                    10.62
+32768                    11.68
+65536                    16.37
+131072                   26.61
+262144                   46.80
+524288                   86.93
+1048576                 167.19
+2097152                 328.52
+4194304                 650.04
+8388608                1292.46
+16777216               2577.58
+
+----------------------------------MPI--------------------------------------------
+
+# OSU MPI_Put Latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush
+# Target unit {id: 55, host: mpp2r07c04s02 }
+# Size          Latency (us)
+0                       0.22
+1                       4.17
+2                       4.09
+4                       4.10
+8                       6.91
+16                      4.03
+32                      4.14
+64                      4.21
+128                     4.21
+256                     4.71
+512                     4.73
+1024                    4.89
+2048                    5.27
+4096                    6.06
+8192                    7.35
+16384                   9.92
+32768                  10.61
+65536                  15.70
+131072                 25.63
+262144                 45.85
+524288                 86.02
+1048576               166.50
+2097152               327.92
+4194304               649.31
+8388608              1291.64
+16777216             2576.35
+# OSU MPI_Put Latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush_local
+# Target unit {id: 55, host: mpp2r07c04s02 }
+# Size          Latency (us)
+0                       0.42
+1                       6.92
+2                       6.91
+4                       6.96
+8                       7.02
+16                      6.90
+32                      6.95
+64                      6.91
+128                     6.99
+256                     7.71
+512                     7.68
+1024                    7.98
+2048                    8.61
+4096                    9.90
+8192                   12.06
+16384                  16.12
+32768                  16.78
+65536                  25.33
+131072                 41.93
+262144                 74.09
+524288                139.38
+1048576               270.01
+2097152               532.43
+4194304              1054.67
+8388608              2098.56
+16777216             4186.58
+# OSU MPI_Put Latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: (null)
+# Target unit {id: 55, host: mpp2r07c04s02 }
+# Size          Latency (us)
+0                       0.42
+1                       3.07
+2                       3.05
+4                       3.05
+8                       3.06
+16                      3.02
+32                      3.03
+64                      2.95
+128                     2.93
+256                     3.04
+512                     5.47
+1024                    5.60
+2048                    6.07
+4096                    6.89
+8192                    8.32
+16384                  10.98
+32768                  11.44
+65536                  17.15
+131072                 28.02
+262144                 50.06
+524288                 93.29
+1048576               180.42
+2097152               355.31
+4194304               703.44
+8388608              1399.50
+16777216             2791.54
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush
+# Size          Latency (us)
+0                       0.56
+1                       4.76
+2                       4.78
+4                       4.85
+8                       4.82
+16                      4.78
+32                      4.72
+64                      4.72
+128                     4.79
+256                     4.87
+512                     5.11
+1024                    5.16
+2048                    5.51
+4096                    6.30
+8192                    7.40
+16384                   9.22
+32768                  10.44
+65536                  15.56
+131072                 25.54
+262144                 45.64
+524288                 86.08
+1048576               166.61
+2097152               327.92
+4194304               649.08
+8388608              1291.80
+16777216             2576.28
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush_local
+# Size          Latency (us)
+0                       0.65
+1                       5.61
+2                       5.69
+4                       5.60
+8                       5.56
+16                      5.93
+32                      5.93
+64                      5.95
+128                     5.83
+256                     5.69
+512                     5.23
+1024                    5.55
+2048                    5.79
+4096                    6.68
+8192                    8.40
+16384                  12.63
+32768                  13.86
+65536                  18.23
+131072                 30.28
+262144                 51.56
+524288                 94.45
+1048576               179.26
+2097152               345.60
+4194304               671.12
+8388608              1310.14
+16777216             2587.88
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: (null)
+# Size          Latency (us)
+0                       0.31
+1                       5.05
+2                       5.04
+4                       5.23
+8                       5.17
+16                      5.13
+32                      4.96
+64                      5.00
+128                     5.12
+256                     5.14
+512                     5.25
+1024                    5.60
+2048                    5.90
+4096                    6.67
+8192                    7.61
+16384                   9.61
+32768                  10.80
+65536                  15.78
+131072                 25.92
+262144                 45.99
+524288                 86.09
+1048576               166.48
+2097152               327.80
+4194304               649.60
+8388608              1292.79
+16777216             2576.69
