@@ -81,7 +81,7 @@ process_options(int argc, char *argv[], WINDOW *win, SYNC *sync)
                         *sync = FLUSH_LOCAL;
                     }
                     else if (0 == strcasecmp(optarg, "blocking")) {
-                        *sync = FLUSH_LOCAL;
+                        *sync = BLOCKING;
                     }
                     else if (0 == strcasecmp(optarg, "req_handle")) {
                         *sync = REQ_HANDLE;
