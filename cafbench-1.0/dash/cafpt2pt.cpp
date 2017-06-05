@@ -135,7 +135,7 @@ void cafpingpong(
         // Force initialisation of source array outside of timing loop 
         // even if we do not check values within it
 
-        cafset(x, count, stride, blksize, 1.0, true);
+        CafCore::cafset(x, count, stride, blksize, 1.0, true);
       }
       x.sync_all();
 
@@ -145,11 +145,94 @@ void cafpingpong(
         switch(cafmodetype){
           case CafCore::mode::cafmodeput: // TODO add other modes
             if(this_image() == image1){
-              cafset(x, count, stride, blksize,
+              CafCore::cafset(x, count, stride, blksize,
                      static_cast<double>(irep), docheck);
+            
+              switch(cafmodetype){
+                case CafCore::mode::cafmodeput:
+                  dash::copy(x.lbegin(), x.lbegin()+ndata, x(image2).begin());
+                  break;
+                // TODO: other cases
+                default:break;
+              }
             }
+            CafCore::cafdosync(cafsynctype, active, neighbours);
+            
+            if(this_image() == image2){
+              lcheck = CafCore::cafcheck(x, count, stride, blksize,
+                                static_cast<double>(irep), docheck);
+    
+              CafCore::cafset(x, count, stride, blksize,
+                     static_cast<double>(-irep), docheck);
+
+              switch(cafmodetype){
+                case CafCore::mode::cafmodeput:
+                  dash::copy(x.lbegin(), x.lbegin()+ndata, x(image1).begin());
+                  break;
+                // TODO: other cases
+                default:break;
+              }
+            }
+            if(docheck) {
+              gcheck &= lcheck;
+            }
+            if(!gcheck) {
+              // Validation error in ping TODO
+            }
+
+            CafCore::cafdosync(cafsynctype, active, neighbours);
+
+            if(this_image() == image1){
+              lcheck = CafCore::cafcheck(x, count, stride, blksize,
+                                static_cast<double>(-irep), docheck);
+            }
+            if(docheck) {
+              gcheck &= lcheck;
+            }
+            if(!gcheck) {
+              // Validation error in pong TODO
+            }
+
+            break;
+          // --------------------------------
+          // --------- get cases ------------
+          // --------------------------------
+          case CafCore::mode::cafmodeget:
+            // TODO
             break;
           default: break;
+        }
+      }
+
+      if(this_image() == 0){
+        if(gcheck) {
+          std::cout << "HEADER"
+                    << count << ","
+                    << blksize << ","
+                    << stride << ","
+                    << ndata << ","
+                    << nextent << ","
+                    << nrep << ","
+                    << time << ","
+                    << time/static_cast<double>(ndata) << ","
+                    << (2.0*static_cast<double>(nrep)*static_cast<double>(sizeof(double)) / (static_cast<double>(1024*1024) * time)) << std::endl;
+        } else {
+          std::cout << "Verification failed: exiting this test" << std::endl;
+        }
+      }
+      if(!gcheck) {
+        finished = true;
+        return;
+      }
+    }
+    x.deallocate();
+    if(this_image() == 0){
+      std::cout << std::endl;
+      if(docheck){
+        if(gcheck){
+          std::cout << "All results validated\n" << std::endl;
+        } else {
+          std::cout << "\n" << "ERROR: validation failed\n" << std::endl;
         }
       }
     }

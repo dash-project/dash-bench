@@ -1,12 +1,12 @@
 cmake_minimum_required(VERSION 3.2)
-project(dummy_app)
+project(cafbench)
 
 ## Adjust to your needs
 
 ## DART Implementation
 set(DASH_DART_IMPL "MPI")
 ## Project Sources
-set(SOURCES "main")
+set(SOURCES "main" "cafpt2pt" "cafpt2ptdriver")
 
 set(CXX_FLAGS "-O3 -Ofast")
 

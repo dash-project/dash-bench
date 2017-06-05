@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "cafcore.h"
+#include "cafparams.h"
 
 using dash::coarray::this_image;
 using dash::coarray::num_images;
@@ -16,17 +17,17 @@ void cafpingpong(
        int nmax,
        bool docheck);
 
-void cafpt2ptdriver(const CafCore & cfg){
-  bool docheck;
+void cafpt2ptdriver(){
+  bool docheck = CafParams::p2pcheck;
 
-  bool dosingle;
-  bool domulti;
-  bool docross;
+  bool dosingle = CafParams::p2psingle;
+  bool domulti  = CafParams::p2pmulti;
+  bool docross  = CafParams::p2pcross;
 
   int image1, image2, tmpimage, nmax;
   int cafsynctype, cafmodetype;
 
-//  nmax = cfg.p2pnmax;
+  nmax = CafParams::p2pnmax;
 
   image1 = 0;
   image2 = 0;
@@ -34,7 +35,7 @@ void cafpt2ptdriver(const CafCore & cfg){
   for(int iloop=0; iloop<2; ++iloop){
     if(iloop == 0 && dosingle){
 
-      image1 = 1;
+      image1 = 0;
       image2 = num_images();
 
       if (this_image() == 0) {

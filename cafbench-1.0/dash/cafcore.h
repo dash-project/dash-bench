@@ -7,6 +7,8 @@
 #include <array>
 #include <string>
 
+using dash::coarray::this_image;
+
 class CafCore {
 public:
   enum mode : unsigned char {
@@ -97,14 +99,60 @@ public:
   }
 
   template<
+    typename CO_A>
+  static bool cafcheck(
+      const CO_A & x,
+      const int count,
+      const int stride,
+      const int blksize,
+      const typename CO_A::value_type value,
+      const bool docheck)
+  {
+    using value_type = typename CO_A::value_type;
+
+    if(docheck){
+      for(int icount = 0; icount < count; ++icount){
+        for(int i=icount*stride; i<icount*stride+blksize;++i){
+          if(x[i] != value){
+            std::cout << "ERROR: image " << this_image()
+                      << ", x(" << i << ") = " << x[i] << std::endl;
+            std::cout << "ERROR: image " << this_image()
+                      << ", expected x = " << value << std::endl;
+            return false; 
+          } 
+        }
+      }
+    } else {
+      if(x[0] == 0){
+        std::cout << "ERROR: image " << this_image()
+                  << " not expecting x(1) = "
+                  << x[0]
+                  << std::endl;
+        return false;
+      }
+    }
+    return true;
+  }
+
+  static void cafdosync(
+      const sync & cafsynctype,
+      const bool active,
+      const std::vector<int> & neighbours){
+    switch(cafsynctype){
+      case sync::cafsyncall: dash::coarray::sync_all(); break;
+      default: break;
+    }
+  }
+
+  template<
     typename CO_A,
     typename CO_B>
   static inline void cafput(
       CO_A & target,
       const CO_A & source,
-      int disp,
-      int count,
-      int image)
+      const int disp,
+      const int count,
+      const int image)
   {
     if(count == 1){
       target(image)[disp] = source[disp];
@@ -121,9 +169,9 @@ public:
   static inline void cafget(
       CO_A & target,
       const CO_A & source,
-      int disp,
-      int count,
-      int image)
+      const int disp,
+      const int count,
+      const int image)
   {
     if(count == 1){
       target[disp] = source(image)[disp];
@@ -140,8 +188,8 @@ public:
   static inline void cafsimpleput(
       CO_A & target,
       const CO_A & source,
-      int n,
-      int image)
+      const int n,
+      const int image)
   {
     auto & begit = source.lbegin();
     auto & endit = source.lend();
@@ -154,12 +202,33 @@ public:
   static inline void cafsimpleget(
       CO_A & target,
       const CO_A & source,
-      int n,
-      int image)
+      const int n,
+      const int image)
   {
     auto & begit = source(image).begin();
     auto & endit = source(image).end();
     dash::copy(begit, endit, target.lbegin());
+  }
+
+  template<
+    typename CO_A>
+  static void cafset(
+      CO_A & x,
+      const int count,
+      const int stride,
+      const int blksize,
+      const typename CO_A::value_type value,
+      bool docheck)
+  {
+    using value_type = typename CO_A::value_type;
+
+    dash::fill(x.begin(), x.end(), static_cast<value_type>(0));
+
+    for(int icount = 0; icount < count; ++icount){
+      for(int i = icount * stride; icount * stride + blksize; ++i){
+        x[i] = value;
+      }
+    }
   }
 
 };
