@@ -125,7 +125,7 @@ public:
     } else {
       if(x[0] == 0){
         std::cout << "ERROR: image " << this_image()
-                  << " not expecting x(1) = "
+                  << " not expecting x(0) = "
                   << x[0]
                   << std::endl;
         return false;
@@ -225,7 +225,12 @@ public:
     dash::fill(x.begin(), x.end(), static_cast<value_type>(0));
 
     for(int icount = 0; icount < count; ++icount){
-      for(int i = icount * stride; icount * stride + blksize; ++i){
+      for(int i = icount * stride; i < icount * stride + blksize; ++i){
+        //std::cout << " Set at " << i << " value " << value << std::endl;
+        if(i < 0 || i >= x.local_size() || x.size() <= 0) {
+          std::cerr << "cafset: internal error, i = " << i << std::endl;
+          continue;
+        }
         x[i] = value;
       }
     }

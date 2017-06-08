@@ -3,7 +3,9 @@
 
 #include <vector>
 
+#include "cafparams.h"
 #include "cafcore.h"
+#include "cafclock.h"
 
 using dash::coarray::this_image;
 using dash::coarray::num_images;
@@ -16,21 +18,28 @@ void cafpingpong(
       int maxndata,
       bool docheck)
 {
+  using timepoint   = std::chrono::time_point<std::chrono::high_resolution_clock>;
+  using duration_ms = std::chrono::milliseconds;
+  using duration_us = std::chrono::microseconds;
+
   dash::Coarray<double[]> x(num_images());
 
-  double time1, time2, time, t0, t1;
+  timepoint time1, time2, t0, t1;
+  dash::Coarray<duration_us> time;
+
   int count, nrep, blksize, stride, ndata, nextent, trialnrep;
   int i, ierr;
 
-  double targettime;
-  std::vector<int> neighbours;
+  auto targettime = duration_us(
+                      static_cast<long>(CafParams::p2ptargettime * 1000));
+
+  std::vector<int> neighbours(1);
 
   bool finished, oktime, active, lcheck, gcheck;
 
   gcheck = true;
   lcheck = true;
 
-//targettime = p2ptargettime;
   trialnrep = 1;
 
   if(cafsynctype != CafCore::sync::cafsyncall){
@@ -103,7 +112,7 @@ void cafpingpong(
     case CafCore::mode::cafmodesget:
     case CafCore::mode::cafmodessubget:
       // set maximum stride
-      //stride  = p2pmaxstride; // TODO
+      stride  = CafParams::p2pmaxstride;
       count   = maxndata / stride;
       blksize = 1;
       break;
@@ -139,9 +148,9 @@ void cafpingpong(
       }
       x.sync_all();
 
-      // time1 = caftime(); // TODO start timer
+      time1 = std::chrono::high_resolution_clock::now();
       
-      for(int irep = 0; irep < trialnrep; ++irep){
+      for(int irep = 1; irep <= trialnrep; ++irep){
         switch(cafmodetype){
           case CafCore::mode::cafmodeput: // TODO add other modes
             if(this_image() == image1){
@@ -202,20 +211,41 @@ void cafpingpong(
             break;
           default: break;
         }
+
+        dash::coarray::sync_all();
+
+        time2 = std::chrono::high_resolution_clock::now();
+        time  = std::chrono::duration_cast<
+                  std::chrono::milliseconds>(time2 - time1);
+
+        // Broadcast time from image 0
+        dash::coarray::cobroadcast(time, dash::team_unit_t{0});
+
+        nrep   = trialnrep;
+        oktime = cafchecktime(trialnrep,
+                   static_cast<duration_us>(time), targettime);
+
+        if(!gcheck){
+          return;
+        }
       }
 
       if(this_image() == 0){
         if(gcheck) {
-          std::cout << "HEADER"
-                    << count << ","
-                    << blksize << ","
-                    << stride << ","
-                    << ndata << ","
-                    << nextent << ","
-                    << nrep << ","
-                    << time << ","
-                    << time/static_cast<double>(ndata) << ","
-                    << (2.0*static_cast<double>(nrep)*static_cast<double>(sizeof(double)) / (static_cast<double>(1024*1024) * time)) << std::endl;
+          const auto & time_local = static_cast<duration_us>(time);
+          const auto time_in_ms = std::chrono::duration_cast<duration_ms>(
+                                (time_local)).count();
+
+          std::cout << std::setw(6) << count << ", "
+                    << std::setw(6) << blksize << ", "
+                    << std::setw(6) << stride << ", "
+                    << std::setw(6) << ndata << ", "
+                    << std::setw(6) << nextent << ", "
+                    << std::setw(6) << nrep << ", "
+                    << std::setw(6) << time_in_ms << ", "
+                    << std::setw(10) << time_in_ms / static_cast<double>(ndata) << ", "
+                    << std::setw(10) << (2.0*static_cast<double>(nrep)*static_cast<double>(sizeof(double))
+                        / (static_cast<double>(1024*1024) * time_in_ms)) << std::endl;
         } else {
           std::cout << "Verification failed: exiting this test" << std::endl;
         }
@@ -225,15 +255,15 @@ void cafpingpong(
         return;
       }
     }
-    x.deallocate();
-    if(this_image() == 0){
-      std::cout << std::endl;
-      if(docheck){
-        if(gcheck){
-          std::cout << "All results validated\n" << std::endl;
-        } else {
-          std::cout << "\n" << "ERROR: validation failed\n" << std::endl;
-        }
+  }
+  x.deallocate();
+  if(this_image() == 0){
+    std::cout << std::endl;
+    if(docheck){
+      if(gcheck){
+        std::cout << "All results validated\n" << std::endl;
+      } else {
+        std::cout << "\n" << "ERROR: validation failed\n" << std::endl;
       }
     }
   }

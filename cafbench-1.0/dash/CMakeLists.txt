@@ -6,9 +6,10 @@ project(cafbench)
 ## DART Implementation
 set(DASH_DART_IMPL "MPI")
 ## Project Sources
-set(SOURCES "main" "cafpt2pt" "cafpt2ptdriver")
+set(SOURCES "main" "cafpt2pt" "cafpt2ptdriver" "cafclock")
 
-set(CXX_FLAGS "-O3 -Ofast")
+#set(CXX_FLAGS "-O3 -Ofast")
+set(CXX_FLAGS "-O0 -g -DDEBUG")
 
 ## Do not edit below this line unless you know what you are doing
 
@@ -36,6 +37,7 @@ string(TOLOWER ${DASH_DART_IMPL} DASH_DART_IMPL_LC)
 
 ## set dependencies and build options
 add_executable(${PROJECT_NAME} ${SOURCES})
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} ${DASH_LIBRARIES})
 
 ## Print summary

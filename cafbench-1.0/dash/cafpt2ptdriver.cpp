@@ -18,7 +18,7 @@ void cafpingpong(
        bool docheck);
 
 void cafpt2ptdriver(){
-  bool docheck = CafParams::p2pcheck;
+  bool docheck  = CafParams::p2pcheck;
 
   bool dosingle = CafParams::p2psingle;
   bool domulti  = CafParams::p2pmulti;
@@ -36,7 +36,7 @@ void cafpt2ptdriver(){
     if(iloop == 0 && dosingle){
 
       image1 = 0;
-      image2 = num_images();
+      image2 = num_images() - 1;
 
       if (this_image() == 0) {
         std::cout << "--------------------" << std::endl
