@@ -173,17 +173,17 @@ void cafpingpong(
                   dash::copy(x.lbegin(), x.lend(), x(image2).begin());
                   break;
                 case CafCore::mode::cafmodemput:
-                  for(int i=1; i<count; ++i){
-                    const auto & sbeg = x.lbegin()+i*blksize;
-                    const auto & send = x.lbegin()+(i+1)*blksize;
+                  for(int i=1; i<=count; ++i){
+                    const auto & sbeg = x.lbegin()+(i-1)*blksize;
+                    const auto & send = x.lbegin()+i*blksize;
                     dash::copy(sbeg, send, x(image2).begin());
                   }
                   break;
                 case CafCore::mode::cafmodesmput:
-                  for(int i=0; i<count; ++i){
-                    const auto & sbeg = x.lbegin()+2*i*blksize;
-                    const auto & send = x.lbegin()+2*(i+1)*blksize;
-                    const auto & tbeg = x(image2).begin()+2*i*blksize;
+                  for(int i=1; i<=count; ++i){
+                    const auto & sbeg = x.lbegin()+2*(i-1)*blksize;
+                    const auto & send = x.lbegin()+(2*i-1)*blksize;
+                    const auto & tbeg = x(image2).begin()+2*(i-1)*blksize;
                     dash::copy(sbeg, send, tbeg);
                   }
                   break;
@@ -208,17 +208,17 @@ void cafpingpong(
                   dash::copy(x.lbegin(), x.lend(), x(image1).begin());
                   break;
                  case CafCore::mode::cafmodemput:
-                  for(int i=1; i<count; ++i){
-                    const auto & sbeg = x.lbegin()+i*blksize;
-                    const auto & send = x.lbegin()+(i+1)*blksize;
+                  for(int i=1; i<=count; ++i){
+                    const auto & sbeg = x.lbegin()+(i-1)*blksize;
+                    const auto & send = x.lbegin()+i*blksize;
                     dash::copy(sbeg, send, x(image1).begin());
                   }
                   break;
                 case CafCore::mode::cafmodesmput:
-                  for(int i=0; i<count; ++i){
-                    const auto & sbeg = x.lbegin()+2*i*blksize;
-                    const auto & send = x.lbegin()+2*(i+1)*blksize;
-                    const auto & tbeg = x(image1).begin()+2*i*blksize;
+                  for(int i=1; i<=count; ++i){
+                    const auto & sbeg = x.lbegin()+2*(i-1)*blksize;
+                    const auto & send = x.lbegin()+(2*i-1)*blksize;
+                    const auto & tbeg = x(image1).begin()+2*(i-1)*blksize;
                     dash::copy(sbeg, send, tbeg);
                   }
                   break;
@@ -284,17 +284,17 @@ void cafpingpong(
                              x.lbegin());
                   break;
                 case CafCore::mode::cafmodemget:
-                  for(int i=1; i<count; ++i){
-                    const auto & sbeg = x(image1).begin()+i*blksize;
-                    const auto & send = x(image1).begin()+(i+1)*blksize;
+                  for(int i=1; i<=count; ++i){
+                    const auto & sbeg = x(image1).begin()+(i-1)*blksize;
+                    const auto & send = x(image1).begin()+i*blksize;
                     dash::copy(sbeg, send, x.lbegin());
                   }
                   break;
                 case CafCore::mode::cafmodesmget:
-                  for(int i=0; i<count; ++i){
-                    const auto & sbeg = x(image1).begin()+2*i*blksize;
-                    const auto & send = x(image1).begin()+2*(i+1)*blksize;
-                    const auto & tbeg = x.lbegin()+2*i*blksize;
+                  for(int i=1; i<=count; ++i){
+                    const auto & sbeg = x(image1).begin()+2*(i-1)*blksize;
+                    const auto & send = x(image1).begin()+(2*i-1)*blksize;
+                    const auto & tbeg = x.lbegin()+2*(i-1)*blksize;
                     dash::copy(sbeg, send, tbeg);
                   }
                   break;
@@ -340,17 +340,17 @@ void cafpingpong(
                              x.lbegin());
                   break;
                 case CafCore::mode::cafmodemget:
-                  for(int i=1; i<count; ++i){
-                    const auto & sbeg = x(image2).begin()+i*blksize;
-                    const auto & send = x(image2).begin()+(i+1)*blksize;
+                  for(int i=1; i<=count; ++i){
+                    const auto & sbeg = x(image2).begin()+(i-1)*blksize;
+                    const auto & send = x(image2).begin()+i*blksize;
                     dash::copy(sbeg, send, x.lbegin());
                   }
                   break;
                 case CafCore::mode::cafmodesmget:
-                  for(int i=0; i<count; ++i){
-                    const auto & sbeg = x(image2).begin()+2*i*blksize;
-                    const auto & send = x(image2).begin()+2*(i+1)*blksize;
-                    const auto & tbeg = x.lbegin()+2*i*blksize;
+                  for(int i=1; i<=count; ++i){
+                    const auto & sbeg = x(image2).begin()+2*(i-1)*blksize;
+                    const auto & send = x(image2).begin()+(2*i-1)*blksize;
+                    const auto & tbeg = x.lbegin()+2*(i-1)*blksize;
                     dash::copy(sbeg, send, tbeg);
                   }
                   break;
