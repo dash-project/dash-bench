@@ -31,7 +31,8 @@ void cafpingpong(
   int i, ierr;
 
   auto targettime = duration_us(
-                      static_cast<long>(CafParams::p2ptargettime * 1000));
+                      static_cast<long>( // p2ptargettime is in seconds
+                        CafParams::p2ptargettime * 1000 * 1000));
 
   std::vector<int> neighbours(1);
 
@@ -70,7 +71,7 @@ void cafpingpong(
     } else {
       std::cout << "NOT verifying data" << std::endl;
     }
-    std::cout << "\ncount   blksize stride  ndata   nextent nrep    time      latency   bwidth"
+    std::cout << "\n  count  blksize   stride    ndata  nextent     nrep  time[s]  latency[s] bwidth[mb/s]" 
               << std::endl << std::endl;
   }
 
@@ -159,7 +160,11 @@ void cafpingpong(
             
               switch(cafmodetype){
                 case CafCore::mode::cafmodeput:
-                  dash::copy(x.lbegin(), x.lbegin()+ndata, x(image2).begin());
+                  if(ndata == 1){
+                    x(image2)[0] = x[0];
+                  } else {
+                    dash::copy(x.lbegin(), x.lbegin()+ndata, x(image2).begin());
+                  }
                   break;
                 // TODO: other cases
                 default:break;
@@ -186,7 +191,14 @@ void cafpingpong(
               gcheck &= lcheck;
             }
             if(!gcheck) {
-              // Validation error in ping TODO
+              if(this_image() == 0){
+                std::cerr << "ERROR: put ping failed to validate" << std::endl;
+                std::cerr << "ERROR: cnt, blk, str, dat, ext, rep = "
+                          << count << "," << blksize << "," << stride << ","
+                          << ndata << "," << nextent << "," << nrep
+                          << std::endl;
+              }
+              return;
             }
 
             CafCore::cafdosync(cafsynctype, active, neighbours);
@@ -199,7 +211,14 @@ void cafpingpong(
               gcheck &= lcheck;
             }
             if(!gcheck) {
-              // Validation error in pong TODO
+              if(this_image() == 0){
+                std::cerr << "ERROR: put pong failed to validate" << std::endl;
+                std::cerr << "ERROR: cnt, blk, str, dat, ext, rep = "
+                          << count << "," << blksize << "," << stride << ","
+                          << ndata << "," << nextent << "," << nrep
+                          << std::endl;
+              }
+              return;
             }
 
             break;
@@ -208,54 +227,92 @@ void cafpingpong(
           // --------------------------------
           case CafCore::mode::cafmodeget:
             // TODO
+            if(!gcheck){
+              if(this_image() == 0){
+                std::cerr << "ERROR: get ping failed to validate" << std::endl;
+                std::cerr << "ERROR: cnt, blk, str, dat, ext, rep = "
+                          << count << "," << blksize << "," << stride << ","
+                          << ndata << "," << nextent << "," << nrep
+                          << std::endl;
+              }
+              return;
+            }
+            CafCore::cafdosync(cafsynctype, active, neighbours);
             break;
           default: break;
         }
-
-        dash::coarray::sync_all();
-
-        time2 = std::chrono::high_resolution_clock::now();
-        time  = std::chrono::duration_cast<
-                  std::chrono::milliseconds>(time2 - time1);
-
-        // Broadcast time from image 0
-        dash::coarray::cobroadcast(time, dash::team_unit_t{0});
-
-        nrep   = trialnrep;
-        oktime = cafchecktime(trialnrep,
-                   static_cast<duration_us>(time), targettime);
-
-        if(!gcheck){
-          return;
-        }
       }
 
-      if(this_image() == 0){
-        if(gcheck) {
-          const auto & time_local = static_cast<duration_us>(time);
-          const auto time_in_ms = std::chrono::duration_cast<duration_ms>(
-                                (time_local)).count();
+      dash::coarray::sync_all();
+ 
+      time2 = std::chrono::high_resolution_clock::now();
+      time  = std::chrono::duration_cast<
+                std::chrono::milliseconds>(time2 - time1);
+ 
+      // Broadcast time from image 0
+      dash::coarray::cobroadcast(time, dash::team_unit_t{0});
+ 
+      nrep   = trialnrep;
+      oktime = cafchecktime(trialnrep,
+                 static_cast<duration_us>(time), targettime);
 
-          std::cout << std::setw(6) << count << ", "
-                    << std::setw(6) << blksize << ", "
-                    << std::setw(6) << stride << ", "
-                    << std::setw(6) << ndata << ", "
-                    << std::setw(6) << nextent << ", "
-                    << std::setw(6) << nrep << ", "
-                    << std::setw(6) << time_in_ms << ", "
-                    << std::setw(10) << time_in_ms / static_cast<double>(ndata) << ", "
-                    << std::setw(10) << (2.0*static_cast<double>(nrep)*static_cast<double>(sizeof(double))
-                        / (static_cast<double>(1024*1024) * time_in_ms)) << std::endl;
-        } else {
-          std::cout << "Verification failed: exiting this test" << std::endl;
-        }
+      if(!gcheck){
+        // TODO
       }
-      if(!gcheck) {
-        finished = true;
-        return;
+
+    }
+    if(this_image() == 0){
+      if(gcheck) {
+        const auto & time_local = static_cast<duration_us>(time);
+        const auto time_in_ms   = std::chrono::duration_cast<duration_ms>(
+                                    (time_local)).count();
+        const double time_in_s  = static_cast<double>(time_in_ms) / 1000.0;
+
+        // transmitted bytes
+        const double transmit_B = 2.0 * static_cast<double>(nrep)
+                                      * static_cast<double>(ndata)
+                                      * static_cast<double>(sizeof(double));
+        const double latency_s  = time_in_s / static_cast<double>(2*nrep);
+
+        std::cout << std::setw(7) << count      << ", "
+                  << std::setw(7) << blksize    << ", "
+                  << std::setw(7) << stride     << ", "
+                  << std::setw(7) << ndata      << ", "
+                  << std::setw(7) << nextent    << ", "
+                  << std::setw(7) << nrep       << ", "
+                  << std::setw(7) << time_in_s  << ", "
+                  << std::setw(10) << latency_s << ", " 
+                  << std::setw(10) << (transmit_B / time_in_ms) / (1024)
+                  << std::endl;
+      } else {
+        std::cout << "Verification failed: exiting this test" << std::endl;
       }
     }
+    if(!gcheck) {
+      finished = true;
+      return;
+    }
+
+    switch(cafmodetype){
+      case CafCore::mode::cafmodeput:
+      case CafCore::mode::cafmodesubput:
+      case CafCore::mode::cafmodeget:
+      case CafCore::mode::cafmodesubget:
+      case CafCore::mode::cafmodeallput:
+      case CafCore::mode::cafmodeallget:
+      case CafCore::mode::cafmodesimplesubput:
+      case CafCore::mode::cafmodesimplesubget:
+        blksize*=2;
+        stride*=2;
+        if(blksize > maxndata){ finished = true; }
+        break;
+      default:
+        if(this_image() == 0){
+          std::cerr << "Invalid mode: " << cafmodetype << std::endl;
+        };
+    }
   }
+
   x.deallocate();
   if(this_image() == 0){
     std::cout << std::endl;
