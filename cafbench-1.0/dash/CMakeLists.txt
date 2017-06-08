@@ -8,8 +8,8 @@ set(DASH_DART_IMPL "MPI")
 ## Project Sources
 set(SOURCES "main" "cafpt2pt" "cafpt2ptdriver" "cafclock")
 
-set(CXX_FLAGS "-O3 -Ofast")
-#set(CXX_FLAGS "-O0 -g -DDEBUG")
+#set(CXX_FLAGS "-O3 -Ofast")
+set(CXX_FLAGS "-O0 -g -DDEBUG")
 
 ## Do not edit below this line unless you know what you are doing
 

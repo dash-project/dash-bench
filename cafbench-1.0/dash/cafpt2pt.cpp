@@ -266,6 +266,9 @@ void cafpingpong(
           // --------- get cases ------------
           // --------------------------------
           case CafCore::mode::cafmodeget:
+          case CafCore::mode::cafmodeallget:
+          case CafCore::mode::cafmodemget:
+          case CafCore::mode::cafmodesmget:
 
             if(this_image() == image2){
               switch(cafmodetype){

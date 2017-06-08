@@ -4,7 +4,7 @@
 #include <libdash.h>
 #include <dash/Coarray.h>
 
-#include <array>
+#include <vector>
 #include <string>
 
 using dash::coarray::this_image;
@@ -54,7 +54,7 @@ public:
     maxcafsync   = 10
   };
 
-  const std::array<mode,8> benchmodes {{
+  const std::vector<mode> benchmodes {{
     mode::cafmodeput,
     mode::cafmodemput,
     mode::cafmodeallput,
