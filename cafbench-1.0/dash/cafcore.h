@@ -11,6 +11,8 @@ using dash::coarray::this_image;
 
 class CafCore {
 public:
+  // all modes for compatibility with fortran benchmark code
+  // supported modes are in benchmodes
   enum mode : unsigned char {
     cafmodeput          =  1,
     cafmodesubput       =  2,
@@ -51,9 +53,29 @@ public:
 
     maxcafsync   = 10
   };
-//  tstart // todo: timer
+
+  const std::array<mode,8> benchmodes {{
+    mode::cafmodeput,
+    mode::cafmodemput,
+    mode::cafmodeallput,
+    mode::cafmodesmput,
+
+    mode::cafmodeget,
+    mode::cafmodemget,
+    mode::cafmodeallget,
+    mode::cafmodesmget
+  }};
 
 public:
+
+  /**
+   * helper to return benchmodes, as static constexpr variant
+   * might lead to linker errors
+   */
+  decltype(benchmodes) getBenchmodes() const noexcept {
+    return benchmodes;
+  }
+
   static std::string cafmodename(const mode & m) {
     switch(m){
       case mode::cafmodeput:          return "put";
@@ -237,4 +259,5 @@ public:
   }
 
 };
+CafCore cafc();
 #endif

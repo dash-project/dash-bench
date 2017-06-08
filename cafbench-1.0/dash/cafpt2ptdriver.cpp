@@ -126,9 +126,7 @@ void cafpt2ptdriver(){
         if (sloop == 0) cafsynctype = CafCore::sync::cafsyncall;
         if (sloop == 2) cafsynctype = CafCore::sync::cafsyncpt2pt;
 
-        for (int cafmodetype=1;
-            cafmodetype < CafCore::mode::maxcafmode;
-            ++cafmodetype)
+        for (auto cafmodetype : CafCore().getBenchmodes())
         {
 //          if (cafmodetype == CafCore::mode::cafmodempisend) {
 //            cafsynctype = CafCore::mode::cafsyncnull;

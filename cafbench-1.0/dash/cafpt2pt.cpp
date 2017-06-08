@@ -153,7 +153,10 @@ void cafpingpong(
       
       for(int irep = 1; irep <= trialnrep; ++irep){
         switch(cafmodetype){
-          case CafCore::mode::cafmodeput: // TODO add other modes
+          case CafCore::mode::cafmodeput:
+          case CafCore::mode::cafmodeallput:
+          case CafCore::mode::cafmodemput:
+          case CafCore::mode::cafmodesmput:
             if(this_image() == image1){
               CafCore::cafset(x, count, stride, blksize,
                      static_cast<double>(irep), docheck);
@@ -164,6 +167,24 @@ void cafpingpong(
                     x(image2)[0] = x[0];
                   } else {
                     dash::copy(x.lbegin(), x.lbegin()+ndata, x(image2).begin());
+                  }
+                  break;
+                case CafCore::mode::cafmodeallput:
+                  dash::copy(x.lbegin(), x.lend(), x(image2).begin());
+                  break;
+                case CafCore::mode::cafmodemput:
+                  for(int i=1; i<count; ++i){
+                    const auto & sbeg = x.lbegin()+i*blksize;
+                    const auto & send = x.lbegin()+(i+1)*blksize;
+                    dash::copy(sbeg, send, x(image2).begin());
+                  }
+                  break;
+                case CafCore::mode::cafmodesmput:
+                  for(int i=0; i<count; ++i){
+                    const auto & sbeg = x.lbegin()+2*i*blksize;
+                    const auto & send = x.lbegin()+2*(i+1)*blksize;
+                    const auto & tbeg = x(image2).begin()+2*i*blksize;
+                    dash::copy(sbeg, send, tbeg);
                   }
                   break;
                 // TODO: other cases
@@ -183,10 +204,29 @@ void cafpingpong(
                 case CafCore::mode::cafmodeput:
                   dash::copy(x.lbegin(), x.lbegin()+ndata, x(image1).begin());
                   break;
+                case CafCore::mode::cafmodeallput:
+                  dash::copy(x.lbegin(), x.lend(), x(image1).begin());
+                  break;
+                 case CafCore::mode::cafmodemput:
+                  for(int i=1; i<count; ++i){
+                    const auto & sbeg = x.lbegin()+i*blksize;
+                    const auto & send = x.lbegin()+(i+1)*blksize;
+                    dash::copy(sbeg, send, x(image1).begin());
+                  }
+                  break;
+                case CafCore::mode::cafmodesmput:
+                  for(int i=0; i<count; ++i){
+                    const auto & sbeg = x.lbegin()+2*i*blksize;
+                    const auto & send = x.lbegin()+2*(i+1)*blksize;
+                    const auto & tbeg = x(image1).begin()+2*i*blksize;
+                    dash::copy(sbeg, send, tbeg);
+                  }
+                  break;
                 // TODO: other cases
                 default:break;
               }
             }
+
             if(docheck) {
               gcheck &= lcheck;
             }
@@ -226,10 +266,110 @@ void cafpingpong(
           // --------- get cases ------------
           // --------------------------------
           case CafCore::mode::cafmodeget:
-            // TODO
+
+            if(this_image() == image2){
+              switch(cafmodetype){
+                case CafCore::mode::cafmodeget:
+                  if(ndata == 1){
+                    x[0] = x(image1)[0];
+                  } else {
+                    dash::copy(x(image1).begin(),
+                               x(image1).begin()+ndata,
+                               x.lbegin());
+                  }
+                  break;
+                case CafCore::mode::cafmodeallget:
+                  dash::copy(x(image1).begin(),
+                             x(image1).end(),
+                             x.lbegin());
+                  break;
+                case CafCore::mode::cafmodemget:
+                  for(int i=1; i<count; ++i){
+                    const auto & sbeg = x(image1).begin()+i*blksize;
+                    const auto & send = x(image1).begin()+(i+1)*blksize;
+                    dash::copy(sbeg, send, x.lbegin());
+                  }
+                  break;
+                case CafCore::mode::cafmodesmget:
+                  for(int i=0; i<count; ++i){
+                    const auto & sbeg = x(image1).begin()+2*i*blksize;
+                    const auto & send = x(image1).begin()+2*(i+1)*blksize;
+                    const auto & tbeg = x.lbegin()+2*i*blksize;
+                    dash::copy(sbeg, send, tbeg);
+                  }
+                  break;
+                default: break;
+              }
+              lcheck = CafCore::cafcheck(x, count, stride, blksize,
+                                static_cast<double>(irep), docheck);
+
+              CafCore::cafset(x, count, stride, blksize,
+                         static_cast<double>(-irep), docheck);
+            }
+
+            if(docheck){
+              gcheck &= lcheck;
+            }
+
             if(!gcheck){
               if(this_image() == 0){
                 std::cerr << "ERROR: get ping failed to validate" << std::endl;
+                std::cerr << "ERROR: cnt, blk, str, dat, ext, rep = "
+                          << count << "," << blksize << "," << stride << ","
+                          << ndata << "," << nextent << "," << nrep
+                          << std::endl;
+              }
+              return;
+            }
+            CafCore::cafdosync(cafsynctype, active, neighbours);
+
+            if(this_image() == image1){
+              switch(cafmodetype){
+                case CafCore::mode::cafmodeget:
+                  if(ndata == 1){
+                    x[0] = x(image2)[0];
+                  } else {
+                    dash::copy(x(image2).begin(),
+                               x(image2).begin()+ndata,
+                               x.lbegin());
+                  }
+                  break;
+                case CafCore::mode::cafmodeallget:
+                  dash::copy(x(image2).begin(),
+                             x(image2).end(),
+                             x.lbegin());
+                  break;
+                case CafCore::mode::cafmodemget:
+                  for(int i=1; i<count; ++i){
+                    const auto & sbeg = x(image2).begin()+i*blksize;
+                    const auto & send = x(image2).begin()+(i+1)*blksize;
+                    dash::copy(sbeg, send, x.lbegin());
+                  }
+                  break;
+                case CafCore::mode::cafmodesmget:
+                  for(int i=0; i<count; ++i){
+                    const auto & sbeg = x(image2).begin()+2*i*blksize;
+                    const auto & send = x(image2).begin()+2*(i+1)*blksize;
+                    const auto & tbeg = x.lbegin()+2*i*blksize;
+                    dash::copy(sbeg, send, tbeg);
+                  }
+                  break;
+                default: break;
+              } 
+              lcheck = CafCore::cafcheck(x, count, stride, blksize,
+                                static_cast<double>(-irep), docheck);
+
+              CafCore::cafset(x, count, stride, blksize,
+                         static_cast<double>(irep+1), docheck);
+            }
+
+            if(docheck){
+              gcheck &= lcheck;
+            }
+
+            if(!gcheck){
+              if(this_image() == 0){
+                std::cerr << "ERROR: get pong failed to validate" << std::endl;
                 std::cerr << "ERROR: cnt, blk, str, dat, ext, rep = "
                           << count << "," << blksize << "," << stride << ","
                           << ndata << "," << nextent << "," << nrep
@@ -305,6 +445,25 @@ void cafpingpong(
         blksize*=2;
         stride*=2;
         if(blksize > maxndata){ finished = true; }
+        break;
+      case CafCore::mode::cafmodemput:
+      case CafCore::mode::cafmodemget:
+        count*=2;
+        blksize/=2;
+        stride/=2;
+        if(count > maxndata) { finished = true; }
+        break;
+      case CafCore::mode::cafmodesmput:
+      case CafCore::mode::cafmodesmget:
+        count*=2;
+        blksize/=2;
+        stride/=2;
+        if(stride < 2){ finished = true; }
+        break;
+      case CafCore::mode::cafmodesput:
+      case CafCore::mode::cafmodesget:
+        stride/=2;
+        if(stride < 1){ finished = true; }
         break;
       default:
         if(this_image() == 0){
