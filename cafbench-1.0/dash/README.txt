@@ -2,6 +2,8 @@
 !                                                                            !
 !  DASH Coarray Micro-Benchmark Suite, based on:                             !
 !                                                                            !
+!----------------------------------------------------------------------------!
+!                                                                            !
 !  Fortran Coarray Micro-Benchmark Suite - Version 1.0                       !
 !                                                                            !
 !  David Henty, EPCC; d.henty@epcc.ed.ac.uk                                  !
