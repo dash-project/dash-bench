@@ -303,6 +303,7 @@ void cafpingpong(
                   break;
                 default: break;
               }
+              x.flush();
               lcheck = CafCore::cafcheck(x, count, stride, blksize,
                                 static_cast<double>(irep), docheck);
 
@@ -358,7 +359,8 @@ void cafpingpong(
                   }
                   break;
                 default: break;
-              } 
+              }
+              x.flush();
               lcheck = CafCore::cafcheck(x, count, stride, blksize,
                                 static_cast<double>(-irep), docheck);
 

@@ -227,6 +227,7 @@ public:
         x[i] = value;
       }
     }
+    x.flush();
   }
 
 };

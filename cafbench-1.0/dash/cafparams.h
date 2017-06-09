@@ -40,7 +40,7 @@ public:
   static const bool p2pcheck    = false;
 
   static const bool p2psingle   = true;
-  static const bool p2pmulti    = true;
+  static const bool p2pmulti    = false;
   static const bool p2pcross    = false;
 
   static const int p2pnmax      = 4*1024*1024;
