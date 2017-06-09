@@ -38,6 +38,7 @@ std::string CafCore::cafmodename(const mode & m) noexcept {
     case mode::cafmodessubget:      return "strided subget";
     case mode::cafmodeallput:       return "all put";
     case mode::cafmodeallget:       return "all get";
+    case mode::cafmodempisend:      return "mpi send";
     default: break;
   }
   return "unknown";

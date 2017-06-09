@@ -12,6 +12,17 @@ set(SOURCES "main" "cafpt2pt" "cafpt2ptdriver" "cafsync" "cafsyncdriver"
 set(CXX_FLAGS "-O3 -Ofast")
 #set(CXX_FLAGS "-O0 -g -DDEBUG")
 
+add_executable(${PROJECT_NAME} ${SOURCES})
+
+# This benchmark can be run with mpi for comparison
+find_package(MPI)
+if(MPI_FOUND)
+  message("MPI Enabled")
+  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${MPI_COMPILE_FLAGS} "-DHAVE_MPI")
+  include_directories(${MPI_INCLUDE_PATH})
+  target_link_libraries(${PROJECT_NAME} ${MPI_LIBRARIES})
+endif()
+
 ## Do not edit below this line unless you know what you are doing
 
 if("$ENV{DASH_BASE}" STREQUAL "")
@@ -37,7 +48,6 @@ set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${DASH_CXX_FLAGS} ${CXX_FLAGS}" )
 string(TOLOWER ${DASH_DART_IMPL} DASH_DART_IMPL_LC)
 
 ## set dependencies and build options
-add_executable(${PROJECT_NAME} ${SOURCES})
 set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
 target_link_libraries(${PROJECT_NAME} ${DASH_LIBRARIES})
 

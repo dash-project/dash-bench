@@ -7,6 +7,10 @@
 #include "cafcore.h"
 #include "cafclock.h"
 
+#ifdef HAVE_MPI
+#include <mpi.h>
+#endif
+
 using dash::coarray::this_image;
 using dash::coarray::num_images;
 
@@ -37,6 +41,10 @@ void cafpingpong(
   std::vector<int> neighbours(1);
 
   bool finished, oktime, active, lcheck, gcheck;
+
+#ifdef HAVE_MPI
+  MPI_Status mpi_status;
+#endif
 
   gcheck = true;
   lcheck = true;
@@ -88,6 +96,7 @@ void cafpingpong(
     case CafCore::mode::cafmodeallget:
     case CafCore::mode::cafmodesimplesubget:
     case CafCore::mode::cafmodesimplesubput:
+    case CafCore::mode::cafmodempisend:
       count   = 1;
       blksize = 1;
       stride  = 1;
@@ -157,6 +166,7 @@ void cafpingpong(
           case CafCore::mode::cafmodeallput:
           case CafCore::mode::cafmodemput:
           case CafCore::mode::cafmodesmput:
+          case CafCore::mode::cafmodempisend:
             if(this_image() == image1){
               CafCore::cafset(x, count, stride, blksize,
                      static_cast<double>(irep), docheck);
@@ -187,10 +197,33 @@ void cafpingpong(
                     dash::copy(sbeg, send, tbeg);
                   }
                   break;
+                case CafCore::mode::cafmodempisend:
+#ifdef HAVE_MPI
+                  MPI_Send(x.lbegin(), ndata, MPI_DOUBLE, image2, 0,
+                           MPI_COMM_WORLD);
+#else
+                  std::cerr << "cafpingpong: ERROR, MPI not enabled but cafmode = "
+                            << cafmodetype << std::endl;
+                  return;
+#endif
+                  break;
                 // TODO: other cases
                 default:break;
               }
             }
+            if(this_image() == image2){
+              if(cafmodetype == CafCore::mode::cafmodempisend){
+#ifdef HAVE_MPI
+                MPI_Recv(x.lbegin(), ndata, MPI_DOUBLE, image1, 0,
+                         MPI_COMM_WORLD, &mpi_status);
+#else
+                std::cerr << "cafpingpong: ERROR, MPI not enabled but cafmode = "
+                          << cafmodetype << std::endl;
+                return;
+#endif
+              }
+            }
+
             CafCore::cafdosync(cafsynctype, active, neighbours);
             
             if(this_image() == image2){
@@ -222,8 +255,30 @@ void cafpingpong(
                     dash::copy(sbeg, send, tbeg);
                   }
                   break;
+                case CafCore::mode::cafmodempisend:
+#ifdef HAVE_MPI
+                  MPI_Send(x.lbegin(), ndata, MPI_DOUBLE, image1, 0,
+                           MPI_COMM_WORLD);
+#else
+                  std::cerr << "cafpingpong: ERROR, MPI not enabled but cafmode = "
+                            << cafmodetype << std::endl;
+                  return;
+#endif
+                  break;
                 // TODO: other cases
                 default:break;
+              }
+            }
+            if(this_image() == image1){
+              if(cafmodetype == CafCore::mode::cafmodempisend){
+#ifdef HAVE_MPI
+                MPI_Recv(x.lbegin(), ndata, MPI_DOUBLE, image2, 0,
+                         MPI_COMM_WORLD, &mpi_status);
+#else
+                std::cerr << "cafpingpong: ERROR, MPI not enabled but cafmode = "
+                          << cafmodetype << std::endl;
+                return;
+#endif
               }
             }
 
@@ -447,6 +502,7 @@ void cafpingpong(
       case CafCore::mode::cafmodeallget:
       case CafCore::mode::cafmodesimplesubput:
       case CafCore::mode::cafmodesimplesubget:
+      case CafCore::mode::cafmodempisend:
         blksize*=2;
         stride*=2;
         if(blksize > maxndata){ finished = true; }

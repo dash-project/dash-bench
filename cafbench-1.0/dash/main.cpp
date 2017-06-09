@@ -3,6 +3,10 @@ DASH version of the Fortran Coarray MicroBenchmark Suite - Version 1.0
 
 Measures various metrics of the dash::Coarray implementation
 */
+#ifdef HAVE_MPI
+#include <mpi.h>
+#endif
+
 #include <iostream>
 
 #include <libdash.h>
@@ -25,6 +29,10 @@ int main(int argc, char** argv){
   bool dosync  = CafParams::syncbench;
   bool dohalo  = CafParams::halobench;
 
+#ifdef HAVE_MPI
+  MPI_Init(&argc, &argv);
+#endif
+
   // Initialize DASH
   dash::init(&argc, &argv);
 
@@ -38,6 +46,9 @@ int main(int argc, char** argv){
               << "CAF Benchmark 1.0 - DASH Version" << std::endl
               << std::endl
               << "numimages = " << num_images()    << std::endl
+#ifdef HAVE_MPI
+              << "MPI Available"      << std::endl
+#endif
               << "------------------" << std::endl << std::endl;
   }
 
@@ -61,4 +72,8 @@ int main(int argc, char** argv){
   
   // quit dash
   dash::finalize();
+
+#ifdef HAVE_MPI
+  MPI_Finalize();
+#endif
 }

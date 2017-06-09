@@ -33,9 +33,7 @@ public:
     cafmodeallget       = 18,
     cafmodesimplesubget = 19,
     cafmodesmget        = 20,
-//    cafmodempisend      = 21,
-
-    maxcafmode          = 21
+    cafmodempisend      = 21,
   };
 
   enum sync : unsigned char {
@@ -53,6 +51,9 @@ public:
   };
 
   const std::vector<mode> benchmodes {{
+#ifdef HAVE_MPI
+    mode::cafmodempisend,
+#endif
     mode::cafmodeput,
     mode::cafmodemput,
     mode::cafmodeallput,
