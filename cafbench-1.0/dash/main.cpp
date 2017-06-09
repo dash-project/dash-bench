@@ -1,5 +1,7 @@
 /**
-Dummy C++ app as a startpoint for writing dash applications
+DASH version of the Fortran Coarray MicroBenchmark Suite - Version 1.0
+
+Measures various metrics of the dash::Coarray implementation
 */
 #include <iostream>
 
@@ -10,9 +12,8 @@ Dummy C++ app as a startpoint for writing dash applications
 #include <thread>
 
 #include "cafparams.h"
-
-// forward decls
-void cafpt2ptdriver();
+#include "cafpt2ptdriver.h"
+#include "cafsyncdriver.h"
 
 
 using dash::coarray::this_image;
@@ -47,6 +48,15 @@ int main(int argc, char** argv){
                 << "------------------" << std::endl << std::endl;
     }
     cafpt2ptdriver();
+  }
+
+  if(dosync){
+    if(this_image() == 0){
+      std::cout << "---------------" << std::endl
+                << "Synchronisation" << std::endl
+                << "---------------" << std::endl << std::endl;
+    }
+    cafsyncdriver();
   }
   
   // quit dash

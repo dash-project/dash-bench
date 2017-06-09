@@ -6,8 +6,10 @@
 
 #include <vector>
 #include <string>
+#include <random>
 
 using dash::coarray::this_image;
+using dash::coarray::num_images;
 
 class CafCore {
 public:
@@ -161,9 +163,120 @@ public:
       const bool active,
       const std::vector<int> & neighbours){
     switch(cafsynctype){
-      case sync::cafsyncall: dash::coarray::sync_all(); break;
+      case sync::cafsyncall:
+        if(!active){
+          std::cerr << "image " << this_image()
+                    << ":invalid active = " << active << std::endl;
+          return;
+        } else {
+          dash::coarray::sync_all();
+        }
+        break;
+#if 0
+      case sync::cafsyncmpi:
+        if(!active){
+          std::cerr << "image " << this_image()
+                    << ":invalid active = " << active << std::endl;
+          return;
+        } else {
+          MPI_Barrier(MPI_COMM_WORLD);
+        }
+        break;
+#endif
+      case cafsyncpt2pt:
+      case cafsyncring:
+      case cafsyncrand:
+      case cafsync3d:
+      case cafsyncpair:
+        dash::coarray::sync_images(neighbours);
+        break;
       default: break;
     }
+  }
+
+  static std::vector<int> getneighs(
+      const int  me,
+      const int  numneigh,
+      const sync cafsynctype)
+  {
+    int n = numneigh;
+    int j;
+    int tmpneigh = 0;
+    std::vector<int> neighs(n);
+    std::vector<int> perm(num_images());
+
+
+    if(n % 2 != 0 && cafsynctype != cafsyncpair){
+      std::cerr << "getneighs: illegal number = " << n << std::endl;
+      return std::vector<int>();
+    }
+
+    switch(cafsynctype){
+      case cafsyncpair:
+        neighs = getneighspair(this_image());
+        break;
+      case cafsyncrand:
+      case cafsyncring:
+        if(cafsynctype == cafsyncrand){
+          getperm(perm);
+        } else if(cafsynctype == cafsyncring) {
+          std::iota(perm.begin(), perm.end(), 0);
+        }
+        for(int i=0; i<num_images(); ++i){
+          for(int partner = 0; partner < n/2; ++partner){
+            j = getpartner(i, partner, num_images());
+            if(perm[i] == me){
+              neighs[tmpneigh] = perm[j];
+              ++tmpneigh;
+            }
+
+            if(perm[j] == me){
+              neighs[tmpneigh] = perm[i];
+              ++tmpneigh;
+            }
+          }
+        }
+        if (tmpneigh != n){
+          std::cerr << "getneighs: internal error!" << std::endl;
+        }
+        break;
+      default:
+        std::cerr << "Illegal cafsynctype: " << cafsynctype << std::endl;
+    }
+#ifdef DEBUG
+    std::this_thread::sleep_for(std::chrono::milliseconds(10*this_image()));
+    std::cout << "Image " << this_image() << ":";
+      for(auto & el : neighs){
+        std::cout << el << ",";
+      }
+      std::cout << std::endl;
+#endif
+    return neighs;
+  }
+
+  static void getperm(std::vector<int> & perm){
+    std::random_device rd;
+    std::mt19937 g(rd());
+
+    std::iota(perm.begin(), perm.end(), 0);
+    std::shuffle(perm.begin(), perm.end(), g);
+
+  }
+
+  static std::vector<int> getneighspair(int image){
+    if(image <= num_images()/2){
+      return std::vector<int> {image + static_cast<int>(num_images())/2 -1};
+    } else {
+      return std::vector<int> {image - static_cast<int>(num_images())/2 -1};
+    }
+  }
+
+  static int getpartner(
+      const int image,
+      const int partner,
+      const int numimages)
+  {
+    return (image+partner+1) % numimages;
   }
 
   template<

@@ -13,8 +13,8 @@ public:
   // syncbench: whether or not to perform the synchronisation benchmarks
   // halobench: whether or not to perform the halo swapping benchmarks
 
-  static const bool p2pbench  = true;
-  static const bool syncbench = false;
+  static const bool p2pbench  = false;
+  static const bool syncbench = true;
   static const bool halobench = false;
 
   // Individual configuration parameters for each of the three benchmarks
@@ -54,14 +54,14 @@ public:
   //
   // syncouter: number of times each test is run
   // syncinner: number of repetitions for each test
-  // syncdelay: controls the length of the delay loop
+  // syncdelay: sleep for n microseconds 
   //
   // syncmaxneigh: maximum neighbours for each point-to-point pattern
   //
 
   static const int syncouter =   100;
   static const int syncinner =   200;
-  static const int syncdelay = 10000;
+  static const int syncdelay =   100;
 
   static const int syncmaxneigh = 12;
 
