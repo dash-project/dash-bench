@@ -13,7 +13,7 @@ public:
   // syncbench: whether or not to perform the synchronisation benchmarks
   // halobench: whether or not to perform the halo swapping benchmarks
 
-  static const bool p2pbench  = false;
+  static const bool p2pbench  = true;
   static const bool syncbench = true;
   static const bool halobench = false;
 

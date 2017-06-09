@@ -6,10 +6,11 @@ project(cafbench)
 ## DART Implementation
 set(DASH_DART_IMPL "MPI")
 ## Project Sources
-set(SOURCES "main" "cafpt2pt" "cafpt2ptdriver" "cafsyncdriver" "cafclock")
+set(SOURCES "main" "cafpt2pt" "cafpt2ptdriver" "cafsync" "cafsyncdriver"
+            "cafclock" "cafcore")
 
-#set(CXX_FLAGS "-O3 -Ofast")
-set(CXX_FLAGS "-O0 -g -DDEBUG")
+set(CXX_FLAGS "-O3 -Ofast")
+#set(CXX_FLAGS "-O0 -g -DDEBUG")
 
 ## Do not edit below this line unless you know what you are doing
 
