@@ -36,6 +36,11 @@ int main(int argc, char** argv){
   // Initialize DASH
   dash::init(&argc, &argv);
 
+  // Print benchmark environment
+  dash::util::BenchmarkParams bench_params("cafbench-1.0");
+  bench_params.print_header();
+  bench_params.print_pinning();
+
   bool test = false;
   while(test){
     std::this_thread::sleep_for(std::chrono::seconds(1));
