@@ -18,7 +18,7 @@ add_executable(${PROJECT_NAME} ${SOURCES})
 find_package(MPI)
 if(MPI_FOUND)
   message("MPI Enabled")
-  set(CMAKE_CXX_FLAGS ${CMAKE_CXX_FLAGS} ${MPI_COMPILE_FLAGS} "-DHAVE_MPI")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${MPI_COMPILE_FLAGS} -DHAVE_MPI")
   include_directories(${MPI_INCLUDE_PATH})
   target_link_libraries(${PROJECT_NAME} ${MPI_LIBRARIES})
 endif()
@@ -48,7 +48,14 @@ set( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} ${DASH_CXX_FLAGS} ${CXX_FLAGS}" )
 string(TOLOWER ${DASH_DART_IMPL} DASH_DART_IMPL_LC)
 
 ## set dependencies and build options
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Intel")
+  message("Intel Compiler detected: manually set CXX11 Flag")
+  set( CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
+else()
+  set_target_properties(${PROJECT_NAME} PROPERTIES
+    CXX_STANDARD 11
+    CXX_STANDARD_REQUIRED ON)
+endif()
 target_link_libraries(${PROJECT_NAME} ${DASH_LIBRARIES})
 
 ## Print summary
