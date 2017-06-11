@@ -79,7 +79,7 @@ void cafpingpong(
     } else {
       std::cout << "NOT verifying data" << std::endl;
     }
-    std::cout << "\n  count  blksize   stride    ndata  nextent     nrep  time[s]  latency[s] bwidth[mb/s]" 
+    std::cout << "\n  count, blksize,  stride,   ndata, nextent,    nrep, time[s], latency[s], bwidth[mb/s]" 
               << std::endl << std::endl;
   }
 
@@ -481,7 +481,7 @@ void cafpingpong(
                   << std::setw(7) << nextent    << ", "
                   << std::setw(7) << nrep       << ", "
                   << std::setw(7) << time_in_s  << ", "
-                  << std::setw(10) << latency_s << ", " 
+                  << std::setw(11) << latency_s << ", " 
                   << std::setw(10) << (transmit_B / time_in_ms) / (1024)
                   << std::endl;
       } else {
