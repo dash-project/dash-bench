@@ -33,8 +33,8 @@ module cafparams
 !
 
   logical, parameter :: p2pbench  = .true.
-  logical, parameter :: syncbench = .true.
-  logical, parameter :: halobench = .true.
+  logical, parameter :: syncbench = .false.
+  logical, parameter :: halobench = .false.
 
 
 ! Individual configuration parameters for each of the three benchmarks
@@ -60,13 +60,13 @@ module cafparams
   logical, parameter :: p2pcheck = .false.
 
   logical, parameter :: p2psingle = .true.
-  logical, parameter :: p2pmulti  = .true.
+  logical, parameter :: p2pmulti  = .false.
   logical, parameter :: p2pcross  = .false.
 
   integer, parameter :: p2pnmax      = 4*1024*1024
   integer, parameter :: p2pmaxstride = 128
 
-  double precision, parameter :: p2ptargettime = 0.5
+  double precision, parameter :: p2ptargettime = 2
 
 
 ! Synchronisation parameters

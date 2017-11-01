@@ -639,7 +639,7 @@ contains
 
           if (gcheck) then
 
-             write(*,fmt='(5(i7, 1x), i6, 1x, 2(g10.3, 1x), g11.4)') &
+             write(*,fmt='(5(i12, 1x), i11, 1x, 2(g10.3, 1x), g11.4)') &
                   count, blksize, stride, ndata, nextent, nrep, &
                   time, time/dble(2*nrep), &
                   (2.0*dble(nrep)*dble(ndata)*dble(dblesize)) /(dble(1024*1024)*time)

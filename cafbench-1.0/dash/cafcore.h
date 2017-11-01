@@ -216,19 +216,17 @@ public:
   {
     using value_type = typename CO_A::value_type;
 
-    dash::fill(x.begin(), x.end(), static_cast<value_type>(0));
+    std::fill(x.lbegin(), x.lend(), static_cast<value_type>(0));
 
     for(int icount = 0; icount < count; ++icount){
       for(int i = icount * stride; i < icount * stride + blksize; ++i){
         //std::cout << " Set at " << i << " value " << value << std::endl;
         if(i < 0 || i >= x.local_size() || x.size() <= 0) {
           std::cerr << "cafset: internal error, i = " << i << std::endl;
-          continue;
         }
         x[i] = value;
       }
     }
-    x.flush();
   }
 
 };

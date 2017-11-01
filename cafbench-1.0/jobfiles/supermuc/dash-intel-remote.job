@@ -1,0 +1,33 @@
+# Run CAFBENCH with intel MPI on supermuc
+#!/bin/bash
+##
+#@ energy_policy_tag = cafbench 
+#@ minimize_time_to_solution = yes
+#@ job_type = MPICH 
+#@ class = micro 
+#@ node = 2
+###@ island_count= not needed for
+#### class general
+#@ island_count = 1 
+#@ total_tasks= 2 
+## other example
+##@ tasks_per_node = 1 
+#@ wall_clock_limit = 2:00:00
+#@ job_name = cafbench-intel-28 
+#@ network.MPI = sn_all,not_shared,us
+#@ initialdir = ../../
+#@ output = $(home)/log/job.$(job_name).$(jobid).out
+#@ error =  $(home)/log/job.$(job_name).$(jobid).err
+#@ queue
+. /etc/profile
+. /etc/profile.d/modules.sh
+module unload mpi.ibm
+module load mpi.intel
+module load papi
+module load hwloc
+
+#echo "=== CAF ==="
+#mpiexec -n 28 fortran/cafbench 
+echo "=== DASH ==="
+mpiexec -n 2 dash/build/cafbench 
+

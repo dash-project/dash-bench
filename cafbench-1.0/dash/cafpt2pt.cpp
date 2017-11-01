@@ -176,17 +176,17 @@ void cafpingpong(
                   if(ndata == 1){
                     x(image2)[0] = x[0];
                   } else {
-                    dash::copy(x.lbegin(), x.lbegin()+ndata, x(image2).begin());
+                    dash::copy_async(x.lbegin(), x.lbegin()+ndata, x(image2).begin());
                   }
                   break;
                 case CafCore::mode::cafmodeallput:
-                  dash::copy(x.lbegin(), x.lend(), x(image2).begin());
+                  dash::copy_async(x.lbegin(), x.lend(), x(image2).begin());
                   break;
                 case CafCore::mode::cafmodemput:
                   for(int i=1; i<=count; ++i){
                     const auto & sbeg = x.lbegin()+(i-1)*blksize;
                     const auto & send = x.lbegin()+i*blksize;
-                    dash::copy(sbeg, send, x(image2).begin());
+                    dash::copy_async(sbeg, send, x(image2).begin());
                   }
                   break;
                 case CafCore::mode::cafmodesmput:
@@ -194,7 +194,7 @@ void cafpingpong(
                     const auto & sbeg = x.lbegin()+2*(i-1)*blksize;
                     const auto & send = x.lbegin()+(2*i-1)*blksize;
                     const auto & tbeg = x(image2).begin()+2*(i-1)*blksize;
-                    dash::copy(sbeg, send, tbeg);
+                    dash::copy_async(sbeg, send, tbeg);
                   }
                   break;
                 case CafCore::mode::cafmodempisend:
@@ -223,7 +223,7 @@ void cafpingpong(
 #endif
               }
             }
-
+            x.flush();
             CafCore::cafdosync(cafsynctype, active, neighbours);
             
             if(this_image() == image2){
@@ -235,16 +235,16 @@ void cafpingpong(
 
               switch(cafmodetype){
                 case CafCore::mode::cafmodeput:
-                  dash::copy(x.lbegin(), x.lbegin()+ndata, x(image1).begin());
+                  dash::copy_async(x.lbegin(), x.lbegin()+ndata, x(image1).begin());
                   break;
                 case CafCore::mode::cafmodeallput:
-                  dash::copy(x.lbegin(), x.lend(), x(image1).begin());
+                  dash::copy_async(x.lbegin(), x.lend(), x(image1).begin());
                   break;
                  case CafCore::mode::cafmodemput:
                   for(int i=1; i<=count; ++i){
                     const auto & sbeg = x.lbegin()+(i-1)*blksize;
                     const auto & send = x.lbegin()+i*blksize;
-                    dash::copy(sbeg, send, x(image1).begin());
+                    dash::copy_async(sbeg, send, x(image1).begin());
                   }
                   break;
                 case CafCore::mode::cafmodesmput:
@@ -252,7 +252,7 @@ void cafpingpong(
                     const auto & sbeg = x.lbegin()+2*(i-1)*blksize;
                     const auto & send = x.lbegin()+(2*i-1)*blksize;
                     const auto & tbeg = x(image1).begin()+2*(i-1)*blksize;
-                    dash::copy(sbeg, send, tbeg);
+                    dash::copy_async(sbeg, send, tbeg);
                   }
                   break;
                 case CafCore::mode::cafmodempisend:
@@ -295,7 +295,7 @@ void cafpingpong(
               }
               return;
             }
-
+            x.flush();
             CafCore::cafdosync(cafsynctype, active, neighbours);
 
             if(this_image() == image1){
@@ -331,13 +331,13 @@ void cafpingpong(
                   if(ndata == 1){
                     x[0] = x(image1)[0];
                   } else {
-                    dash::copy(x(image1).begin(),
+                    dash::copy_async(x(image1).begin(),
                                x(image1).begin()+ndata,
                                x.lbegin());
                   }
                   break;
                 case CafCore::mode::cafmodeallget:
-                  dash::copy(x(image1).begin(),
+                  dash::copy_async(x(image1).begin(),
                              x(image1).end(),
                              x.lbegin());
                   break;
@@ -345,7 +345,7 @@ void cafpingpong(
                   for(int i=1; i<=count; ++i){
                     const auto & sbeg = x(image1).begin()+(i-1)*blksize;
                     const auto & send = x(image1).begin()+i*blksize;
-                    dash::copy(sbeg, send, x.lbegin());
+                    dash::copy_async(sbeg, send, x.lbegin());
                   }
                   break;
                 case CafCore::mode::cafmodesmget:
@@ -353,7 +353,7 @@ void cafpingpong(
                     const auto & sbeg = x(image1).begin()+2*(i-1)*blksize;
                     const auto & send = x(image1).begin()+(2*i-1)*blksize;
                     const auto & tbeg = x.lbegin()+2*(i-1)*blksize;
-                    dash::copy(sbeg, send, tbeg);
+                    dash::copy_async(sbeg, send, tbeg);
                   }
                   break;
                 default: break;
@@ -388,13 +388,13 @@ void cafpingpong(
                   if(ndata == 1){
                     x[0] = x(image2)[0];
                   } else {
-                    dash::copy(x(image2).begin(),
+                    dash::copy_async(x(image2).begin(),
                                x(image2).begin()+ndata,
                                x.lbegin());
                   }
                   break;
                 case CafCore::mode::cafmodeallget:
-                  dash::copy(x(image2).begin(),
+                  dash::copy_async(x(image2).begin(),
                              x(image2).end(),
                              x.lbegin());
                   break;
@@ -402,7 +402,7 @@ void cafpingpong(
                   for(int i=1; i<=count; ++i){
                     const auto & sbeg = x(image2).begin()+(i-1)*blksize;
                     const auto & send = x(image2).begin()+i*blksize;
-                    dash::copy(sbeg, send, x.lbegin());
+                    dash::copy_async(sbeg, send, x.lbegin());
                   }
                   break;
                 case CafCore::mode::cafmodesmget:
@@ -410,7 +410,7 @@ void cafpingpong(
                     const auto & sbeg = x(image2).begin()+2*(i-1)*blksize;
                     const auto & send = x(image2).begin()+(2*i-1)*blksize;
                     const auto & tbeg = x.lbegin()+2*(i-1)*blksize;
-                    dash::copy(sbeg, send, tbeg);
+                    dash::copy_async(sbeg, send, tbeg);
                   }
                   break;
                 default: break;
