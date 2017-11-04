@@ -1,4 +1,4 @@
-#include <libdash.h>
+#include <dash/algorithm/Copy.h>
 #include <dash/Coarray.h>
 
 #include <vector>
@@ -9,6 +9,10 @@
 
 #ifdef HAVE_MPI
 #include <mpi.h>
+#endif
+
+#ifndef DASH__ALGORITHM__COPY__USE_FLUSH
+static_assert(false, "This implementation requires flush-based copy-async");
 #endif
 
 using dash::coarray::this_image;
