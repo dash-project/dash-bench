@@ -79,7 +79,7 @@ void cafpingpong(
     } else {
       std::cout << "NOT verifying data" << std::endl;
     }
-    std::cout << "\n  count, blksize,  stride,   ndata, nextent,    nrep, time[s], latency[s], bwidth[mb/s]" 
+    std::cout << "\n  count, blksize,  stride,   ndata, nextent,    nrep, time[s],  latency[s], bwidth[mb/s]" 
               << std::endl << std::endl;
   }
 
@@ -184,9 +184,12 @@ void cafpingpong(
                   break;
                 case CafCore::mode::cafmodemput:
                   for(int i=1; i<=count; ++i){
-                    const auto & sbeg = x.lbegin()+(i-1)*blksize;
-                    const auto & send = x.lbegin()+i*blksize;
-                    dash::copy_async(sbeg, send, x(image2).begin());
+                    const int offset_beg = (i-1)*blksize;
+                    const int offset_end = i*blksize;
+                    dash::copy_async(
+                        x.lbegin()+offset_beg,
+                        x.lbegin()+offset_end,
+                        x(image2).begin()+offset_beg);
                   }
                   break;
                 case CafCore::mode::cafmodesmput:
@@ -242,9 +245,12 @@ void cafpingpong(
                   break;
                  case CafCore::mode::cafmodemput:
                   for(int i=1; i<=count; ++i){
-                    const auto & sbeg = x.lbegin()+(i-1)*blksize;
-                    const auto & send = x.lbegin()+i*blksize;
-                    dash::copy_async(sbeg, send, x(image1).begin());
+                    const int offset_beg = (i-1)*blksize;
+                    const int offset_end = i*blksize;
+                    dash::copy_async(
+                        x.lbegin()+offset_beg,
+                        x.lbegin()+offset_end,
+                        x(image1).begin()+offset_beg);
                   }
                   break;
                 case CafCore::mode::cafmodesmput:
@@ -343,9 +349,12 @@ void cafpingpong(
                   break;
                 case CafCore::mode::cafmodemget:
                   for(int i=1; i<=count; ++i){
-                    const auto & sbeg = x(image1).begin()+(i-1)*blksize;
-                    const auto & send = x(image1).begin()+i*blksize;
-                    dash::copy_async(sbeg, send, x.lbegin());
+                    const int offset_beg = (i-1)*blksize;
+                    const int offset_end = i*blksize;
+                    dash::copy_async(
+                        x(image1).begin()+offset_beg,
+                        x(image1).begin()+offset_end,
+                        x.lbegin()+offset_beg);
                   }
                   break;
                 case CafCore::mode::cafmodesmget:
@@ -400,9 +409,12 @@ void cafpingpong(
                   break;
                 case CafCore::mode::cafmodemget:
                   for(int i=1; i<=count; ++i){
-                    const auto & sbeg = x(image2).begin()+(i-1)*blksize;
-                    const auto & send = x(image2).begin()+i*blksize;
-                    dash::copy_async(sbeg, send, x.lbegin());
+                    const int offset_beg = (i-1)*blksize;
+                    const int offset_end = i*blksize;
+                    dash::copy_async(
+                        x(image2).begin()+offset_beg,
+                        x(image2).begin()+offset_end,
+                        x.lbegin()+offset_beg);
                   }
                   break;
                 case CafCore::mode::cafmodesmget:
@@ -482,7 +494,7 @@ void cafpingpong(
                   << std::setw(7) << nrep       << ", "
                   << std::setw(7) << time_in_s  << ", "
                   << std::setw(11) << latency_s << ", " 
-                  << std::setw(10) << (transmit_B / time_in_ms) / (1024)
+                  << std::setw(12) << (transmit_B / time_in_ms) / (1024)
                   << std::endl;
       } else {
         std::cout << "Verification failed: exiting this test" << std::endl;
