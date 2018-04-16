@@ -25,7 +25,6 @@ template <typename RandomIt>
 void trace_histo(RandomIt begin, RandomIt end)
 {
 #ifdef ENABLE_LOGGING
-#if 0
   auto const n = std::distance(begin, end);
   std::map<key_t, size_t> hist{};
   for (size_t idx = 0; idx < n; ++idx) {
@@ -35,7 +34,6 @@ void trace_histo(RandomIt begin, RandomIt end)
   for (auto p : hist) {
     LOG(p.first << ' ' << p.second);
   }
-#endif
 #endif
 }
 
@@ -72,7 +70,7 @@ void Test(RandomIt begin, RandomIt end)
   auto const ThisTask = 0;
 #endif
 
-  static constexpr size_t           SIZE_FACTOR = 1E6;
+  static constexpr size_t           SIZE_FACTOR = 1E2;
   static std::normal_distribution<> dist{0};
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
@@ -89,7 +87,9 @@ void Test(RandomIt begin, RandomIt end)
 
     auto const duration = ChronoClockNow() - start;
 
-    trace_histo(begin, begin + n);
+    if (iter == 0) {
+      trace_histo(begin, begin + n);
+    }
 
     parallel_sort(begin, begin + n, std::less<key_t>());
 
