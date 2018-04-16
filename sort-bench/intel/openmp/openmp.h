@@ -1,0 +1,11 @@
+#ifndef OPENMP_H
+#define OPENMP_H
+
+#if defined(_OPENMP)
+#include <omp.h>
+#else
+#define omp_get_thread_num() (0)
+#define omp_get_num_threads() (1)
+#endif
+
+#endif
