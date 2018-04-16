@@ -1,0 +1,18 @@
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_allocate
+# Synchronization: MPI_Win_flush
+# Size          Latency (us)
+0                  629457.86
+1                  635212.60
+2                  643102.12
+4                  635090.99
+8                  636498.02
+16                 632510.99
+32                 636315.04
+64                 642596.04
+128                643201.57
+256                636965.65
+512                639328.67
+1024               638153.81
+slurmstepd: *** JOB 330573 ON mpp2r02c01s05 CANCELLED AT 2017-06-04T12:07:40 DUE TO TIME LIMIT ***
+mpiexec: Forwarding signal 18 to job

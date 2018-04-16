@@ -1,0 +1,92 @@
+WARNING: $MANPATH does not agree with $MANPATH_modshare counter. The following directories' usage counters were adjusted to match. Note that this may mean that module unloading may not work correctly.
+ /opt/ibmhpc/pecurrent/mpich2/man /opt/ibmll/LoadL/resmgr/full/man /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/mkl/man/en_US /lrz/sys/intel/studio2016_u4/documentation_2016/en/debugger/gdb-mic/man /lrz/sys/intel/studio2016_u4/compilers_and_libraries_2016.4.258/linux/man/common /opt/ibmhpc/pecurrent/ppe.man /lrz/sys/intel/studio2016_u4/documentation_2016/en/debugger/gdb-ia/man /lrz/sys/intel/studio2016_u4/documentation_2016/en/debugger/gdb-igfx/man /lrz/sys/tools/lrztools/1.0/man /opt/ibmll/LoadL/scheduler/full/man
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_allocate
+# Synchronization: (null)
+# Size          Latency (us)
+0                     366.55
+1                     359.80
+2                     346.63
+4                     328.77
+8                     332.94
+16                    330.96
+32                    331.00
+64                    332.02
+128                   333.98
+256                   331.58
+512                   332.43
+1024                  332.71
+2048                  330.31
+4096                  331.64
+8192                  336.75
+16384                 340.06
+32768                 344.98
+65536                 361.22
+131072                373.53
+262144                387.87
+524288                412.49
+1048576               435.82
+2097152               495.61
+4194304               664.74
+8388608               831.04
+16777216              741.39
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create
+# Synchronization: MPI_Win_flush
+# Size          Latency (us)
+0                     365.56
+1                     354.36
+2                     352.95
+4                     335.07
+8                     333.46
+16                    333.66
+32                    338.21
+64                    330.78
+128                   331.01
+256                   332.68
+512                   331.44
+1024                  336.24
+2048                  337.80
+4096                  337.64
+8192                  336.20
+16384                 344.64
+32768                 349.93
+65536                 352.71
+131072                388.87
+262144                388.23
+524288                423.61
+1048576               432.77
+2097152               487.35
+4194304               667.87
+8388608               833.79
+16777216              766.45
+# OSU MPI_Get latency Test v5.3.2
+# Window creation: MPI_Win_create_dynamic
+# Synchronization: MPI_Win_flush_local
+# Size          Latency (us)
+0                    3112.30
+1                    2999.08
+2                    2978.74
+4                    3007.10
+8                    3836.93
+16                   3698.32
+32                   3561.37
+64                   3390.78
+128                  2969.67
+256                  2961.00
+512                  2937.30
+1024                 2983.28
+2048                 2929.31
+4096                 3160.15
+8192                 3007.21
+16384                2972.49
+32768                2938.37
+65536                3159.87
+131072               2935.73
+262144               2975.57
+524288               2952.43
+1048576              2962.30
+2097152              2943.21
+4194304              2972.38
+8388608              2962.11
+16777216             2961.04
