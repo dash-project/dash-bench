@@ -29,6 +29,8 @@
   WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   POSSIBILITY OF SUCH DAMAGE.
 */
+#ifndef PARALLEL_STABLE_SORT_H
+#define PARALLEL_STABLE_SORT_H
 #include <algorithm>
 #include <tbb/parallel_invoke.h>
 
@@ -98,3 +100,5 @@ void parallel_stable_sort( RandomAccessIterator xs, RandomAccessIterator xe, Com
 }
 
 } // namespace pss
+#endif
+

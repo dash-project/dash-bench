@@ -38,6 +38,7 @@
 #include <iterator>
 #include <utility>
 #include <atomic>
+#include <cassert>
 
 //Forward Declarations
 void CreateDataSet(size_t n);

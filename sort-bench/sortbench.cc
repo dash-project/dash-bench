@@ -1,11 +1,8 @@
-#if defined(USE_CILKPLUS)
-#include "cilkplus/parallel_stable_sort.h"
-#elif defined(USE_TBB_LOWLEVEL)
-#include "tbb-lowlevel/parallel_stable_sort.h"
+#if defined(USE_TBB_LOWLEVEL)
+#include "tbb-lowlevel/sortbench.h"
 #elif defined(USE_TBB_HIGHLEVEL)
-#include "tbb-highlevel/parallel_stable_sort.h"
+#include "tbb-highlevel/sortbench.h"
 #elif defined(USE_OPENMP)
-#include "openmp/parallel_stable_sort.h"
 #include "openmp/sortbench.h"
 #endif
 
@@ -14,6 +11,7 @@
 #include <iostream>
 #include <map>
 #include <random>
+#include <thread>
 #include <vector>
 
 #include <IndexedValue.h>
@@ -23,71 +21,134 @@
 #define GB (1 << 30)
 #define MB (1 << 20)
 
-#if 0
+template <typename RandomIt>
+void trace_histo(RandomIt begin, RandomIt end)
+{
 #ifdef ENABLE_LOGGING
-  {
-    std::map<key_t, size_t> hist{};
-    for (size_t idx = 0; idx < n; ++idx) {
-      ++hist[begin[idx]];
-    }
+#if 0
+  auto const n = std::distance(begin, end);
+  std::map<key_t, size_t> hist{};
+  for (size_t idx = 0; idx < n; ++idx) {
+    ++hist[begin[idx]];
+  }
 
-    for (auto p : hist) {
-      std::cout << std::setw(2) << p.first << ' ' << p.second << '\n';
-    }
+  for (auto p : hist) {
+    LOG(p.first << ' ' << p.second);
   }
 #endif
 #endif
+}
+
+static constexpr size_t BURN_IN = 1;
+static constexpr size_t NITER   = 10;
+
+void print_header(std::string const& app, double mb, int NTask)
+{
+  std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++\n";
+  std::cout << "++              Sort Bench                     ++\n";
+  std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++\n";
+  std::cout << std::setw(20) << "NTasks: " << NTask << "\n";
+  std::cout << std::setw(20) << "Size: " << std::fixed << std::setprecision(2)
+            << mb << "\n";
+#if defined(USE_DASH) || defined(USE_MPI)
+  std::cout << std::setw(20) << "Size per Unit (MB): " << std::fixed
+            << std::setprecision(2) << mb / NTask;
+#endif
+  std::cout << "\n\n";
+  // Print the header
+  std::cout << std::setw(4) << "#,";
+  std::cout << std::setw(20) << app;
+  std::cout << "\n";
+}
 
 //! Test sort for n items
-template <typename T>
-void Test(size_t n)
+template <typename RandomIt>
+void Test(RandomIt begin, RandomIt end)
 {
-  using key_t = T;
-
+  auto const n = static_cast<size_t>(std::distance(begin, end));
 #if defined(USE_DASH)
-  // use dash array
+// use dash array
 #else
-  LOG("Testing for n = " << n << "...");
-  std::vector<key_t> keys(n);
-  auto               begin = std::begin(keys);
+  auto const ThisTask = 0;
 #endif
 
-  auto const                        min = -10;
-  auto const                        max = 10;
-  static std::normal_distribution<> dist{(min + max) / 2};
+  static constexpr size_t           SIZE_FACTOR = 1E6;
+  static std::normal_distribution<> dist{0};
 
-  auto const start = ChronoClockNow();
+  for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
+    auto const start = ChronoClockNow();
 
-  parallel_rand(
-      begin, begin + n, [](size_t total, size_t index, std::mt19937& rng) {
-        // return raFailed sort order: nd() % (2 * total);
-        // return index;
-        // return total - index;
-        return std::round(dist(rng));
-      });
+    parallel_rand(
+        begin, begin + n, [](size_t total, size_t index, std::mt19937& rng) {
+          // return raFailed sort order: nd() % (2 * total);
+          // return index;
+          // return total - index;
+          using key_t = typename std::iterator_traits<RandomIt>::value_type;
+          return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
+        });
 
-  auto const duration = ChronoClockNow() - start;
+    auto const duration = ChronoClockNow() - start;
 
-  LOG_TRACE_RANGE("before sort", begin, begin + n);
+    trace_histo(begin, begin + n);
 
-  parallel_sort(begin, begin + n, std::less<key_t>());
+    parallel_sort(begin, begin + n, std::less<key_t>());
 
-  LOG_TRACE_RANGE("after sort", begin, begin + n);
+    auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
 
-  auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
+    if (!ret) {
+      std::cerr << "validation failed! (n = " << n << ")\n";
+    }
 
-  if (!ret) {
-    std::cerr << "validation failed! (n = " << n << ")\n";
+    if (iter >= BURN_IN && ThisTask == 0) {
+      std::cout << std::setw(3) << iter;
+      std::cout << "," << std::setw(20) << std::fixed << std::setprecision(8);
+      std::cout << duration;
+      std::cout << "\n";
+    }
   }
 }
 
-int main()
+int main(int argc, char* argv[])
 {
-  using key_t        = int32_t;
-  const size_t N_MAX = (static_cast<size_t>(2) * GB) / sizeof(key_t);
-  for (size_t n = 0; n <= N_MAX; n = n < 10 ? n + 1 : n * 1.618f) {
-    Test<key_t>(n);
+  using key_t = int32_t;
+
+  if (argc < 2) {
+    std::cout << std::string(argv[0]) << " [nbytes]\n";
+    return 1;
   }
-  printf("\n");
+
+  auto const mysize = static_cast<size_t>(atoll(argv[1]));
+  auto const N      = mysize / sizeof(key_t);
+
+#if defined(USE_DASH) || defined(USE_MPI)
+  auto const gsize = mysize * dash::size();
+  auto const NTask = dash::size();
+#else
+  auto const gsize    = mysize;
+  auto const NTask =
+      (argc == 3) ? atoi(argv[2]) : std::thread::hardware_concurrency();
+#endif
+
+  double mb = (gsize / MB);
+
+  std::string const executable(argv[0]);
+  auto const        base_filename =
+      executable.substr(executable.find_last_of("/\\") + 1);
+
+#if defined(USE_DASH)
+// use dash array
+#else
+  key_t* keys  = new key_t[N];
+  auto   begin = keys;
+#endif
+
+  print_header(base_filename, mb, NTask);
+
+  Test(begin, begin + N);
+
+  std::cout << "\n";
+
+  delete[] keys;
+
   return 0;
 }
