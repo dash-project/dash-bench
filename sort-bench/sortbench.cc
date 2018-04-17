@@ -7,8 +7,10 @@
 #elif defined(USE_OPENMP)
 #include "openmp/sortbench.h"
 #elif defined(USE_DASH)
+#include <dash/sortbench.h>
 #include <libdash.h>
-#include "dash/sortbench.h"
+#elif defined(USE_MPI)
+#include <mpi/sortbench.h>
 #endif
 
 #include <chrono>
@@ -66,27 +68,21 @@ void print_header(std::string const& app, double mb, int NTask)
 
 //! Test sort for n items
 template <typename RandomIt>
-void Test(RandomIt begin, RandomIt end)
+void Test(RandomIt begin, RandomIt end, int ThisTask)
 {
   auto const n = static_cast<size_t>(std::distance(begin, end));
-#if defined(USE_DASH)
-  auto const ThisTask = begin.pattern().team().myid();
-#else
-  auto const ThisTask = 0;
-#endif
-
   LOG("N :" << n);
 
   static constexpr size_t           SIZE_FACTOR = 1E2;
   static std::normal_distribution<> dist{0};
 
+  using key_t = typename std::iterator_traits<RandomIt>::value_type;
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
         begin, begin + n, [](size_t total, size_t index, std::mt19937& rng) {
           // return raFailed sort order: nd() % (2 * total);
           // return index;
           // return total - index;
-          using key_t = typename std::iterator_traits<RandomIt>::value_type;
           return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
         });
 
@@ -121,7 +117,7 @@ struct LibraryInitializer {
 
 int main(int argc, char* argv[])
 {
-  using key_t = int32_t;
+  using key_t = uint32_t;
 
   if (argc < 2) {
     std::cout << std::string(argv[0]) << " [nbytes]\n";
@@ -139,12 +135,26 @@ int main(int argc, char* argv[])
   auto const NTask       = dash::size();
   auto const gsize_bytes = mysize * NTask;
   auto const N           = nl * NTask;
+  auto const ThisTask    = dash::myid();
+#elif defined(USE_MPI)
+  static_assert(
+      std::is_unsigned<key_t>::value,
+      "MPI Sort supports only unsigned key types");
+
+  MPI_Init(&argc, &argv);
+  int NTask;
+  MPI_Comm_size(MPI_COMM_WORLD, &NTask);
+  auto const gsize_bytes = mysize * NTask;
+  auto const N           = nl;
+  int        ThisTask;
+  MPI_Comm_rank(MPI_COMM_WORLD, &ThisTask);
 #else
   auto const NTask =
       (argc == 3) ? atoi(argv[2]) : std::thread::hardware_concurrency();
   assert(NTask > 0);
   auto const gsize_bytes = mysize;
   auto const N           = nl;
+  auto const ThisTask    = 0;
 #endif
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
@@ -167,21 +177,20 @@ int main(int argc, char* argv[])
   auto   begin = keys;
 #endif
 
-#ifdef USE_DASH
-  if (dash::myid() == 0)
-#endif
+  if (ThisTask == 0) {
     print_header(base_filename, mb, NTask);
+  }
 
-  Test(begin, begin + N);
-
-  std::cout << "\n";
+  Test(begin, begin + N, ThisTask);
 
 #ifndef USE_DASH
   delete[] keys;
 #endif
 
-#ifdef USE_DASH
+#if defined(USE_DASH)
   dash::finalize();
+#elif defined(USE_MPI)
+  MPI_Finalize();
 #endif
 
   return 0;
