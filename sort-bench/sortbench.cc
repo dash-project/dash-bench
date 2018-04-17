@@ -17,12 +17,12 @@
 #include <iomanip>
 #include <iostream>
 #include <map>
-#include <random>
 #include <thread>
 #include <vector>
 
 #include <IndexedValue.h>
 #include <util/Logging.h>
+#include <util/Random.h>
 #include <util/Timer.h>
 
 #define GB (1 << 30)
@@ -73,17 +73,21 @@ void Test(RandomIt begin, RandomIt end, int ThisTask)
   auto const n = static_cast<size_t>(std::distance(begin, end));
   LOG("N :" << n);
 
-  static constexpr size_t           SIZE_FACTOR = 1E2;
-  static std::normal_distribution<> dist{0};
-
   using key_t = typename std::iterator_traits<RandomIt>::value_type;
+
+  using dist_type = sortbench::NormalDistribution<key_t>;
+
+  dist_type dist{};
+
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
-        begin, begin + n, [](size_t total, size_t index, std::mt19937& rng) {
-          // return raFailed sort order: nd() % (2 * total);
+        begin,
+        begin + n,
+        [&dist](size_t total, size_t index, std::mt19937& rng) {
           // return index;
           // return total - index;
-          return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
+          return dist(rng);
+          // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
         });
 
     if (iter == 0) {
@@ -117,7 +121,7 @@ struct LibraryInitializer {
 
 int main(int argc, char* argv[])
 {
-  using key_t = uint32_t;
+  using key_t = int32_t;
 
   if (argc < 2) {
     std::cout << std::string(argv[0]) << " [nbytes]\n";
@@ -192,6 +196,10 @@ int main(int argc, char* argv[])
 #elif defined(USE_MPI)
   MPI_Finalize();
 #endif
+
+  if (ThisTask == 0) {
+    std::cout << "\n";
+  }
 
   return 0;
 }

@@ -23,7 +23,7 @@ endif
 NPROCS?=4
 
 
-all: bin/tbb-lowlevel.x bin/tbb-highlevel.x bin/openmp.x bin/gomp.x bin/dash.x bin/mpi.x
+all: bin/tbb-lowlevel.x bin/tbb-highlevel.x bin/openmp.x bin/gomp.x bin/dash.x
 
 run: all
 	./bin/tbb-highlevel.x $(SIZE) $(NPROCS)
@@ -31,7 +31,7 @@ run: all
 	./bin/gomp.x $(SIZE) $(NPROCS)
 	./bin/openmp.x $(SIZE) $(NPROCS)
 	mpirun -n $(NPROCS) ./bin/dash.x $$(($(SIZE) / $(NPROCS)))
-	mpirun -n $(NPROCS) ./bin/mpi.x $$(($(SIZE) / $(NPROCS)))
+	#mpirun -n $(NPROCS) ./bin/mpi.x $$(($(SIZE) / $(NPROCS)))
 
 bin/tbb-lowlevel.x: intel/tbb-lowlevel/parallel_stable_sort.h intel/tbb-lowlevel/sortbench.h sortbench.cc
 	@mkdir -p bin
