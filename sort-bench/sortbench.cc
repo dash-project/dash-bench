@@ -1,7 +1,9 @@
 #if defined(USE_TBB_LOWLEVEL)
 #include "tbb-lowlevel/sortbench.h"
+#include "tbb/task_scheduler_init.h"
 #elif defined(USE_TBB_HIGHLEVEL)
 #include "tbb-highlevel/sortbench.h"
+#include "tbb/task_scheduler_init.h"
 #elif defined(USE_OPENMP)
 #include "openmp/sortbench.h"
 #elif defined(USE_DASH)
@@ -28,7 +30,7 @@ template <typename RandomIt>
 void trace_histo(RandomIt begin, RandomIt end)
 {
 #ifdef ENABLE_LOGGING
-  auto const              n = std::distance(begin, end);
+  auto const n = std::distance(begin, end);
   std::map<key_t, size_t> hist{};
   for (size_t idx = 0; idx < n; ++idx) {
     ++hist[begin[idx]];
@@ -140,8 +142,15 @@ int main(int argc, char* argv[])
 #else
   auto const NTask =
       (argc == 3) ? atoi(argv[2]) : std::thread::hardware_concurrency();
+  assert(NTask > 0);
   auto const gsize_bytes = mysize;
   auto const N           = nl;
+#endif
+
+#if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
+  tbb::task_scheduler_init init{NTask};
+#elif defined(USE_OPENMP)
+  omp_set_num_threads(NTask);
 #endif
 
   double mb = (gsize_bytes / MB);
@@ -154,8 +163,8 @@ int main(int argc, char* argv[])
   dash::Array<key_t> keys(N);
   auto               begin = keys.begin();
 #else
-  key_t*     keys        = new key_t[N];
-  auto       begin       = keys;
+  key_t* keys  = new key_t[N];
+  auto   begin = keys;
 #endif
 
 #ifdef USE_DASH
