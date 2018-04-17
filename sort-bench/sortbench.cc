@@ -4,6 +4,9 @@
 #include "tbb-highlevel/sortbench.h"
 #elif defined(USE_OPENMP)
 #include "openmp/sortbench.h"
+#elif defined(USE_DASH)
+#include <libdash.h>
+#include "dash/sortbench.h"
 #endif
 
 #include <chrono>
@@ -25,7 +28,7 @@ template <typename RandomIt>
 void trace_histo(RandomIt begin, RandomIt end)
 {
 #ifdef ENABLE_LOGGING
-  auto const n = std::distance(begin, end);
+  auto const              n = std::distance(begin, end);
   std::map<key_t, size_t> hist{};
   for (size_t idx = 0; idx < n; ++idx) {
     ++hist[begin[idx]];
@@ -65,17 +68,17 @@ void Test(RandomIt begin, RandomIt end)
 {
   auto const n = static_cast<size_t>(std::distance(begin, end));
 #if defined(USE_DASH)
-// use dash array
+  auto const ThisTask = begin.pattern().team().myid();
 #else
   auto const ThisTask = 0;
 #endif
+
+  LOG("N :" << n);
 
   static constexpr size_t           SIZE_FACTOR = 1E2;
   static std::normal_distribution<> dist{0};
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
-    auto const start = ChronoClockNow();
-
     parallel_rand(
         begin, begin + n, [](size_t total, size_t index, std::mt19937& rng) {
           // return raFailed sort order: nd() % (2 * total);
@@ -85,13 +88,15 @@ void Test(RandomIt begin, RandomIt end)
           return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
         });
 
-    auto const duration = ChronoClockNow() - start;
-
     if (iter == 0) {
       trace_histo(begin, begin + n);
     }
 
+    auto const start = ChronoClockNow();
+
     parallel_sort(begin, begin + n, std::less<key_t>());
+
+    auto const duration = ChronoClockNow() - start;
 
     auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
 
@@ -108,6 +113,10 @@ void Test(RandomIt begin, RandomIt end)
   }
 }
 
+template <typename Initializer, typename Delete>
+struct LibraryInitializer {
+};
+
 int main(int argc, char* argv[])
 {
   using key_t = int32_t;
@@ -117,38 +126,54 @@ int main(int argc, char* argv[])
     return 1;
   }
 
+  // Size in Bytes
   auto const mysize = static_cast<size_t>(atoll(argv[1]));
-  auto const N      = mysize / sizeof(key_t);
+  // Number of local elements
+  auto const nl = mysize / sizeof(key_t);
 
-#if defined(USE_DASH) || defined(USE_MPI)
-  auto const gsize = mysize * dash::size();
-  auto const NTask = dash::size();
+#if defined(USE_DASH)
+  dash::init(&argc, &argv);
+
+  auto const NTask       = dash::size();
+  auto const gsize_bytes = mysize * NTask;
+  auto const N           = nl * NTask;
 #else
-  auto const gsize    = mysize;
   auto const NTask =
       (argc == 3) ? atoi(argv[2]) : std::thread::hardware_concurrency();
+  auto const gsize_bytes = mysize;
+  auto const N           = nl;
 #endif
 
-  double mb = (gsize / MB);
+  double mb = (gsize_bytes / MB);
 
   std::string const executable(argv[0]);
   auto const        base_filename =
       executable.substr(executable.find_last_of("/\\") + 1);
 
 #if defined(USE_DASH)
-// use dash array
+  dash::Array<key_t> keys(N);
+  auto               begin = keys.begin();
 #else
-  key_t* keys  = new key_t[N];
-  auto   begin = keys;
+  key_t*     keys        = new key_t[N];
+  auto       begin       = keys;
 #endif
 
-  print_header(base_filename, mb, NTask);
+#ifdef USE_DASH
+  if (dash::myid() == 0)
+#endif
+    print_header(base_filename, mb, NTask);
 
   Test(begin, begin + N);
 
   std::cout << "\n";
 
+#ifndef USE_DASH
   delete[] keys;
+#endif
+
+#ifdef USE_DASH
+  dash::finalize();
+#endif
 
   return 0;
 }

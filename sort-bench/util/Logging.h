@@ -8,6 +8,11 @@
 #include <iterator>
 #include <sstream>
 
+#ifdef USE_DASH
+#include <dash/Init.h>
+#include <dash/Team.h>
+#endif
+
 #define LOG(msg) (Log(__FILE__, __LINE__, LogData<None>() << msg))
 
 // Workaround GCC 4.7.2 not recognizing noinline attribute
@@ -18,6 +23,15 @@
 #define NOINLINE_ATTRIBUTE
 #endif  // __ICC
 #endif  // NOINLINE_ATTRIBUTE
+
+#ifdef USE_DASH
+#define PRINT_MYID(os)                          \
+  do {                                          \
+    os << "[unit: " << dash::myid() << "] -- "; \
+  } while (0)
+#else
+#define PRINT_MYID(os)
+#endif
 
 struct None {
 };
@@ -30,8 +44,11 @@ struct LogData {
 template <typename List>
 void Log(const char* file, int line, LogData<List>&& data) NOINLINE_ATTRIBUTE
 {
-  std::cout << file << ":" << line << ": ";
-  output(std::cout, std::move(data.list));
+  std::ostringstream os;
+  PRINT_MYID(os);
+  os << file << ":" << line << ": ";
+  output(os, std::move(data.list));
+  std::cout << os.str();
   std::cout << std::endl;
 }
 
@@ -69,7 +86,8 @@ inline void output(std::ostream& os, None)
 {
 }
 
-#define MAX_ELEMS_RANGE_LOGGING__ 25
+#define MAX_ELEMS_RANGE_LOGGING 100
+
 #define LOG_TRACE_RANGE(desc, begin, end)                                   \
   do {                                                                      \
     using value_t =                                                         \
@@ -78,12 +96,12 @@ inline void output(std::ostream& os, None)
         typename std::iterator_traits<decltype(begin)>::difference_type;    \
     auto const nelems = std::distance(begin, end);                          \
     auto const max_elems =                                                  \
-        std::min<difference_t>(nelems, MAX_ELEMS_RANGE_LOGGING__);          \
+        std::min<difference_t>(nelems, MAX_ELEMS_RANGE_LOGGING);            \
     std::ostringstream os;                                                  \
     os << desc << " : ";                                                    \
     std::copy(                                                              \
         begin, begin + max_elems, std::ostream_iterator<value_t>(os, " ")); \
-    if (nelems > MAX_ELEMS_RANGE_LOGGING__) os << "...";                    \
+    if (nelems > MAX_ELEMS_RANGE_LOGGING) os << "...";                      \
     LOG(os.str());                                                          \
   } while (0)
 
