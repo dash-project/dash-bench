@@ -1,0 +1,3 @@
+[submodule "sort-bench/external/MP-sort"]
+	path = sort-bench/external/MP-sort
+	url = git@github.com:rainwoodman/MP-sort.git
