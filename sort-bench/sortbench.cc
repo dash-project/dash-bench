@@ -59,18 +59,22 @@ void print_header(std::string const& app, double mb, int NTask)
   std::cout << "\n\n";
   // Print the header
   std::cout << std::setw(4) << "#,";
+  std::cout << std::setw(10) << "NTasks,";
+  std::cout << std::setw(10) << "Size (MB),";
   std::cout << std::setw(20) << app;
   std::cout << "\n";
 }
 
 //! Test sort for n items
 template <typename RandomIt>
-void Test(RandomIt begin, RandomIt end, int ThisTask)
+void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask)
 {
   auto const n = static_cast<size_t>(std::distance(begin, end));
   LOG("N :" << n);
 
   using key_t = typename std::iterator_traits<RandomIt>::value_type;
+
+  auto const mb = n * sizeof(key_t) / MB;
 
   using dist_t = sortbench::NormalDistribution<key_t>;
 
@@ -120,7 +124,9 @@ void Test(RandomIt begin, RandomIt end, int ThisTask)
     }
 
     if (iter >= BURN_IN && ThisTask == 0) {
-      std::cout << std::setw(3) << iter;
+      std::cout << std::setw(3) << iter << ",";
+      std::cout << std::setw(9) << NTask << ",";
+      std::cout << std::setw(9) << std::fixed << std::setprecision(2) << mb;
       std::cout << "," << std::setw(20) << std::fixed << std::setprecision(8);
       std::cout << duration;
       std::cout << "\n";
@@ -198,7 +204,7 @@ int main(int argc, char* argv[])
     print_header(base_filename, mb, NTask);
   }
 
-  Test(begin, begin + N, ThisTask);
+  Test(begin, begin + N, ThisTask, NTask);
 
 #ifndef USE_DASH
   delete[] keys;

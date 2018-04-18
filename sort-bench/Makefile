@@ -22,6 +22,8 @@ endif
 
 NPROCS?=4
 
+ENABLE_TRACE?=0
+
 
 all: bin/tbb-lowlevel.x bin/tbb-highlevel.x bin/openmp.x bin/gomp.x bin/dash.x
 
@@ -30,7 +32,7 @@ run: all
 	./bin/tbb-lowlevel.x $(SIZE) $(NPROCS)
 	./bin/gomp.x $(SIZE) $(NPROCS)
 	./bin/openmp.x $(SIZE) $(NPROCS)
-	mpirun -n $(NPROCS) ./bin/dash.x $$(($(SIZE) / $(NPROCS)))
+	DASH_ENABLE_TRACE=$(ENABLE_TRACE) mpirun -n $(NPROCS) ./bin/dash.x $$(($(SIZE) / $(NPROCS)))
 	#mpirun -n $(NPROCS) ./bin/mpi.x $$(($(SIZE) / $(NPROCS)))
 
 bin/tbb-lowlevel.x: intel/tbb-lowlevel/parallel_stable_sort.h tbb/sortbench.h sortbench.cc
