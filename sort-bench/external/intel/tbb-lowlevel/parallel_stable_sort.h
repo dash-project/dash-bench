@@ -35,7 +35,7 @@
 #include <algorithm>
 #include <tbb/task.h>
 
-#include "pss_common.h"
+#include "../pss_common.h"
 
 namespace pss {
 

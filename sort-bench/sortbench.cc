@@ -1,3 +1,10 @@
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <map>
+#include <thread>
+#include <vector>
+
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
 #include <tbb/sortbench.h>
 #include <tbb/task_scheduler_init.h>
@@ -10,14 +17,8 @@
 #include <mpi/sortbench.h>
 #endif
 
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <map>
-#include <thread>
-#include <vector>
+#include <intel/IndexedValue.h>
 
-#include <IndexedValue.h>
 #include <util/Logging.h>
 #include <util/Random.h>
 #include <util/Timer.h>

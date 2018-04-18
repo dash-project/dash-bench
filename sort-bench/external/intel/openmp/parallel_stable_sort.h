@@ -32,7 +32,7 @@
 #ifndef PARALLEL_STABLE_SORT_H
 #define PARALLEL_STABLE_SORT_H
 #include <algorithm>
-#include "pss_common.h"
+#include "../pss_common.h"
 #include <omp.h>
 
 namespace pss {

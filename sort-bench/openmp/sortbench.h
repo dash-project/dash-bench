@@ -8,7 +8,7 @@
 #include <util/Logging.h>
 
 #include "omp.h"
-#include <openmp/parallel_stable_sort.h>
+#include <intel/openmp/parallel_stable_sort.h>
 
 
 template <typename RandomIt, typename Gen>

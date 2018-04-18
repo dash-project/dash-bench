@@ -34,7 +34,7 @@
 #include <algorithm>
 #include <tbb/parallel_invoke.h>
 
-#include "pss_common.h"
+#include "../pss_common.h"
 
 namespace pss {
 

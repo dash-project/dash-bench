@@ -10,9 +10,9 @@
 #include <util/Logging.h>
 
 #ifdef USE_TBB_HIGHLEVEL
-#include <tbb-highlevel/parallel_stable_sort.h>
+#include <intel/tbb-highlevel/parallel_stable_sort.h>
 #elif defined(USE_TBB_LOWLEVEL)
-#include <tbb-lowlevel/parallel_stable_sort.h>
+#include <intel/tbb-lowlevel/parallel_stable_sort.h>
 #endif
 
 

@@ -32,7 +32,7 @@
 #include <algorithm>
 #include <cilk/cilk.h>
 
-#include "pss_common.h"
+#include "../pss_common.h"
 
 namespace pss {
 
@@ -72,7 +72,7 @@ void parallel_stable_sort_aux( RandomAccessIterator1 xs, RandomAccessIterator1 x
     typedef typename std::iterator_traits<RandomAccessIterator2>::value_type T;
     const size_t SORT_CUT_OFF = 500;
     if( xe-xs<=SORT_CUT_OFF ) {
-        stable_sort_base_case(xs, xe, zs, inplace, comp); 
+        stable_sort_base_case(xs, xe, zs, inplace, comp);
     } else {
         RandomAccessIterator1 xm = xs + (xe-xs)/2;
         RandomAccessIterator2 zm = zs + (xm-xs);
