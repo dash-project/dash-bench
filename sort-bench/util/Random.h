@@ -76,7 +76,7 @@ struct NormalDistribution<T, false> {
 public:
   NormalDistribution() = default;
 
-  NormalDistribution(T mean, T stddev)
+  NormalDistribution(float mean, float stddev)
     : dist_{mean, stddev}
   {
   }

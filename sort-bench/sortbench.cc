@@ -75,9 +75,9 @@ void Test(RandomIt begin, RandomIt end, int ThisTask)
 
   using key_t = typename std::iterator_traits<RandomIt>::value_type;
 
-  using dist_type = sortbench::NormalDistribution<key_t>;
+  using dist_t = sortbench::NormalDistribution<key_t>;
 
-  dist_type dist{};
+  dist_t dist{50, 10};
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
