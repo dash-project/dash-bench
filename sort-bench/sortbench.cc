@@ -77,9 +77,11 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask)
 
   auto const mb = n * sizeof(key_t) / MB;
 
-  using dist_t = sortbench::NormalDistribution<key_t>;
+  //using dist_t = sortbench::NormalDistribution<key_t>;
+  using dist_t = sortbench::UniformDistribution<key_t>;
 
-  dist_t dist{50, 10};
+  //dist_t dist{50, 10};
+  dist_t dist{key_t{0}, key_t{(1 << 20)}};
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
@@ -161,10 +163,6 @@ int main(int argc, char* argv[])
   auto const N           = nl * NTask;
   auto const ThisTask    = dash::myid();
 #elif defined(USE_MPI)
-  static_assert(
-      std::is_unsigned<key_t>::value,
-      "MPI Sort supports only unsigned key types");
-
   MPI_Init(&argc, &argv);
   int NTask;
   MPI_Comm_size(MPI_COMM_WORLD, &NTask);
