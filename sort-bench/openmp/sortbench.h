@@ -7,8 +7,8 @@
 
 #include <util/Logging.h>
 
-#include "openmp.h"
-#include "parallel_stable_sort.h"
+#include "omp.h"
+#include <openmp/parallel_stable_sort.h>
 
 
 template <typename RandomIt, typename Gen>
@@ -17,8 +17,6 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   assert(!(end < begin));
 
   auto const n = static_cast<size_t>(std::distance(begin, end));
-
-  auto const nthreads = omp_get_num_threads();
 
 #pragma omp parallel default(none) shared(begin)
   {

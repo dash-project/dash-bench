@@ -7,8 +7,8 @@ MPICXX?=mpiCC
 DASHROOT?=$(HOME)/opt/dash-0.3.0
 DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 
-#CXXFLAGS = -O3 -std=c++11 -I./intel -I. -DENABLE_LOGGING
-CXXFLAGS = -O3 -std=c++11 -I./intel -I. -DNDEBUG
+#CXXFLAGS = -O3 -std=c++11 -I./intel -I. -Wall -DENABLE_LOGGING
+CXXFLAGS = -O3 -std=c++11 -I./intel -I. -DNDEBUG -Wall
 
 SIZE ?= $$((500 * (2**20)))
 
@@ -33,18 +33,18 @@ run: all
 	mpirun -n $(NPROCS) ./bin/dash.x $$(($(SIZE) / $(NPROCS)))
 	#mpirun -n $(NPROCS) ./bin/mpi.x $$(($(SIZE) / $(NPROCS)))
 
-bin/tbb-lowlevel.x: intel/tbb-lowlevel/parallel_stable_sort.h intel/tbb-lowlevel/sortbench.h sortbench.cc
+bin/tbb-lowlevel.x: intel/tbb-lowlevel/parallel_stable_sort.h tbb/sortbench.h sortbench.cc
 	@mkdir -p bin
 	icpc $(CXXFLAGS) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc -ltbb
 
-bin/tbb-highlevel.x: intel/tbb-highlevel/parallel_stable_sort.h intel/tbb-highlevel/sortbench.h sortbench.cc
+bin/tbb-highlevel.x: intel/tbb-highlevel/parallel_stable_sort.h tbb/sortbench.h sortbench.cc
 	@mkdir -p bin
 	icpc $(CXXFLAGS) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc -ltbb
 
-bin/openmp.x: intel/openmp/parallel_stable_sort.h intel/openmp/sortbench.h sortbench.cc
+bin/openmp.x: intel/openmp/parallel_stable_sort.h openmp/sortbench.h sortbench.cc
 	icpc $(CXXFLAGS) -o $@ -DUSE_OPENMP -qopenmp sortbench.cc
 
-bin/gomp.x: intel/openmp/parallel_stable_sort.h intel/openmp/sortbench.h sortbench.cc
+bin/gomp.x: intel/openmp/parallel_stable_sort.h openmp/sortbench.h sortbench.cc
 	@mkdir -p bin
 	g++ $(CXXFLAGS) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc
 

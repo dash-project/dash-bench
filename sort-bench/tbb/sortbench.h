@@ -8,7 +8,12 @@
 #include <tbb/parallel_for.h>
 
 #include <util/Logging.h>
-#include "parallel_stable_sort.h"
+
+#ifdef USE_TBB_HIGHLEVEL
+#include <tbb-highlevel/parallel_stable_sort.h>
+#elif defined(USE_TBB_LOWLEVEL)
+#include <tbb-lowlevel/parallel_stable_sort.h>
+#endif
 
 
 template <typename RandomIt, typename Gen>

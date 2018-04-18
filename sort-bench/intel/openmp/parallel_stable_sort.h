@@ -32,9 +32,8 @@
 #ifndef PARALLEL_STABLE_SORT_H
 #define PARALLEL_STABLE_SORT_H
 #include <algorithm>
-#include "openmp.h"
-
 #include "pss_common.h"
+#include <omp.h>
 
 namespace pss {
 
@@ -74,7 +73,7 @@ void parallel_move_merge(
 {
 #endif
   const size_t MERGE_CUT_OFF = 2000;
-  while ((xe - xs) + (ye - ys) > MERGE_CUT_OFF) {
+  while (static_cast<size_t>((xe - xs) + (ye - ys)) > MERGE_CUT_OFF) {
     RandomAccessIterator1 xm;
     RandomAccessIterator2 ym;
     if (xe - xs < ye - ys) {
@@ -113,9 +112,8 @@ void parallel_stable_sort_aux(
     int                   inplace,
     Compare               comp)
 {
-  typedef typename std::iterator_traits<RandomAccessIterator2>::value_type T;
   const size_t SORT_CUT_OFF = 500;
-  if (xe - xs <= SORT_CUT_OFF) {
+  if (static_cast<size_t>(xe - xs) <= SORT_CUT_OFF) {
     stable_sort_base_case(xs, xe, zs, inplace, comp);
   }
   else {

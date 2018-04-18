@@ -1,11 +1,8 @@
-#if defined(USE_TBB_LOWLEVEL)
-#include "tbb-lowlevel/sortbench.h"
-#include "tbb/task_scheduler_init.h"
-#elif defined(USE_TBB_HIGHLEVEL)
-#include "tbb-highlevel/sortbench.h"
-#include "tbb/task_scheduler_init.h"
+#if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
+#include <tbb/sortbench.h>
+#include <tbb/task_scheduler_init.h>
 #elif defined(USE_OPENMP)
-#include "openmp/sortbench.h"
+#include <openmp/sortbench.h>
 #elif defined(USE_DASH)
 #include <dash/sortbench.h>
 #include <libdash.h>
@@ -162,7 +159,7 @@ int main(int argc, char* argv[])
 #endif
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
-  tbb::task_scheduler_init init{NTask};
+  tbb::task_scheduler_init init{static_cast<int>(NTask)};
 #elif defined(USE_OPENMP)
   omp_set_num_threads(NTask);
 #endif
