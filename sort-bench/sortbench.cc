@@ -91,11 +91,27 @@ void Test(RandomIt begin, RandomIt end, int ThisTask)
       trace_histo(begin, begin + n);
     }
 
+#ifdef USE_DASH
+    dash::util::TraceStore::on();
+    dash::util::TraceStore::clear();
+
+#endif
+
     auto const start = ChronoClockNow();
 
     parallel_sort(begin, begin + n, std::less<key_t>());
 
     auto const duration = ChronoClockNow() - start;
+
+#ifdef USE_DASH
+    if (iter == (NITER + BURN_IN - 1)) {
+      dash::util::TraceStore::write(std::cout);
+    }
+
+    dash::util::TraceStore::off();
+    dash::util::TraceStore::clear();
+    begin.pattern().team().barrier();
+#endif
 
     auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
 
