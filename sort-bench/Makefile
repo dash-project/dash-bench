@@ -26,7 +26,7 @@ NPROCS?=4
 ENABLE_TRACE?=0
 
 
-all: build/tbb-lowlevel.x build/tbb-highlevel.x build/openmp.x build/gomp.x build/dash.x
+all: build/tbb-lowlevel.x build/tbb-highlevel.x build/openmp.x build/gomp.x build/dash.x build/mpi.x
 
 run: all
 	./build/tbb-highlevel.x $(SIZE) $(NPROCS)
@@ -34,7 +34,7 @@ run: all
 	./build/gomp.x $(SIZE) $(NPROCS)
 	./build/openmp.x $(SIZE) $(NPROCS)
 	DASH_ENABLE_TRACE=$(ENABLE_TRACE) mpirun -n $(NPROCS) ./build/dash.x $$(($(SIZE) / $(NPROCS)))
-	#mpirun -n $(NPROCS) ./build/mpi.x $$(($(SIZE) / $(NPROCS)))
+	mpirun -n $(NPROCS) ./build/mpi.x $$(($(SIZE) / $(NPROCS)))
 
 build/tbb-lowlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build

@@ -75,7 +75,11 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask)
 
   using key_t = typename std::iterator_traits<RandomIt>::value_type;
 
+#ifdef USE_MPI
+  auto const mb = n * NTask * sizeof(key_t) / MB;
+#else
   auto const mb = n * sizeof(key_t) / MB;
+#endif
 
   //using dist_t = sortbench::NormalDistribution<key_t>;
   using dist_t = sortbench::UniformDistribution<key_t>;
