@@ -5,7 +5,6 @@ SHELL=/bin/bash
 MPICXX?=mpiCC
 
 DASHROOT?=$(HOME)/opt/dash-0.3.0
-#DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose -L/opt/intel.2018/compilers_and_libraries_2018.0.128/linux/mpi/intel64/lib/release_mt -lmpi
 DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 
 #CXXFLAGS = -O3 -std=c++11 -I./external -I. -Wall -DENABLE_LOGGING

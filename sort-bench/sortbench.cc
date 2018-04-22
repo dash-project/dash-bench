@@ -62,13 +62,14 @@ void print_header(std::string const& app, double mb, int NTask)
   std::cout << std::setw(4) << "#,";
   std::cout << std::setw(10) << "NTasks,";
   std::cout << std::setw(10) << "Size (MB),";
-  std::cout << std::setw(20) << app;
+  std::cout << std::setw(20) << "Time,";
+  std::cout << std::setw(20) << "Test Case";
   std::cout << "\n";
 }
 
 //! Test sort for n items
 template <typename RandomIt>
-void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask)
+void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string const & test_case)
 {
   auto const n = static_cast<size_t>(std::distance(begin, end));
   LOG("N :" << n);
@@ -131,19 +132,22 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask)
     }
 
     if (iter >= BURN_IN && ThisTask == 0) {
+      //Iteration
       std::cout << std::setw(3) << iter << ",";
+      //Ntasks
       std::cout << std::setw(9) << NTask << ",";
+      //Size
       std::cout << std::setw(9) << std::fixed << std::setprecision(2) << mb;
-      std::cout << "," << std::setw(20) << std::fixed << std::setprecision(8);
-      std::cout << duration;
+      std::cout << ",";
+      //Time (s)
+      std::cout << std::setw(19) << std::fixed << std::setprecision(8);
+      std::cout << duration << ",";
+      //Test Case
+      std::cout << std::setw(20) << test_case;
       std::cout << "\n";
     }
   }
 }
-
-template <typename Initializer, typename Delete>
-struct LibraryInitializer {
-};
 
 int main(int argc, char* argv[])
 {
@@ -207,7 +211,7 @@ int main(int argc, char* argv[])
     print_header(base_filename, mb, NTask);
   }
 
-  Test(begin, begin + N, ThisTask, NTask);
+  Test(begin, begin + N, ThisTask, NTask, base_filename);
 
 #ifndef USE_DASH
   delete[] keys;
