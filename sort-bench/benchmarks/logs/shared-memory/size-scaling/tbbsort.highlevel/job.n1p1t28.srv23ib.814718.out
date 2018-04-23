@@ -1,0 +1,19 @@
++++++++++++++++++++++++++++++++++++++++++++++++++
+++              Sort Bench                     ++
++++++++++++++++++++++++++++++++++++++++++++++++++
+            NTasks: 28
+              Size: 56.00
+
+
+  #,   NTasks,Size (MB),     		Time,		Test Case
+  1,       28,       56,          0.07728968,		tbb-highlevel.x
+  2,       28,       56,          0.08152792,		tbb-highlevel.x
+  3,       28,       56,          0.07931439,		tbb-highlevel.x
+  4,       28,       56,          0.08346570,		tbb-highlevel.x
+  5,       28,       56,          0.08423262,		tbb-highlevel.x
+  6,       28,       56,          0.08530970,		tbb-highlevel.x
+  7,       28,       56,          0.08155848,		tbb-highlevel.x
+  8,       28,       56,          0.08126275,		tbb-highlevel.x
+  9,       28,       56,          0.08182260,		tbb-highlevel.x
+ 10,       28,       56,          0.07985451,		tbb-highlevel.x
+

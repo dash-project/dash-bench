@@ -44,9 +44,23 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
     return(datac)
 }
 
-data <- read.csv("shared-memory/28.csv", header=TRUE, strip.white=TRUE)
+args = commandArgs(trailingOnly=TRUE)
 
-my.agg <- summarySE(data,
+if (length(args)==0) {
+    stop("Usage: ./plots.R <infile> <outfile>", call.=FALSE)
+} else if (length(args)==1) {
+    filename <- basename(args[1])
+    filename <- sub("^([^.]*).*", "\\1", filename)
+    filename <- paste(filename, ".pdf", sep="")
+    args[2] <- filename
+}
+
+csvFile <- args[1]
+outfile <- args[2]
+
+my.data <- read.csv(csvFile, header=TRUE, strip.white=TRUE)
+
+my.agg <- summarySE(my.data,
                     measurevar="Time",
                     groupvars=c("Size", "Test.Case"),
                     na.rm=TRUE)
@@ -60,7 +74,7 @@ my.shm <- my.agg %>%
 
 library(ggplot2)
 
-pdf(file="figure.pdf")
+pdf(file=outfile)
 
 # The errorbars overlapped, so use position_dodge to move them horizontally
 pd <- position_dodge(0.1) # move them .05 to the left and right
@@ -83,4 +97,5 @@ ggtitle("Sort Benchmark") +
                   legend.position=c(1,0))               # Position legend in bottom right
 
 dev.off()
+
 
