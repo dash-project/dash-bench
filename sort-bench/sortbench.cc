@@ -208,6 +208,12 @@ int main(int argc, char* argv[])
 #endif
 
   if (ThisTask == 0) {
+#if defined(USE_DASH)
+    dash::util::BenchmarkParams bench_params("bench.dash.sort");
+    bench_params.set_output_width(72);
+    bench_params.print_header();
+    bench_params.print_pinning();
+#endif
     print_header(base_filename, mb, NTask);
   }
 
