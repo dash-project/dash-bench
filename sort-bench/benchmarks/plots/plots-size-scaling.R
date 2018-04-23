@@ -44,7 +44,55 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
     return(datac)
 }
 
-args = commandArgs(trailingOnly=TRUE)
+plotLineChart <- function(data) {
+
+# The errorbars overlapped, so use position_dodge to move them horizontally
+    pd <- position_dodge(0.1) # move them .05 to the left and right
+
+    ggplot(data, aes(x=Size, y=Time, colour=Test.Case, group=Test.Case)) +
+        geom_errorbar(aes(ymin=Time-ci, ymax=Time+ci), colour="black", width=.1, position=pd) +
+        geom_line(position=pd) +
+        geom_point(position=pd, size=3, shape=21, fill="white") + # 21 is filled circle
+        xlab("Size (MB)") +
+            ylab("Time") +
+            scale_colour_hue(name="Implementation",    # Legend label, use darker colors
+                             breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
+                             labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP"),
+                             l=40) +                    # Use darker colors, lightness=40
+    ggtitle("Sort Benchmark") +
+        expand_limits(y=0) +                        # Expand y range
+        scale_y_continuous(breaks=0:20*4) +         # Set tick every 4
+            theme_bw() +
+                theme(legend.justification=c(1,0),
+                      legend.position=c(1,0))               # Position legend in bottom right
+
+}
+
+plotBarChart <- function(data) {
+    library(ggplot2)
+
+    data$Size <- factor(data$Size)
+
+    ggplot(data, aes(x=Size, y=Time, fill=Test.Case)) +
+    geom_bar(position=position_dodge(), stat="identity",
+             colour="black", # Use black outlines,
+             size=.3) +      # Thinner lines
+    geom_errorbar(aes(ymin=Time-ci, ymax=Time+ci),
+                  size=.3,    # Thinner lines
+                  width=.2,
+                  position=position_dodge(.9)) +
+    xlab("Size (MB)") +
+    ylab("Time") +
+    scale_fill_hue(name="Implementation", # Legend label, use darker colors
+                   breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
+                   labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP")) +
+    ggtitle("Sort Benchmark") +
+    scale_y_continuous(breaks=0:20*4) +
+    theme_bw()
+
+}
+
+args <- commandArgs(trailingOnly=TRUE)
 
 if (length(args)==0) {
     stop("Usage: ./plots.R <infile> <outfile>", call.=FALSE)
@@ -65,7 +113,7 @@ my.agg <- summarySE(my.data,
                     groupvars=c("Size", "Test.Case"),
                     na.rm=TRUE)
 
-my.shm <- my.agg %>%
+my.view <- my.agg %>%
     filter(Size < 25500 &
            (Test.Case == "dash.x" |
             Test.Case == "openmp.x" |
@@ -75,27 +123,8 @@ my.shm <- my.agg %>%
 library(ggplot2)
 
 pdf(file=outfile)
-
-# The errorbars overlapped, so use position_dodge to move them horizontally
-pd <- position_dodge(0.1) # move them .05 to the left and right
-
-ggplot(my.shm, aes(x=Size, y=Time, colour=Test.Case, group=Test.Case)) +
-    geom_errorbar(aes(ymin=Time-ci, ymax=Time+ci), colour="black", width=.1, position=pd) +
-    geom_line(position=pd) +
-    geom_point(position=pd, size=3, shape=21, fill="white") + # 21 is filled circle
-    xlab("Size (MB)") +
-        ylab("Time") +
-        scale_colour_hue(name="Implementation",    # Legend label, use darker colors
-                         breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
-                         labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP"),
-                         l=40) +                    # Use darker colors, lightness=40
-ggtitle("Sort Benchmark") +
-    expand_limits(y=0) +                        # Expand y range
-    scale_y_continuous(breaks=0:20*4) +         # Set tick every 4
-        theme_bw() +
-            theme(legend.justification=c(1,0),
-                  legend.position=c(1,0))               # Position legend in bottom right
-
+plotLineChart(my.view)
+plotBarChart(my.view)
 dev.off()
 
 
