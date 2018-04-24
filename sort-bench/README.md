@@ -10,9 +10,10 @@ The platform is [SuperMUC Phase
 2](https://www.lrz.de/services/compute/supermuc/systemdescription/) at the
 [Leibnitz Supercomputing Center](https://www.lrz.de). A single node consists of
 2 CPU sockets, each equipped with 14 cores which are interconnected in two NUMA
-domains. Each NUMA domain provides 16 GB's of memory.  Finally, this results in
-28 cores per node, each with 64 GBytes of memory which is distributed among 4
-NUMA clusters.
+domains. Each NUMA domain provides 16 GB's of memory.
+
+This results in 28 cores per node, each with 64 GBytes of memory which is
+distributed among 4 NUMA clusters.
 
 ## Shared Memory
 
@@ -30,8 +31,9 @@ namely:
 ### Methodology
 
 We measure two variants. The first variant has a fixed size of tasks which are
-either 28 or 56 (with hyperthreading) and scales the problem size of array
-starting from 56 MB up to approx. 15 GB. 
+either 28 or 56 (with hyperthreading) and scales the problem size
+starting from 56 MB up to approx. 15 GB. The data to be sorted are 32-bit
+signed integers which are initially generated based on a uniform distribution.
 
 The second variant has a fixed size (approx. 2 GB) and scales the number of
 cores on a single node. The purpuse of this study is to measure performance
