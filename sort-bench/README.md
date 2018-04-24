@@ -52,3 +52,6 @@ Hyperthreading) until we finally occupy all 4 NUMA domains.
 - Results for the second variant: [NUMA
   Scaling](benchmarks/plots/numa-scaling.pdf)
 
+## Distributed Memory
+
+TODO...
