@@ -1,4 +1,5 @@
 library(dplyr)
+library(ggplot2)
 
 ## Summarizes data.
 ## Gives count, mean, standard deviation, standard error of the mean, and
@@ -44,7 +45,7 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
     return(datac)
 }
 
-plotLineChart <- function(data) {
+plotLineChart <- function(data, title="") {
 
 # The errorbars overlapped, so use position_dodge to move them horizontally
     pd <- position_dodge(0.1) # move them .05 to the left and right
@@ -59,7 +60,7 @@ plotLineChart <- function(data) {
                              breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
                              labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP"),
                              l=40) +                    # Use darker colors, lightness=40
-    ggtitle("Sort Benchmark") +
+    ggtitle(title) +
         expand_limits(y=0) +                        # Expand y range
         scale_y_continuous(breaks=0:20*4) +         # Set tick every 4
             theme_bw() +
@@ -68,8 +69,7 @@ plotLineChart <- function(data) {
 
 }
 
-plotBarChart <- function(data) {
-    library(ggplot2)
+plotBarChart <- function(data, title="") {
 
     data$Size <- factor(data$Size)
 
@@ -86,45 +86,41 @@ plotBarChart <- function(data) {
     scale_fill_hue(name="Implementation", # Legend label, use darker colors
                    breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
                    labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP")) +
-    ggtitle("Sort Benchmark") +
+    ggtitle(title) +
     scale_y_continuous(breaks=0:20*4) +
     theme_bw()
-
 }
 
-args <- commandArgs(trailingOnly=TRUE)
+summarizeData <- function(rawData) {
+    agg <- summarySE(rawData,
+                        measurevar="Time",
+                        groupvars=c("Size", "Test.Case"),
+                        na.rm=TRUE)
 
-if (length(args)==0) {
-    stop("Usage: ./plots.R <infile> <outfile>", call.=FALSE)
-} else if (length(args)==1) {
-    filename <- basename(args[1])
-    filename <- sub("^([^.]*).*", "\\1", filename)
-    filename <- paste(filename, ".pdf", sep="")
-    args[2] <- filename
+    view <- agg %>%
+        filter(Size < 25500 &
+               (Test.Case == "dash.x" |
+                Test.Case == "openmp.x" |
+                Test.Case == "tbb-lowlevel.x" |
+                Test.Case == "tbb-highlevel.x"))
+
+    return(view)
 }
 
-csvFile <- args[1]
-outfile <- args[2]
+sizeScaling.cores.data <- read.csv("../summary/shared-memory/28tasks-size-scaling.csv", header=TRUE, strip.white=TRUE)
+sizeScaling.threads.data <- read.csv("../summary/shared-memory/56tasks-size-scaling.csv", header=TRUE, strip.white=TRUE)
 
-my.data <- read.csv(csvFile, header=TRUE, strip.white=TRUE)
+sizeScaling.cores.view <- summarizeData(sizeScaling.cores.data)
+sizeScaling.threads.view <- summarizeData(sizeScaling.threads.data)
 
-my.agg <- summarySE(my.data,
-                    measurevar="Time",
-                    groupvars=c("Size", "Test.Case"),
-                    na.rm=TRUE)
 
-my.view <- my.agg %>%
-    filter(Size < 25500 &
-           (Test.Case == "dash.x" |
-            Test.Case == "openmp.x" |
-            Test.Case == "tbb-lowlevel.x" |
-            Test.Case == "tbb-highlevel.x"))
+pdf(file="size-scaling.pdf")
 
-library(ggplot2)
+plotLineChart(sizeScaling.cores.view, "Shared Memory Sort Benchmark (NTasks = 28)")
+plotBarChart(sizeScaling.cores.view, "Shared Memory Sort Benchmark (NTasks = 28)")
+plotLineChart(sizeScaling.threads.view, "Shared Memory Sort Benchmark (NTasks = 56)")
+plotBarChart(sizeScaling.threads.view, "Shared Memory Sort Benchmark (NTasks = 56)")
 
-pdf(file=outfile)
-plotLineChart(my.view)
-plotBarChart(my.view)
 dev.off()
 
 

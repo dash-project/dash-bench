@@ -1,4 +1,5 @@
 library(dplyr)
+library(ggplot2)
 
 ## Summarizes data.
 ## Gives count, mean, standard deviation, standard error of the mean, and
@@ -44,8 +45,7 @@ summarySE <- function(data=NULL, measurevar, groupvars=NULL, na.rm=FALSE,
     return(datac)
 }
 
-plotLineChart <- function(data) {
-    library(ggplot2)
+plotLineChart <- function(data, title="") {
 
 # The errorbars overlapped, so use position_dodge to move them horizontally
     pd <- position_dodge(0.1) # move them .05 to the left and right
@@ -60,7 +60,7 @@ plotLineChart <- function(data) {
                              breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
                              labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP"),
                              l=40) +                    # Use darker colors, lightness=40
-    ggtitle("Sort Benchmark") +
+    ggtitle(title) +
         expand_limits(y=0) +                        # Expand y range
         scale_y_continuous(breaks=0:20*4) +         # Set tick every 4
             theme_bw() +
@@ -69,12 +69,7 @@ plotLineChart <- function(data) {
 }
 
 
-plotBarChart <- function(data, gsize) {
-    library(ggplot2)
-
-    desc <- paste("Sort Benchmark (1 Node, ", gsize, " MB)", sep="")
-
-    print(desc)
+plotBarChart <- function(data, title="") {
 
     data$NTasks <- factor(data$NTasks)
 
@@ -91,51 +86,54 @@ plotBarChart <- function(data, gsize) {
     scale_fill_hue(name="Implementation", # Legend label, use darker colors
                    breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
                    labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP")) +
-    ggtitle(desc) +
+    ggtitle(title) +
     scale_y_continuous(breaks=0:20*4) +
     theme_bw()
 
 }
 
-args = commandArgs(trailingOnly=TRUE)
+#args = commandArgs(trailingOnly=TRUE)
+#
+#if (length(args)==0) {
+#    stop("Usage: ./plots.R <infile> <outfile>", call.=FALSE)
+#} else if (length(args)==1) {
+#    filename <- basename(args[1])
+#    filename <- sub("^([^.]*).*", "\\1", filename)
+#    filename <- paste(filename, ".pdf", sep="")
+#    args[2] <- filename
+#}
+#
+#csvFile <- args[1]
+#outfile <- args[2]
 
-if (length(args)==0) {
-    stop("Usage: ./plots.R <infile> <outfile>", call.=FALSE)
-} else if (length(args)==1) {
-    filename <- basename(args[1])
-    filename <- sub("^([^.]*).*", "\\1", filename)
-    filename <- paste(filename, ".pdf", sep="")
-    args[2] <- filename
-}
+affinity.cores.data <- read.csv("../summary/shared-memory/affinity-no-ht.csv", header=TRUE, strip.white=TRUE)
+affinity.threads.data <- read.csv("../summary/shared-memory/affinity-ht.csv", header=TRUE, strip.white=TRUE)
 
-csvFile <- args[1]
-outfile <- args[2]
+affinity.cores.title <-
+    paste("NUMA aware Sort Benchmark (No Hyperthreading, Problem Size: ",
+          affinity.cores.data[1,3], " MB)", sep="")
 
-my.data <- read.csv(csvFile, header=TRUE, strip.white=TRUE)
+affinity.threads.title <-
+    paste("NUMA aware Sort Benchmark (Hyperthreading, Problem Size: ",
+          affinity.threads.data[1,3], " MB)", sep="")
 
-head(my.data)
-
-gsize <- my.data[1,3]
-
-my.agg <- summarySE(my.data,
+affinity.cores.agg <- summarySE(affinity.cores.data,
                     measurevar="Time",
                     groupvars=c("NTasks", "Test.Case"),
                     na.rm=TRUE)
 
-#my.agg <- my.agg %>%
-#    filter((Test.Case == "dash.x" |
-#            Test.Case == "openmp.x" |
-#            Test.Case == "tbb-lowlevel.x" |
-#            Test.Case == "tbb-highlevel.x"))
+affinity.threads.agg <- summarySE(affinity.threads.data,
+                    measurevar="Time",
+                    groupvars=c("NTasks", "Test.Case"),
+                    na.rm=TRUE)
 
-my.view <- my.agg
+pdf(file="numa-scaling.pdf")
 
+plotLineChart(affinity.cores.agg, affinity.cores.title)
+plotBarChart(affinity.cores.agg, affinity.cores.title)
 
-pdf(file=outfile)
-
-plotLineChart(my.view)
-plotBarChart(my.view, gsize)
-
+plotLineChart(affinity.threads.agg, affinity.threads.title)
+plotBarChart(affinity.threads.agg, affinity.threads.title)
 dev.off()
 
 
