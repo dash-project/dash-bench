@@ -8,7 +8,7 @@ DASHROOT?=$(HOME)/opt/dash-0.3.0
 DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 
 #CXXFLAGS = -O3 -std=c++11 -I./external -I. -Wall -DENABLE_LOGGING
-CXXFLAGS = -O3 -std=c++11 -I./external -I. -DNDEBUG
+CXXFLAGS ?= -O3 -std=c++11 -I./external -I. -DNDEBUG
 
 SIZE ?= $$((500 * (2**20)))
 
