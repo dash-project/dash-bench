@@ -48,7 +48,7 @@ build/openmp.x: openmp/sortbench.h sortbench.cc
 
 build/gomp.x: openmp/sortbench.h sortbench.cc
 	@mkdir -p build
-	g++ $(CXXFLAGS) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc
+	icpc $(CXXFLAGS) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc
 
 build/dash.x: dash/sortbench.h sortbench.cc
 	@mkdir -p build
