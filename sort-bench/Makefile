@@ -37,11 +37,11 @@ run: all
 
 build/tbb-lowlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build
-	icpc $(CXXFLAGS) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc -ltbb
+	icpc $(CXXFLAGS) $(TBB_INC) -L$(TBB_LIBDIR) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc -ltbb
 
 build/tbb-highlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build
-	icpc $(CXXFLAGS) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc -ltbb
+	icpc $(CXXFLAGS) $(TBB_INC) -L$(TBB_LIBDIR) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc -ltbb
 
 build/openmp.x: openmp/sortbench.h sortbench.cc
 	icpc $(CXXFLAGS) -o $@ -DUSE_OPENMP -qopenmp sortbench.cc
