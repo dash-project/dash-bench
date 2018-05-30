@@ -154,7 +154,12 @@ int main(int argc, char* argv[])
   using key_t = int32_t;
 
   if (argc < 2) {
-    std::cout << std::string(argv[0]) << " [nbytes]\n";
+    std::cout << std::string(argv[0])
+#if defined(USE_DASH) || defined (USE_MPI)
+      << " [nbytes per task]\n";
+#else
+      << " [nbytes]\n";
+#endif
     return 1;
   }
 
