@@ -97,6 +97,7 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string con
           // return total - index;
           return dist(rng);
           // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
+          //return std::rand();
         });
 
     if (iter == 0) {
@@ -114,16 +115,6 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string con
     parallel_sort(begin, begin + n, std::less<key_t>());
 
     auto const duration = ChronoClockNow() - start;
-
-#ifdef USE_DASH
-    if (iter == (NITER + BURN_IN - 1)) {
-      dash::util::TraceStore::write(std::cout);
-    }
-
-    dash::util::TraceStore::off();
-    dash::util::TraceStore::clear();
-    begin.pattern().team().barrier();
-#endif
 
     auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
 
@@ -146,6 +137,17 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string con
       std::cout << std::setw(20) << test_case;
       std::cout << "\n";
     }
+
+#ifdef USE_DASH
+    if (iter == (NITER + BURN_IN - 1)) {
+      dash::util::TraceStore::write(std::cout);
+    }
+
+    dash::util::TraceStore::off();
+    dash::util::TraceStore::clear();
+    begin.pattern().team().barrier();
+#endif
+
   }
 }
 
