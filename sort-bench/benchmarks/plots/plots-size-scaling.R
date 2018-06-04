@@ -110,8 +110,31 @@ summarizeData <- function(rawData) {
 sizeScaling.cores.data <- read.csv("../summary/shared-memory/28tasks-size-scaling.csv", header=TRUE, strip.white=TRUE)
 sizeScaling.threads.data <- read.csv("../summary/shared-memory/56tasks-size-scaling.csv", header=TRUE, strip.white=TRUE)
 
-sizeScaling.cores.view <- summarizeData(sizeScaling.cores.data)
-sizeScaling.threads.view <- summarizeData(sizeScaling.threads.data)
+sizeScaling.cores.agg <- summarySE(sizeScaling.cores.data,
+                    measurevar="Time",
+                    groupvars=c("Size", "Test.Case"),
+                    na.rm=TRUE)
+
+sizeScaling.cores.view <- sizeScaling.cores.agg %>%
+    filter((Size < 25000) &
+            (Test.Case == "dash.x" |
+            Test.Case == "openmp.x" |
+            Test.Case == "tbb-lowlevel.x" |
+            Test.Case == "tbb-highlevel.x"))
+
+sizeScaling.threads.agg <- summarySE(sizeScaling.threads.data,
+                    measurevar="Time",
+                    groupvars=c("Size", "Test.Case"),
+                    na.rm=TRUE)
+
+sizeScaling.threads.agg
+
+sizeScaling.threads.view <- sizeScaling.threads.agg %>%
+    filter((Size < 25000) &
+           (Test.Case == "dash.x" |
+            Test.Case == "openmp.x" |
+            Test.Case == "tbb-lowlevel.x" |
+            Test.Case == "tbb-highlevel.x"))
 
 
 pdf(file="size-scaling.pdf")
