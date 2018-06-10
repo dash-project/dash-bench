@@ -86,13 +86,13 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string con
   using dist_t = sortbench::UniformDistribution<key_t>;
 
   //dist_t dist{50, 10};
-  dist_t dist{key_t{0}, key_t{(1 << 20)}};
+  static dist_t dist{key_t{0}, key_t{(1 << 20)}};
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
         begin,
         begin + n,
-        [&dist](size_t total, size_t index, std::mt19937& rng) {
+        [](size_t total, size_t index, std::mt19937& rng) {
           // return index;
           // return total - index;
           return dist(rng);
