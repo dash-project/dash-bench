@@ -8,7 +8,7 @@ DASHROOT?=$(HOME)/opt/dash-0.3.0
 DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 
 #CXXFLAGS = -O3 -std=c++11 -I./external -I. -Wall -DENABLE_LOGGING
-CXXFLAGS = -O3 -std=c++11 -I./external -I. -DNDEBUG
+CXXFLAGS ?= -O3 -std=c++11 -I./external -I. -DNDEBUG
 
 SIZE ?= $$((500 * (2**20)))
 
@@ -37,18 +37,18 @@ run: all
 
 build/tbb-lowlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build
-	icpc $(CXXFLAGS) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc -ltbb
+	icpc $(CXXFLAGS) $(TBB_INC) -L$(TBB_LIBDIR) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc -ltbb
 
 build/tbb-highlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build
-	icpc $(CXXFLAGS) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc -ltbb
+	icpc $(CXXFLAGS) $(TBB_INC) -L$(TBB_LIBDIR) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc -ltbb
 
 build/openmp.x: openmp/sortbench.h sortbench.cc
 	icpc $(CXXFLAGS) -o $@ -DUSE_OPENMP -qopenmp sortbench.cc
 
 build/gomp.x: openmp/sortbench.h sortbench.cc
 	@mkdir -p build
-	g++ $(CXXFLAGS) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc
+	icpc $(CXXFLAGS) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc
 
 build/dash.x: dash/sortbench.h sortbench.cc
 	@mkdir -p build
