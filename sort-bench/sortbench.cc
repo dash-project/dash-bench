@@ -147,34 +147,36 @@ void Test(
     }
 
     if (iter >= BURN_IN && ThisTask == 0) {
+      std::ostringstream os;
       // Iteration
-      std::cout << std::setw(3) << iter << ",";
+      os << std::setw(3) << iter << ",";
       // Ntasks
-      std::cout << std::setw(9) << NTask << ",";
+      os << std::setw(9) << NTask << ",";
       // Size
-      std::cout << std::setw(9) << std::fixed << std::setprecision(2) << mb;
-      std::cout << ",";
+      os << std::setw(9) << std::fixed << std::setprecision(2) << mb;
+      os << ",";
       // Time (s)
-      std::cout << std::setw(19) << std::fixed << std::setprecision(8);
-      std::cout << duration << ",";
+      os << std::setw(19) << std::fixed << std::setprecision(8);
+      os << duration << ",";
       // Test Case
-      std::cout << std::setw(20) << test_case;
-      std::cout << "\n";
+      os << std::setw(20) << test_case;
+      os << "\n";
+      std::cout << os.str();
     }
 
 #ifdef USE_DASH
+    begin.pattern().team().barrier();
     if (iter == (NITER + BURN_IN - 1) &&
         // if the id of this task is included in samples
         (std::find(
              std::begin(trace_unit_samples),
              std::end(trace_unit_samples),
              dash::team_unit_t{ThisTask}) != std::end(trace_unit_samples))) {
-      dash::util::TraceStore::write(std::cout);
+      dash::util::TraceStore::write(std::cout, false);
     }
 
     dash::util::TraceStore::off();
     dash::util::TraceStore::clear();
-    begin.pattern().team().barrier();
 #endif
   }
 }
