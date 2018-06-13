@@ -30,7 +30,7 @@ template <typename RandomIt>
 void trace_histo(RandomIt begin, RandomIt end)
 {
 #ifdef ENABLE_LOGGING
-  auto const n = std::distance(begin, end);
+  auto const              n = std::distance(begin, end);
   std::map<key_t, size_t> hist{};
   for (size_t idx = 0; idx < n; ++idx) {
     ++hist[begin[idx]];
@@ -69,7 +69,12 @@ void print_header(std::string const& app, double mb, int NTask)
 
 //! Test sort for n items
 template <typename RandomIt>
-void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string const & test_case)
+void Test(
+    RandomIt           begin,
+    RandomIt           end,
+    int                ThisTask,
+    int                NTask,
+    std::string const& test_case)
 {
   auto const n = static_cast<size_t>(std::distance(begin, end));
   LOG("N :" << n);
@@ -82,22 +87,42 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string con
   auto const mb = n * sizeof(key_t) / MB;
 #endif
 
-  //using dist_t = sortbench::NormalDistribution<key_t>;
+  // using dist_t = sortbench::NormalDistribution<key_t>;
   using dist_t = sortbench::UniformDistribution<key_t>;
 
-  //dist_t dist{50, 10};
+  // dist_t dist{50, 10};
   static dist_t dist{key_t{0}, key_t{(1 << 20)}};
+
+  constexpr int nSamples = 250;
+
+  // The DASH Trace does not really scale, so we select at most nSamples units
+  // which trace
+  std::vector<dash::team_unit_t> trace_unit_samples(nSamples);
+  int                            id_stride = NTask / nSamples;
+  if (id_stride < 2) {
+    std::iota(
+        std::begin(trace_unit_samples), std::end(trace_unit_samples), 0);
+  }
+  else {
+    dash::team_unit_t v_init{0};
+    std::generate(
+        std::begin(trace_unit_samples),
+        std::end(trace_unit_samples),
+        [&v_init, id_stride]() {
+          auto val = v_init;
+          v_init += id_stride;
+          return val;
+        });
+  }
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
-        begin,
-        begin + n,
-        [](size_t total, size_t index, std::mt19937& rng) {
+        begin, begin + n, [](size_t total, size_t index, std::mt19937& rng) {
           // return index;
           // return total - index;
           return dist(rng);
           // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
-          //return std::rand();
+          // return std::rand();
         });
 
     if (iter == 0) {
@@ -107,7 +132,6 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string con
 #ifdef USE_DASH
     dash::util::TraceStore::on();
     dash::util::TraceStore::clear();
-
 #endif
 
     auto const start = ChronoClockNow();
@@ -123,23 +147,28 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string con
     }
 
     if (iter >= BURN_IN && ThisTask == 0) {
-      //Iteration
+      // Iteration
       std::cout << std::setw(3) << iter << ",";
-      //Ntasks
+      // Ntasks
       std::cout << std::setw(9) << NTask << ",";
-      //Size
+      // Size
       std::cout << std::setw(9) << std::fixed << std::setprecision(2) << mb;
       std::cout << ",";
-      //Time (s)
+      // Time (s)
       std::cout << std::setw(19) << std::fixed << std::setprecision(8);
       std::cout << duration << ",";
-      //Test Case
+      // Test Case
       std::cout << std::setw(20) << test_case;
       std::cout << "\n";
     }
 
 #ifdef USE_DASH
-    if (iter == (NITER + BURN_IN - 1)) {
+    if (iter == (NITER + BURN_IN - 1) &&
+        // if the id of this task is included in samples
+        (std::find(
+             std::begin(trace_unit_samples),
+             std::end(trace_unit_samples),
+             dash::team_unit_t{ThisTask}) != std::end(trace_unit_samples))) {
       dash::util::TraceStore::write(std::cout);
     }
 
@@ -147,7 +176,6 @@ void Test(RandomIt begin, RandomIt end, int ThisTask, int NTask, std::string con
     dash::util::TraceStore::clear();
     begin.pattern().team().barrier();
 #endif
-
   }
 }
 
@@ -157,10 +185,10 @@ int main(int argc, char* argv[])
 
   if (argc < 2) {
     std::cout << std::string(argv[0])
-#if defined(USE_DASH) || defined (USE_MPI)
-      << " [nbytes per task]\n";
+#if defined(USE_DASH) || defined(USE_MPI)
+              << " [nbytes per task]\n";
 #else
-      << " [nbytes]\n";
+              << " [nbytes]\n";
 #endif
     return 1;
   }
@@ -219,7 +247,9 @@ int main(int argc, char* argv[])
     dash::util::BenchmarkParams bench_params("bench.dash.sort");
     bench_params.set_output_width(72);
     bench_params.print_header();
-    bench_params.print_pinning();
+    if (dash::size() < 200) {
+      bench_params.print_pinning();
+    }
 #endif
     print_header(base_filename, mb, NTask);
   }
