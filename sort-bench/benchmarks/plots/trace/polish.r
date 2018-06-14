@@ -4,11 +4,14 @@ library(dplyr)
 
 args = commandArgs(trailingOnly=TRUE)
 
-if (length(args) == 0) {
-  stop("Usage: <script> <infile>", call.=FALSE)
+if (length(args) < 2) {
+  stop("Usage: <script> <infile> <withHeader>", call.=FALSE)
 }
 
 fileName <- basename(args[1])
+withHeader <- basename(args[2])
+withHeader <- withHeader == "y"
+
 fileName <- sub("^(.*)(\\.[a-z0-9].*$)", "\\1", fileName)
 dirname <- dirname(args[1])
 
@@ -18,15 +21,21 @@ outDetail <- paste(fileName, "-detail.csv", sep="")
 outDetail <- paste(dirname, outDetail, sep="/")
 
 # read csv
-data.raw <- read.csv(args[1], header=TRUE, strip.white=TRUE)
-# remove context column
-data.raw <- subset(data.raw, select=-context)
+data.raw <- read.csv(args[1], header=withHeader, strip.white=TRUE)
+# name all columns regardless of the already existing header
+colnames(data.raw) <- c("context", "unit", "start", "end", "state")
 # reorder columns
-data.raw <- data.raw[c("state","unit","start","end")]
+cols <- c("state","unit","start","end")
+data.raw <- data.raw[cols]
 
 #discard detail traces about partition border finding
 data.svg <- data.raw %>% filter(!grepl("[0-9]\\.[0-9].*", state))
-write.table(data.svg, outSvg, row.names = F, col.names = T, sep = ",")
+#we extract the phase and finally order by unit and phase
+data.svg <- mutate(data.svg, phase=gsub("([0-9]+)(:.*)$", "\\1", data.svg$state))
+data.svg <- arrange(data.svg, as.numeric(unit), as.numeric(phase));
+
+# only write certain columns to csv and omit the header
+write.table(data.svg[,cols], outSvg, row.names = F, col.names = F, sep = ",")
 
 # print out the generated svg filename
 cat(outSvg, "\n")
