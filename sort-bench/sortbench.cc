@@ -93,6 +93,8 @@ void Test(
   // dist_t dist{50, 10};
   static dist_t dist{key_t{0}, key_t{(1 << 20)}};
 
+#ifdef USE_DASH
+
   constexpr int nSamples = 250;
 
   // The DASH Trace does not really scale, so we select at most nSamples units
@@ -114,6 +116,8 @@ void Test(
           return val;
         });
   }
+
+#endif
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
