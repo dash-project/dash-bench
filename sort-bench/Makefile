@@ -6,9 +6,11 @@ MPICXX?=mpiCC
 
 DASHROOT?=$(HOME)/opt/dash-0.3.0
 DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
+DASHNVCC=$(DASHROOT)/bin/dash-nvcc -dash:verbose
 
 #CXXFLAGS = -O3 -std=c++11 -I./external -I. -Wall -DENABLE_LOGGING
-CXXFLAGS = -O3 -std=c++11 -I./external -I. -DNDEBUG
+DASHCXXFLAGS = -O3 -I./external -I. -DNDEBUG
+CXXFLAGS = $DASHCXXFLAGS -std=c++11
 
 SIZE ?= $$((500 * (2**20)))
 
@@ -52,7 +54,11 @@ build/gomp.x: openmp/sortbench.h sortbench.cc
 
 build/dash.x: dash/sortbench.h sortbench.cc
 	@mkdir -p build
-	$(DASHCXX) $(CXXFLAGS) -o $@ -DUSE_DASH sortbench.cc
+	$(DASHCXX) $(DASHCXXFLAGS) -o $@ -DUSE_DASH sortbench.cc
+
+build/dash.nv: dash/sortbench.h sortbench.cc
+	@mkdir -p build
+	$(DASHNVCC) $(DASHCXXFLAGS) -o $@ -DUSE_DASH sortbench.cu
 
 build/mpi.x: mpi/sortbench.h sortbench.cc external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
 	@mkdir -p build
@@ -68,4 +74,5 @@ external/MP-sort/libradixsort.a:
 
 clean:
 	rm -f build/*.x
+	rm -f build/*.nv
 	make -C external/MP-sort clean
