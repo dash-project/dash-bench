@@ -24,6 +24,9 @@ NPROCS?=4
 
 ENABLE_TRACE?=0
 
+LIKWID_LIB=-L$(HOME)/opt/likwid/lib -llikwid
+LIKWID_INC=-I$(HOME)/opt/likwid/include
+
 
 all: build/tbb-lowlevel.x build/tbb-highlevel.x build/openmp.x build/gomp.x build/dash.x build/mpi.x
 
@@ -48,11 +51,11 @@ build/openmp.x: openmp/sortbench.h sortbench.cc
 
 build/gomp.x: openmp/sortbench.h sortbench.cc
 	@mkdir -p build
-	g++ $(CXXFLAGS) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc
+	g++ $(CXXFLAGS) $(LIKWID_INC) $(LIKWID_LIB) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc
 
-build/dash.x: dash/sortbench.h sortbench.cc
+build/dash.x: dash/sortbench.h sortbench.cc dash/sortbench.cc
 	@mkdir -p build
-	$(DASHCXX) $(CXXFLAGS) -o $@ -DUSE_DASH sortbench.cc
+	$(DASHCXX) $(CXXFLAGS) -o $@ -DUSE_DASH sortbench.cc dash/sortbench.cc
 
 build/mpi.x: mpi/sortbench.h sortbench.cc external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
 	@mkdir -p build

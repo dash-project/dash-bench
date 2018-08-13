@@ -1,3 +1,6 @@
+#ifndef DASH__SORTBENCH_H_INCLUDED
+#define DASH__SORTBENCH_H_INCLUDED
+
 #include <cassert>
 #include <random>
 
@@ -7,6 +10,20 @@
 #include <dash/algorithm/Sort.h>
 
 #include <util/Logging.h>
+#include <util/params.h>
+
+void init_runtime(int argc, char* argv[]);
+
+template <class T>
+std::unique_ptr<BenchParams<T>> init_benchmark(size_t nlocal)
+{
+  assert(dash::is_initialized());
+
+  auto const NTask    = dash::size();
+  auto const N        = nlocal * NTask;
+
+  return std::unique_ptr<BenchParams<T>>(new BenchParams<T>(nlocal));
+}
 
 template <typename RandomIt, typename Gen>
 inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
@@ -41,7 +58,7 @@ inline void parallel_sort(RandomIt begin, RandomIt end, Cmp cmp)
 
   dash::sort(begin, end);
 
-  //implicit barrier in dash::sort
+  // implicit barrier in dash::sort
 }
 
 template <typename RandomIt, typename Cmp>
@@ -89,3 +106,5 @@ inline bool parallel_verify(RandomIt begin, RandomIt end, Cmp cmp)
   LOG("found " << nerror << " errors!");
   return nerror == 0;
 }
+
+#endif

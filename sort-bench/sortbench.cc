@@ -4,6 +4,7 @@
 #include <map>
 #include <thread>
 #include <vector>
+#include <sstream>
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
 #include <tbb/sortbench.h>
@@ -176,7 +177,8 @@ void Test(
              std::begin(trace_unit_samples),
              std::end(trace_unit_samples),
              dash::team_unit_t{ThisTask}) != std::end(trace_unit_samples))) {
-      dash::util::TraceStore::write(std::cout, false);
+      //dash::util::TraceStore::write(std::cout, false);
+      dash::util::TraceStore::write(std::cout);
     }
 
     dash::util::TraceStore::off();
@@ -205,12 +207,13 @@ int main(int argc, char* argv[])
   auto const nl = mysize / sizeof(key_t);
 
 #if defined(USE_DASH)
-  dash::init(&argc, &argv);
-
-  auto const NTask       = dash::size();
-  auto const gsize_bytes = mysize * NTask;
-  auto const N           = nl * NTask;
-  auto const ThisTask    = dash::myid();
+  init_runtime(argc, argv);
+  auto b = init_benchmark<key_t>(nl);
+  auto const gsize_bytes = b->nglobal() * sizeof(key_t);
+  auto const ThisTask = b->data().team().myid();
+  auto const NTask = b->ntask();
+  auto begin = b->data().begin();
+  auto const N = b->nglobal();
 #elif defined(USE_MPI)
   MPI_Init(&argc, &argv);
   int NTask;
@@ -240,10 +243,7 @@ int main(int argc, char* argv[])
   auto const        base_filename =
       executable.substr(executable.find_last_of("/\\") + 1);
 
-#if defined(USE_DASH)
-  dash::Array<key_t> keys(N);
-  auto               begin = keys.begin();
-#else
+#ifndef USE_DASH
   key_t* keys  = new key_t[N];
   auto   begin = keys;
 #endif

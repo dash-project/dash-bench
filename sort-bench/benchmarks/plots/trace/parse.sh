@@ -25,6 +25,6 @@ do
   [[ "$?" == "0" ]] && echo "plot generated for: $f"
 done;
 
-rm -f *.in
-rm -f *-plot.csv
+#rm -f *.in
+#rm -f *-plot.csv
 
