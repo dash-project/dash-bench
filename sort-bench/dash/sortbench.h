@@ -1,5 +1,5 @@
-#ifndef DASH__SORTBENCH_H_INCLUDED
-#define DASH__SORTBENCH_H_INCLUDED
+#ifndef DASH__SORTBENCH_H__INCLUDED
+#define DASH__SORTBENCH_H__INCLUDED
 
 #include <cassert>
 #include <random>
@@ -10,19 +10,51 @@
 #include <dash/algorithm/Sort.h>
 
 #include <util/Logging.h>
-#include <util/params.h>
+#include <util/benchdata.h>
 
 void init_runtime(int argc, char* argv[]);
+void fini_runtime();
+
+static std::vector<dash::team_unit_t> trace_unit_samples;
 
 template <class T>
-std::unique_ptr<BenchParams<T>> init_benchmark(size_t nlocal)
+std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal)
 {
   assert(dash::is_initialized());
 
-  auto const NTask    = dash::size();
-  auto const N        = nlocal * NTask;
+  return std::unique_ptr<BenchData<T>>(
+      new BenchData<T>(nlocal, dash::myid(), dash::size()));
+}
 
-  return std::unique_ptr<BenchParams<T>>(new BenchParams<T>(nlocal));
+template <class T>
+void preprocess(
+    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+{
+  if (current_iteration > 0) {
+    return;
+  }
+
+  constexpr int nSamples = 250;
+
+  // The DASH Trace does not really scale, so we select at most nSamples units
+  // which trace
+  trace_unit_samples.resize(nSamples);
+  int id_stride = params.nTask() / nSamples;
+  if (id_stride < 2) {
+    std::iota(
+        std::begin(trace_unit_samples), std::end(trace_unit_samples), 0);
+  }
+  else {
+    dash::team_unit_t v_init{0};
+    std::generate(
+        std::begin(trace_unit_samples),
+        std::end(trace_unit_samples),
+        [&v_init, id_stride]() {
+          auto val = v_init;
+          v_init += id_stride;
+          return val;
+        });
+  }
 }
 
 template <typename RandomIt, typename Gen>
@@ -57,8 +89,31 @@ inline void parallel_sort(RandomIt begin, RandomIt end, Cmp cmp)
   assert(!(end < begin));
 
   dash::sort(begin, end);
+}
 
-  // implicit barrier in dash::sort
+template <class T>
+void postprocess(
+    const BenchData<T>& params,
+    size_t              current_iteration,
+    size_t              n_iterations)
+{
+  if (current_iteration + 1 < n_iterations) {
+    return;
+  }
+
+  params.data().team().barrier();
+  // if the id of this task is included in samples
+  if ((std::find(
+           std::begin(trace_unit_samples),
+           std::end(trace_unit_samples),
+           dash::team_unit_t{params.thisTask()}) !=
+       std::end(trace_unit_samples))) {
+    // dash::util::TraceStore::write(std::cout, false);
+    dash::util::TraceStore::write(std::cout);
+  }
+
+  dash::util::TraceStore::off();
+  dash::util::TraceStore::clear();
 }
 
 template <typename RandomIt, typename Cmp>

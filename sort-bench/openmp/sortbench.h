@@ -7,9 +7,20 @@
 
 #include <util/Logging.h>
 
-#include "omp.h"
 #include <intel/openmp/parallel_stable_sort.h>
+#include "omp.h"
 
+#include <util/benchdata.h>
+
+void init_runtime(int argc, char* argv[]);
+void fini_runtime();
+
+template <class T>
+std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal)
+{
+  return std::unique_ptr<BenchData<T>>(new BenchData<T>(
+      nlocal, omp_get_thread_num(), omp_get_num_threads()));
+}
 
 template <typename RandomIt, typename Gen>
 inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
@@ -33,6 +44,11 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   }
 }
 
+template <class T>
+void preprocess(
+    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+{
+}
 template <typename RandomIt, typename Compare>
 inline void parallel_sort(RandomIt begin, RandomIt end, Compare cmp)
 {
@@ -45,6 +61,12 @@ inline void parallel_sort(RandomIt begin, RandomIt end, Compare cmp)
   else {
     pss::parallel_stable_sort(begin, end, cmp);
   }
+}
+
+template <class T>
+void postprocess(
+    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+{
 }
 
 template <typename RandomIt, typename Compare>

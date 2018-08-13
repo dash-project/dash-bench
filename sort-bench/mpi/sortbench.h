@@ -11,6 +11,28 @@ extern "C" {
 }
 
 #include <util/Logging.h>
+#include <util/benchdata.h>
+
+void init_runtime(int argc, char* argv[]);
+void fini_runtime();
+
+template <class T>
+std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal)
+{
+
+#ifndef NDEBUG
+  int flag;
+  MPI_Initialized(&flag);
+  assert(flag);
+#endif
+
+  int ThisTask, NTask;
+  MPI_Comm_rank(MPI_COMM_WORLD, &ThisTask);
+  MPI_Comm_size(MPI_COMM_WORLD, &NTask);
+
+  return std::unique_ptr<BenchData<T>>(new BenchData<T>(nlocal, ThisTask, NTask));
+}
+
 
 template <typename T>
 static void radix_value(const void* ptr, void* radix, void* arg)
@@ -28,6 +50,18 @@ static int compar_value(const void *a, const void*b)
   if (val_a > val_b) return 1;
 
   return 0;
+}
+
+template <class T>
+void preprocess(
+    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+{
+}
+
+template <class T>
+void postprocess(
+    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+{
 }
 
 template <typename RandomIt, typename Gen>

@@ -51,7 +51,7 @@ build/openmp.x: openmp/sortbench.h sortbench.cc
 
 build/gomp.x: openmp/sortbench.h sortbench.cc
 	@mkdir -p build
-	g++ $(CXXFLAGS) $(LIKWID_INC) $(LIKWID_LIB) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc
+	g++ $(CXXFLAGS) $(LIKWID_INC) $(LIKWID_LIB) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc openmp/sortbench.cc
 
 build/dash.x: dash/sortbench.h sortbench.cc dash/sortbench.cc
 	@mkdir -p build
@@ -59,7 +59,7 @@ build/dash.x: dash/sortbench.h sortbench.cc dash/sortbench.cc
 
 build/mpi.x: mpi/sortbench.h sortbench.cc external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
 	@mkdir -p build
-	$(MPICXX) $(CXXFLAGS) -Iexternal -o $@ -DUSE_MPI sortbench.cc external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
+	$(MPICXX) $(CXXFLAGS) -Iexternal -o $@ -DUSE_MPI sortbench.cc mpi/sortbench.cc external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
 
 external/MP-sort/libmpsort-mpi.a:
 	make -C external/MP-sort libmpsort-mpi.a

@@ -1,10 +1,11 @@
 #include <chrono>
 #include <iomanip>
 #include <iostream>
+#include <iterator>
 #include <map>
+#include <sstream>
 #include <thread>
 #include <vector>
-#include <sstream>
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
 #include <tbb/sortbench.h>
@@ -26,22 +27,6 @@
 
 #define GB (1 << 30)
 #define MB (1 << 20)
-
-template <typename RandomIt>
-void trace_histo(RandomIt begin, RandomIt end)
-{
-#ifdef ENABLE_LOGGING
-  auto const              n = std::distance(begin, end);
-  std::map<key_t, size_t> hist{};
-  for (size_t idx = 0; idx < n; ++idx) {
-    ++hist[begin[idx]];
-  }
-
-  for (auto p : hist) {
-    LOG(p.first << ' ' << p.second);
-  }
-#endif
-}
 
 static constexpr size_t BURN_IN = 1;
 static constexpr size_t NITER   = 10;
@@ -69,56 +54,28 @@ void print_header(std::string const& app, double mb, int NTask)
 }
 
 //! Test sort for n items
-template <typename RandomIt>
-void Test(
-    RandomIt           begin,
-    RandomIt           end,
-    int                ThisTask,
-    int                NTask,
-    std::string const& test_case)
+template <typename T>
+void Test(BenchData<T>& benchmarkData, std::string const& test_case)
 {
-  auto const n = static_cast<size_t>(std::distance(begin, end));
-  LOG("N :" << n);
-
-  using key_t = typename std::iterator_traits<RandomIt>::value_type;
-
-#ifdef USE_MPI
-  auto const mb = n * NTask * sizeof(key_t) / MB;
+#ifdef USE_DASH
+  auto begin = benchmarkData.data().begin();
 #else
-  auto const mb = n * sizeof(key_t) / MB;
+  auto begin = benchmarkData.data();
 #endif
+
+  auto end = begin + benchmarkData.nglobal();
+
+  auto const n = static_cast<size_t>(std::distance(begin, end));
+
+  using key_t = typename std::iterator_traits<decltype(begin)>::value_type;
+
+  auto const mb = n * benchmarkData.nglobal() * sizeof(key_t) / MB;
 
   // using dist_t = sortbench::NormalDistribution<key_t>;
   using dist_t = sortbench::UniformDistribution<key_t>;
 
   // dist_t dist{50, 10};
   static dist_t dist{key_t{0}, key_t{(1 << 20)}};
-
-#ifdef USE_DASH
-
-  constexpr int nSamples = 250;
-
-  // The DASH Trace does not really scale, so we select at most nSamples units
-  // which trace
-  std::vector<dash::team_unit_t> trace_unit_samples(nSamples);
-  int                            id_stride = NTask / nSamples;
-  if (id_stride < 2) {
-    std::iota(
-        std::begin(trace_unit_samples), std::end(trace_unit_samples), 0);
-  }
-  else {
-    dash::team_unit_t v_init{0};
-    std::generate(
-        std::begin(trace_unit_samples),
-        std::end(trace_unit_samples),
-        [&v_init, id_stride]() {
-          auto val = v_init;
-          v_init += id_stride;
-          return val;
-        });
-  }
-
-#endif
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
@@ -130,14 +87,7 @@ void Test(
           // return std::rand();
         });
 
-    if (iter == 0) {
-      trace_histo(begin, begin + n);
-    }
-
-#ifdef USE_DASH
-    dash::util::TraceStore::on();
-    dash::util::TraceStore::clear();
-#endif
+    preprocess(benchmarkData, iter, iter + BURN_IN);
 
     auto const start = ChronoClockNow();
 
@@ -147,16 +97,18 @@ void Test(
 
     auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
 
+    postprocess(benchmarkData, iter, iter + BURN_IN);
+
     if (!ret) {
       std::cerr << "validation failed! (n = " << n << ")\n";
     }
 
-    if (iter >= BURN_IN && ThisTask == 0) {
+    if (iter >= BURN_IN && benchmarkData.thisTask() == 0) {
       std::ostringstream os;
       // Iteration
       os << std::setw(3) << iter << ",";
       // Ntasks
-      os << std::setw(9) << NTask << ",";
+      os << std::setw(9) << benchmarkData.nTask() << ",";
       // Size
       os << std::setw(9) << std::fixed << std::setprecision(2) << mb;
       os << ",";
@@ -169,21 +121,6 @@ void Test(
       std::cout << os.str();
     }
 
-#ifdef USE_DASH
-    begin.pattern().team().barrier();
-    if (iter == (NITER + BURN_IN - 1) &&
-        // if the id of this task is included in samples
-        (std::find(
-             std::begin(trace_unit_samples),
-             std::end(trace_unit_samples),
-             dash::team_unit_t{ThisTask}) != std::end(trace_unit_samples))) {
-      //dash::util::TraceStore::write(std::cout, false);
-      dash::util::TraceStore::write(std::cout);
-    }
-
-    dash::util::TraceStore::off();
-    dash::util::TraceStore::clear();
-#endif
   }
 }
 
@@ -206,73 +143,24 @@ int main(int argc, char* argv[])
   // Number of local elements
   auto const nl = mysize / sizeof(key_t);
 
-#if defined(USE_DASH)
   init_runtime(argc, argv);
-  auto b = init_benchmark<key_t>(nl);
-  auto const gsize_bytes = b->nglobal() * sizeof(key_t);
-  auto const ThisTask = b->data().team().myid();
-  auto const NTask = b->ntask();
-  auto begin = b->data().begin();
-  auto const N = b->nglobal();
-#elif defined(USE_MPI)
-  MPI_Init(&argc, &argv);
-  int NTask;
-  MPI_Comm_size(MPI_COMM_WORLD, &NTask);
-  auto const gsize_bytes = mysize * NTask;
-  auto const N           = nl;
-  int        ThisTask;
-  MPI_Comm_rank(MPI_COMM_WORLD, &ThisTask);
-#else
-  auto const NTask =
-      (argc == 3) ? atoi(argv[2]) : std::thread::hardware_concurrency();
-  assert(NTask > 0);
-  auto const gsize_bytes = mysize;
-  auto const N           = nl;
-  auto const ThisTask    = 0;
-#endif
+  auto benchmarkData = init_benchmark<key_t>(nl);
 
-#if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
-  tbb::task_scheduler_init init{static_cast<int>(NTask)};
-#elif defined(USE_OPENMP)
-  omp_set_num_threads(NTask);
-#endif
-
-  double mb = (gsize_bytes / MB);
+  auto const mb = benchmarkData->nglobal() * sizeof(key_t) / MB;
 
   std::string const executable(argv[0]);
   auto const        base_filename =
       executable.substr(executable.find_last_of("/\\") + 1);
 
-#ifndef USE_DASH
-  key_t* keys  = new key_t[N];
-  auto   begin = keys;
-#endif
-
-  if (ThisTask == 0) {
-#if defined(USE_DASH)
-    dash::util::BenchmarkParams bench_params("bench.dash.sort");
-    bench_params.set_output_width(72);
-    bench_params.print_header();
-    if (dash::size() < 200) {
-      bench_params.print_pinning();
-    }
-#endif
-    print_header(base_filename, mb, NTask);
+  if (benchmarkData->thisTask() == 0) {
+    print_header(base_filename, mb, benchmarkData->nTask());
   }
 
-  Test(begin, begin + N, ThisTask, NTask, base_filename);
+  Test(*benchmarkData, base_filename);
 
-#ifndef USE_DASH
-  delete[] keys;
-#endif
+  fini_runtime();
 
-#if defined(USE_DASH)
-  dash::finalize();
-#elif defined(USE_MPI)
-  MPI_Finalize();
-#endif
-
-  if (ThisTask == 0) {
+  if (benchmarkData->thisTask() == 0) {
     std::cout << "\n";
   }
 

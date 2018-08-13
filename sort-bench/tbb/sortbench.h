@@ -16,6 +16,9 @@
 #endif
 
 
+void init_runtime(int argc, char* argv[]);
+void fini_runtime();
+
 template <typename RandomIt, typename Gen>
 inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
 {
@@ -41,6 +44,18 @@ template <typename RandomIt, typename Compare>
 inline void parallel_sort(RandomIt begin, RandomIt end, Compare cmp)
 {
   pss::parallel_stable_sort(begin, end, cmp);
+}
+
+template <class T>
+void preprocess(
+    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+{
+}
+
+template <class T>
+void postprocess(
+    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+{
 }
 
 template <typename RandomIt, typename Compare>
