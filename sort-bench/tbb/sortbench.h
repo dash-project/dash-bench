@@ -15,9 +15,17 @@
 #include <intel/tbb-lowlevel/parallel_stable_sort.h>
 #endif
 
+#include <util/benchdata.h>
 
 void init_runtime(int argc, char* argv[]);
 void fini_runtime();
+
+template <class T>
+std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal, size_t ntasks)
+{
+  return std::unique_ptr<BenchData<T>>(
+      new BenchData<T>(nlocal, 0, ntasks));
+}
 
 template <typename RandomIt, typename Gen>
 inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)

@@ -8,6 +8,8 @@ void init_runtime(int argc, char* argv[]) {
   assert(NTask > 0);
   omp_set_num_threads(NTask);
 }
+
 void fini_runtime()
 {
 }
+

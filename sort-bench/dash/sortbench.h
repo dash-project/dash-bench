@@ -18,42 +18,81 @@ void fini_runtime();
 static std::vector<dash::team_unit_t> trace_unit_samples;
 
 template <class T>
-std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal)
+std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal, size_t ntasks)
 {
   assert(dash::is_initialized());
 
   return std::unique_ptr<BenchData<T>>(
-      new BenchData<T>(nlocal, dash::myid(), dash::size()));
+           new BenchData<T>(nlocal, dash::myid(), dash::size()));
 }
 
 template <class T>
 void preprocess(
-    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+  const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
 {
-  if (current_iteration > 0) {
-    return;
+  if (current_iteration == n_iterations - 1)
+  {
+    //turn on tracing and clear it
+    dash::util::TraceStore::on();
+    dash::util::TraceStore::clear();
   }
+  else
+  {
+    //clear the trace since we want it only in the last iteration
+    dash::util::TraceStore::off();
+    dash::util::TraceStore::clear();
+    if (current_iteration == 0)
+    {
+      constexpr int nSamples = 250;
 
-  constexpr int nSamples = 250;
-
-  // The DASH Trace does not really scale, so we select at most nSamples units
-  // which trace
-  trace_unit_samples.resize(nSamples);
-  int id_stride = params.nTask() / nSamples;
-  if (id_stride < 2) {
-    std::iota(
-        std::begin(trace_unit_samples), std::end(trace_unit_samples), 0);
-  }
-  else {
-    dash::team_unit_t v_init{0};
-    std::generate(
-        std::begin(trace_unit_samples),
-        std::end(trace_unit_samples),
-        [&v_init, id_stride]() {
+      // The DASH Trace does not really scale, so we select at most nSamples units
+      // which trace
+      trace_unit_samples.resize(params.nTask());
+      int id_stride = params.nTask() / nSamples;
+      if (id_stride < 2)
+      {
+        std::iota(
+          std::begin(trace_unit_samples), std::end(trace_unit_samples), 0);
+      }
+      else
+      {
+        dash::team_unit_t v_init{0};
+        std::generate(
+          std::begin(trace_unit_samples),
+          std::end(trace_unit_samples),
+          [&v_init, id_stride]()
+        {
           auto val = v_init;
           v_init += id_stride;
           return val;
         });
+      }
+    }
+  }
+
+}
+
+template <class T>
+void postprocess(
+  const BenchData<T>& params,
+  size_t              current_iteration,
+  size_t              n_iterations)
+{
+  if (current_iteration < n_iterations - 1)
+  {
+    return;
+  }
+
+  params.data().team().barrier();
+  // if the id of this task is included in samples
+  if ((std::find(
+         std::begin(trace_unit_samples),
+         std::end(trace_unit_samples),
+         dash::team_unit_t{params.thisProc()}) !=
+       std::end(trace_unit_samples)))
+  {
+    auto const print_header = false;
+    dash::util::TraceStore::write(std::cout, print_header);
   }
 }
 
@@ -75,7 +114,8 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   std::seed_seq seed{std::random_device{}(), static_cast<unsigned>(myid)};
   std::mt19937  rng(seed);
 
-  for (size_t idx = 0; idx < nl; ++idx) {
+  for (size_t idx = 0; idx < nl; ++idx)
+  {
     auto it = lbegin + idx;
     *it     = g(n, idx, rng);
   }
@@ -91,30 +131,6 @@ inline void parallel_sort(RandomIt begin, RandomIt end, Cmp cmp)
   dash::sort(begin, end);
 }
 
-template <class T>
-void postprocess(
-    const BenchData<T>& params,
-    size_t              current_iteration,
-    size_t              n_iterations)
-{
-  if (current_iteration + 1 < n_iterations) {
-    return;
-  }
-
-  params.data().team().barrier();
-  // if the id of this task is included in samples
-  if ((std::find(
-           std::begin(trace_unit_samples),
-           std::end(trace_unit_samples),
-           dash::team_unit_t{params.thisTask()}) !=
-       std::end(trace_unit_samples))) {
-    // dash::util::TraceStore::write(std::cout, false);
-    dash::util::TraceStore::write(std::cout);
-  }
-
-  dash::util::TraceStore::off();
-  dash::util::TraceStore::clear();
-}
 
 template <typename RandomIt, typename Cmp>
 inline bool parallel_verify(RandomIt begin, RandomIt end, Cmp cmp)
@@ -133,11 +149,13 @@ inline bool parallel_verify(RandomIt begin, RandomIt end, Cmp cmp)
 
   size_t nerror = 0;
 
-  for (size_t idx = 1; idx < nl; ++idx) {
+  for (size_t idx = 1; idx < nl; ++idx)
+  {
     auto const it = lbegin + idx;
-    if (cmp(*it, *(it - 1))) {
-      LOG("Failed local order: {prev: " << *(it - 1) << ", cur: " << *it
-                                        << "}");
+    if (cmp(*it, *(it - 1)))
+    {
+      LOG("Failed local order: {prev: " << * (it - 1) << ", cur: " << *it
+          << "}");
       ++nerror;
     }
   }
@@ -146,19 +164,20 @@ inline bool parallel_verify(RandomIt begin, RandomIt end, Cmp cmp)
 
   auto const myid = begin.pattern().team().myid();
 
-  if (myid > 0) {
+  if (myid > 0)
+  {
     auto const gidx0    = begin.pattern().global(0);
     auto const prev_idx = gidx0 - 1;
     auto const prev     = static_cast<value_t>(*(begin + prev_idx));
-    if (cmp(lbegin[0], prev)) {
+    if (cmp(lbegin[0], prev))
+    {
       LOG("Failed global order: {prev: " << prev << ", cur: " << lbegin[0]
-                                         << "}");
+          << "}");
       ++nerror;
     }
   }
 
   begin.pattern().team().barrier();
-  LOG("found " << nerror << " errors!");
   return nerror == 0;
 }
 

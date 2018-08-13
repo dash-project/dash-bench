@@ -48,8 +48,8 @@ void Log(const char* file, int line, LogData<List>&& data) NOINLINE_ATTRIBUTE
   PRINT_MYID(os);
   os << file << ":" << line << ": ";
   output(os, std::move(data.list));
+  os << std::endl;
   std::cout << os.str();
-  std::cout << std::endl;
 }
 
 template <typename Begin, typename Value>

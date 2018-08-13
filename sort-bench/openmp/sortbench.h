@@ -1,3 +1,5 @@
+#ifndef OPENMP__SORTBENCH_H__INCLUDED
+#define OPENMP__SORTBENCH_H__INCLUDED
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -16,10 +18,10 @@ void init_runtime(int argc, char* argv[]);
 void fini_runtime();
 
 template <class T>
-std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal)
+std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal, size_t ntasks)
 {
   return std::unique_ptr<BenchData<T>>(new BenchData<T>(
-      nlocal, omp_get_thread_num(), omp_get_num_threads()));
+      nlocal, 0, ntasks));
 }
 
 template <typename RandomIt, typename Gen>
@@ -90,3 +92,4 @@ inline bool parallel_verify(RandomIt begin, RandomIt end, Compare cmp)
 
   return nerror == 0;
 }
+#endif

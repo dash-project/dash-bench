@@ -1,32 +1,54 @@
 #ifndef UTIL__BENCH_DATA_H__INCLUDED
 #define UTIL__BENCH_DATA_H__INCLUDED
 #include <cstdlib>
+#include <cstring>
+
 #include <memory>
 
 #ifdef USE_DASH
 #include <dash/Array.h>
 #endif
 
-namespace detail {
+#include <util/Logging.h>
+#include <util/Math.h>
+
+namespace detail
+{
 
 template <class T>
 static inline T* allocate_aligned(std::size_t nels)
 {
-  T* mem = nullptr;
+  void* mem = nullptr;
 
-  if (posix_memalign(
-          reinterpret_cast<void**>(&mem), alignof(T), sizeof(T) * nels) !=
-      0) {
-    throw std::bad_alloc();  // or something
+  auto alignment = std::max(sizeof(void*), alignof(T));
+
+  alignment = ::nextPowerTwo(alignment);
+
+  int error;
+
+  if ((error = posix_memalign(
+                 &mem, alignment, sizeof(T) * nels)) !=
+      0)
+  {
+    LOG("posix_memalign failed (" << strerror(error) << ") --> falling back to malloc");
+    mem = std::malloc(sizeof(T) * nels);
+
+    if (mem == nullptr)
+    {
+      std::string str((error == EINVAL) ? "EINVAL" : "ENOMEM");
+      std::cout << str  << std::endl;
+      throw std::bad_alloc();  // or something
+    }
   }
 
-  return mem;
+  return reinterpret_cast<T*>(mem);
 }
 
 }  // namespace detail
 
 template <class T>
-class BenchData {
+class BenchData
+{
 #ifdef USE_DASH
   using storage_t         = dash::Array<T>;
   using reference_t       = dash::Array<T>&;
@@ -84,22 +106,22 @@ public:
   {
     return
 #ifdef USE_DASH
-        m_data
+      m_data
 #else
-        m_data.get()
+      m_data.get()
 #endif
-        ;
+      ;
   }
 
   const_reference_t data() const noexcept
   {
     return
 #ifdef USE_DASH
-        m_data
+      m_data
 #else
-        m_data.get()
+      m_data.get()
 #endif
-        ;
+      ;
   }
 
   int32_t thisProc() const noexcept

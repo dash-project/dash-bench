@@ -64,21 +64,21 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
 {
 #ifdef USE_DASH
   auto begin = benchmarkData.data().begin();
+  auto end = begin + benchmarkData.nglobal();
 #else
   auto begin = benchmarkData.data();
+  auto end = begin + benchmarkData.nlocal();
 #endif
 
-#ifdef USE_TBB
+#if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
+  std::cout << "allocating a scheduler with " << benchmarkData.nTask() << "\n";
   tbb::task_scheduler_init init(benchmarkData.nTask());
 #endif
 
-  auto end = begin + benchmarkData.nglobal();
-
-  auto const n = static_cast<size_t>(std::distance(begin, end));
 
   using key_t = typename std::iterator_traits<decltype(begin)>::value_type;
 
-  auto const mb = n * benchmarkData.nglobal() * sizeof(key_t) / MB;
+  auto const mb = benchmarkData.nglobal() * sizeof(key_t) / MB;
 
   // using dist_t = sortbench::NormalDistribution<key_t>;
   using dist_t = sortbench::UniformDistribution<key_t>;
@@ -88,7 +88,7 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
-        begin, begin + n, [](size_t total, size_t index, std::mt19937& rng) {
+        begin, end, [](size_t total, size_t index, std::mt19937& rng) {
           // return index;
           // return total - index;
           return dist(rng);
@@ -96,19 +96,19 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
           // return std::rand();
         });
 
-    preprocess(benchmarkData, iter, iter + BURN_IN);
+    preprocess(benchmarkData, iter, NITER + BURN_IN);
 
     auto const start = ChronoClockNow();
 
-    parallel_sort(begin, begin + n, std::less<key_t>());
+    parallel_sort(begin, end, std::less<key_t>());
 
     auto const duration = ChronoClockNow() - start;
 
-    auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
-    preprocess(benchmarkData, iter, iter + BURN_IN);
+    auto const ret = parallel_verify(begin, end, std::less<key_t>());
+    postprocess(benchmarkData, iter, NITER + BURN_IN);
 
     if (!ret) {
-      std::cerr << "validation failed! (n = " << n << ")\n";
+      std::cerr << "validation failed! (n = " << std::distance(begin, end) << ")\n";
     }
 
     if (iter >= BURN_IN && benchmarkData.thisProc() == 0) {
@@ -133,7 +133,7 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
 
 int main(int argc, char* argv[])
 {
-  using key_t = int32_t;
+  using key_t = uint32_t;
 
   if (argc < 2) {
     std::cout << std::string(argv[0])
@@ -150,7 +150,8 @@ int main(int argc, char* argv[])
   auto const nbytes = static_cast<size_t>(atoll(argv[1]));
   // This is only relevant for OpenMP / TBB
   // DASH and MPI use the number of units / procs
-  auto const ntasks = (argc == 3) ? static_cast<size_t>(atoll(argv[2])) : 0;
+  auto const ntasks = (argc == 3) ? static_cast<size_t>(atoll(argv[2])) :
+    std::thread::hardware_concurrency();
   // Number of local elements
   auto const nlocal = nbytes / sizeof(key_t);
 
@@ -158,7 +159,7 @@ int main(int argc, char* argv[])
   init_runtime(argc, argv);
 
   // setup benchmark
-  auto benchmarkData = init_benchmark<key_t>(nlocal);
+  auto benchmarkData = init_benchmark<key_t>(nlocal, ntasks);
 
   std::string const executable(argv[0]);
   auto const        base_filename =

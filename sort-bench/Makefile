@@ -7,7 +7,7 @@ MPICXX?=mpiCC
 DASHROOT?=$(HOME)/opt/dash-0.3.0
 DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 
-#CXXFLAGS = -O3 -std=c++11 -I./external -I. -Wall -DENABLE_LOGGING
+#CXXFLAGS = -O0 -std=c++11 -ggdb3 -I./external -I. -Wall -DENABLE_LOGGING
 CXXFLAGS = -O3 -std=c++11 -I./external -I. -DNDEBUG
 
 SIZE ?= $$((500 * (2**20)))
@@ -24,8 +24,13 @@ NPROCS?=4
 
 ENABLE_TRACE?=0
 
-LIKWID_LIB=-L$(HOME)/opt/likwid/lib -llikwid
-LIKWID_INC=-I$(HOME)/opt/likwid/include
+LIKWID_LIB?=$(HOME)/opt/likwid/lib -llikwid
+LIKWID_INC?=$(HOME)/opt/likwid/include
+
+LIBS=-L$(LIKWID_LIB) -llikwid
+INCS=-I$(LIKWID_INC)
+
+DEPS=util/Math.cc
 
 
 all: build/tbb-lowlevel.x build/tbb-highlevel.x build/openmp.x build/gomp.x build/dash.x build/mpi.x
@@ -40,26 +45,26 @@ run: all
 
 build/tbb-lowlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build
-	icpc $(CXXFLAGS) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc -ltbb
+	icpc $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc tbb/sortbench.cc $(DEPS) -ltbb
 
 build/tbb-highlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build
-	icpc $(CXXFLAGS) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc -ltbb
+	icpc $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc tbb/sortbench.cc $(DEPS) -ltbb
 
 build/openmp.x: openmp/sortbench.h sortbench.cc
-	icpc $(CXXFLAGS) -o $@ -DUSE_OPENMP -qopenmp sortbench.cc
+	icpc $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -DUSE_OPENMP -qopenmp sortbench.cc openmp/sortbench.cc $(DEPS)
 
 build/gomp.x: openmp/sortbench.h sortbench.cc
 	@mkdir -p build
-	g++ $(CXXFLAGS) $(LIKWID_INC) $(LIKWID_LIB) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc openmp/sortbench.cc
+	g++ $(CXXFLAGS) $(INCS) $(LIBS) -o $@  -DUSE_OPENMP -fopenmp sortbench.cc openmp/sortbench.cc $(DEPS)
 
 build/dash.x: dash/sortbench.h sortbench.cc dash/sortbench.cc
 	@mkdir -p build
-	$(DASHCXX) $(CXXFLAGS) -o $@ -DUSE_DASH sortbench.cc dash/sortbench.cc
+	$(DASHCXX) $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -DUSE_DASH sortbench.cc dash/sortbench.cc $(DEPS)
 
 build/mpi.x: mpi/sortbench.h sortbench.cc external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
 	@mkdir -p build
-	$(MPICXX) $(CXXFLAGS) -Iexternal -o $@ -DUSE_MPI sortbench.cc mpi/sortbench.cc external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
+	$(MPICXX) $(CXXFLAGS) -Iexternal $(INCS) $(LIBS) -o $@ -DUSE_MPI sortbench.cc mpi/sortbench.cc $(DEPS) external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
 
 external/MP-sort/libmpsort-mpi.a:
 	make -C external/MP-sort libmpsort-mpi.a

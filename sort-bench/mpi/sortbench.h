@@ -17,7 +17,7 @@ void init_runtime(int argc, char* argv[]);
 void fini_runtime();
 
 template <class T>
-std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal)
+std::unique_ptr<BenchData<T>> init_benchmark(size_t nlocal, size_t ntasks)
 {
 
 #ifndef NDEBUG
@@ -46,10 +46,7 @@ static int compar_value(const void *a, const void*b)
   T const val_a = *reinterpret_cast<T const*>(a);
   T const val_b = *reinterpret_cast<T const*>(b);
 
-  if (val_a < val_b) return -1;
-  if (val_a > val_b) return 1;
-
-  return 0;
+  return (val_a > val_b) - (val_a < val_b);
 }
 
 template <class T>
@@ -101,8 +98,6 @@ inline void parallel_sort(RandomIt begin, RandomIt end, Cmp cmp)
       sizeof(value_t),
       NULL,
       MPI_COMM_WORLD);
-
-  LOG_TRACE_RANGE("Mp_sort", begin, end);
 }
 
 template <typename RandomIt, typename Cmp>
