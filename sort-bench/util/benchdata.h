@@ -14,7 +14,9 @@ static inline T* allocate_aligned(std::size_t nels)
 {
   T* mem = nullptr;
 
-  if (posix_memalign(reinterpret_cast<void**>(&mem), alignof(T), sizeof(T) * nels) != 0) {
+  if (posix_memalign(
+          reinterpret_cast<void**>(&mem), alignof(T), sizeof(T) * nels) !=
+      0) {
     throw std::bad_alloc();  // or something
   }
 
@@ -26,21 +28,21 @@ static inline T* allocate_aligned(std::size_t nels)
 template <class T>
 class BenchData {
 #ifdef USE_DASH
-  using storage_t   = dash::Array<T>;
-  using reference_t = dash::Array<T>&;
+  using storage_t         = dash::Array<T>;
+  using reference_t       = dash::Array<T>&;
   using const_reference_t = dash::Array<T> const&;
 #else
   // Do not use std::vector since it calls the constructor for all elements
   // which, in turn, breaks some NUMA effects
-  using storage_t   = std::unique_ptr<T, decltype(std::free)*>;
-  using reference_t = T*;
-  using const_reference_t = T const *;
+  using storage_t         = std::unique_ptr<T, decltype(std::free)*>;
+  using reference_t       = T*;
+  using const_reference_t = T const*;
 #endif
 
 private:
   std::size_t m_nlocal;
   std::size_t m_nglobal;
-  int32_t     m_ThisTask;
+  int32_t     m_thisProc;
   std::size_t m_NTask;
   storage_t   m_data;
 
@@ -56,7 +58,7 @@ public:
     , m_nglobal(m_nlocal)
 #endif
 
-    , m_ThisTask(ThisTask)
+    , m_thisProc(ThisTask)
     , m_NTask(NTask)
 
 #ifdef USE_DASH
@@ -100,9 +102,9 @@ public:
         ;
   }
 
-  int32_t thisTask() const noexcept
+  int32_t thisProc() const noexcept
   {
-    return m_ThisTask;
+    return m_thisProc;
   }
 
   size_t nTask() const noexcept

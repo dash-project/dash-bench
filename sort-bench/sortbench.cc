@@ -24,6 +24,7 @@
 #include <util/Logging.h>
 #include <util/Random.h>
 #include <util/Timer.h>
+#include <util/benchdata.h>
 
 #define GB (1 << 30)
 #define MB (1 << 20)
@@ -31,8 +32,12 @@
 static constexpr size_t BURN_IN = 1;
 static constexpr size_t NITER   = 10;
 
-void print_header(std::string const& app, double mb, int NTask)
+template<class T>
+void print_header(BenchData<T> const & benchmarkData, std::string const& app)
 {
+  auto const mb = benchmarkData.nglobal() * sizeof(T) / MB;
+  auto const NTask = benchmarkData.nTask();
+
   std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++\n";
   std::cout << "++              Sort Bench                     ++\n";
   std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++\n";
@@ -61,6 +66,10 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
   auto begin = benchmarkData.data().begin();
 #else
   auto begin = benchmarkData.data();
+#endif
+
+#ifdef USE_TBB
+  tbb::task_scheduler_init init(benchmarkData.nTask());
 #endif
 
   auto end = begin + benchmarkData.nglobal();
@@ -96,14 +105,13 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
     auto const duration = ChronoClockNow() - start;
 
     auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
-
-    postprocess(benchmarkData, iter, iter + BURN_IN);
+    preprocess(benchmarkData, iter, iter + BURN_IN);
 
     if (!ret) {
       std::cerr << "validation failed! (n = " << n << ")\n";
     }
 
-    if (iter >= BURN_IN && benchmarkData.thisTask() == 0) {
+    if (iter >= BURN_IN && benchmarkData.thisProc() == 0) {
       std::ostringstream os;
       // Iteration
       os << std::setw(3) << iter << ",";
@@ -120,7 +128,6 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
       os << "\n";
       std::cout << os.str();
     }
-
   }
 }
 
@@ -138,29 +145,34 @@ int main(int argc, char* argv[])
     return 1;
   }
 
+
   // Size in Bytes
-  auto const mysize = static_cast<size_t>(atoll(argv[1]));
+  auto const nbytes = static_cast<size_t>(atoll(argv[1]));
+  // This is only relevant for OpenMP / TBB
+  // DASH and MPI use the number of units / procs
+  auto const ntasks = (argc == 3) ? static_cast<size_t>(atoll(argv[2])) : 0;
   // Number of local elements
-  auto const nl = mysize / sizeof(key_t);
+  auto const nlocal = nbytes / sizeof(key_t);
 
+  //Load Runtime
   init_runtime(argc, argv);
-  auto benchmarkData = init_benchmark<key_t>(nl);
 
-  auto const mb = benchmarkData->nglobal() * sizeof(key_t) / MB;
+  // setup benchmark
+  auto benchmarkData = init_benchmark<key_t>(nlocal);
 
   std::string const executable(argv[0]);
   auto const        base_filename =
       executable.substr(executable.find_last_of("/\\") + 1);
 
-  if (benchmarkData->thisTask() == 0) {
-    print_header(base_filename, mb, benchmarkData->nTask());
+  if (benchmarkData->thisProc() == 0) {
+    print_header(*benchmarkData, base_filename);
   }
 
   Test(*benchmarkData, base_filename);
 
   fini_runtime();
 
-  if (benchmarkData->thisTask() == 0) {
+  if (benchmarkData->thisProc() == 0) {
     std::cout << "\n";
   }
 
