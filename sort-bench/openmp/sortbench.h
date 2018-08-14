@@ -7,12 +7,12 @@
 #include <random>
 #include <type_traits>
 
-#include <util/Logging.h>
-
 #include <intel/openmp/parallel_stable_sort.h>
 #include "omp.h"
+#include <likwid.h>
 
 #include <util/benchdata.h>
+#include <util/Logging.h>
 
 void init_runtime(int argc, char* argv[]);
 void fini_runtime();
@@ -47,26 +47,27 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
 }
 
 template <class T>
-void preprocess(
-    const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
+inline void preprocess(
+    const BenchData<T>& data, size_t current_iteration, size_t n_iterations)
 {
 }
+
 template <typename RandomIt, typename Compare>
 inline void parallel_sort(RandomIt begin, RandomIt end, Compare cmp)
 {
-  if (rand() & 0x100) {
-#pragma omp parallel
-#pragma omp master
-    // Check that sort works when already in a parallel region.
+  if (omp_get_num_threads() > 1) {
+    #pragma omp master
     pss::parallel_stable_sort(begin, end, cmp);
-  }
-  else {
+  } else {
+    #pragma omp parallel
+    #pragma omp master
     pss::parallel_stable_sort(begin, end, cmp);
+
   }
 }
 
 template <class T>
-void postprocess(
+inline void postprocess(
     const BenchData<T>& params, size_t current_iteration, size_t n_iterations)
 {
 }

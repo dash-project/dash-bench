@@ -26,6 +26,8 @@
 #include <util/Timer.h>
 #include <util/benchdata.h>
 
+#include <likwid.h>
+
 #define GB (1 << 30)
 #define MB (1 << 20)
 
@@ -71,7 +73,6 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
 #endif
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
-  std::cout << "allocating a scheduler with " << benchmarkData.nTask() << "\n";
   tbb::task_scheduler_init init(benchmarkData.nTask());
 #endif
 
@@ -86,7 +87,24 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
   // dist_t dist{50, 10};
   static dist_t dist{key_t{0}, key_t{(1 << 20)}};
 
+  LIKWID_MARKER_INIT;
+
+#ifdef USE_OPENMP
+  #pragma omp parallel
+    {
+        // Each thread must add itself to the Marker API, therefore must be
+        // in parallel region
+        LIKWID_MARKER_THREADINIT;
+        // Optional. Register region name
+        LIKWID_MARKER_REGISTER("sort");
+    }
+#else
+  // Optional. Register region name
+  LIKWID_MARKER_REGISTER("sort");
+#endif
+
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
+    auto const last_iter = (iter == NITER + BURN_IN - 1);
     parallel_rand(
         begin, end, [](size_t total, size_t index, std::mt19937& rng) {
           // return index;
@@ -100,7 +118,20 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
 
     auto const start = ChronoClockNow();
 
+#ifdef USE_OPENMP
+#pragma omp parallel
+{
+#endif
+  if (last_iter)
+    LIKWID_MARKER_START("sort");
+
     parallel_sort(begin, end, std::less<key_t>());
+
+  if (last_iter)
+    LIKWID_MARKER_STOP("sort");
+#ifdef USE_OPENMP
+}
+#endif
 
     auto const duration = ChronoClockNow() - start;
 
@@ -129,6 +160,8 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
       std::cout << os.str();
     }
   }
+
+  LIKWID_MARKER_CLOSE;
 }
 
 int main(int argc, char* argv[])

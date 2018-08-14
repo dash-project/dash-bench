@@ -30,8 +30,11 @@ LIKWID_INC?=$(HOME)/opt/likwid/include
 LIBS=-L$(LIKWID_LIB) -llikwid
 INCS=-I$(LIKWID_INC)
 
-DEPS=util/Math.cc
+ifeq ($(ENABLE_LIKWID), 1)
+CXXFLAGS+=-DLIKWID_PERFMON
+endif
 
+DEPS=util/Math.cc
 
 all: build/tbb-lowlevel.x build/tbb-highlevel.x build/openmp.x build/gomp.x build/dash.x build/mpi.x
 
