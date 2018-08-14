@@ -9,7 +9,6 @@
 
 #include <intel/openmp/parallel_stable_sort.h>
 #include "omp.h"
-#include <likwid.h>
 
 #include <util/benchdata.h>
 #include <util/Logging.h>

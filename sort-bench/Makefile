@@ -1,3 +1,7 @@
+ifneq (,$(wildcard ./make.defs.local))
+include make.defs.local
+endif
+
 SHELL=/bin/bash
 
 # Depending on the platform it may be also mpicxx --> specify as an environment
@@ -24,11 +28,9 @@ NPROCS?=4
 
 ENABLE_TRACE?=0
 
-LIKWID_LIB?=$(HOME)/opt/likwid/lib -llikwid
-LIKWID_INC?=$(HOME)/opt/likwid/include
-
-LIBS=-L$(LIKWID_LIB) -llikwid
-INCS=-I$(LIKWID_INC)
+# LIKWID
+LIBS+=-L$(LIKWID_LIB) -llikwid
+INCS+=-I$(LIKWID_INC)
 
 ifeq ($(ENABLE_LIKWID), 1)
 CXXFLAGS+=-DLIKWID_PERFMON
@@ -48,11 +50,11 @@ run: all
 
 build/tbb-lowlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build
-	icpc $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc tbb/sortbench.cc $(DEPS) -ltbb
+	icpc $(CXXFLAGS) $(INCS) $(LIBS) -L$(TBB_LIB) -ltbb -I$(TBB_INC) -o $@ -DUSE_TBB_LOWLEVEL sortbench.cc tbb/sortbench.cc $(DEPS) -ltbb
 
 build/tbb-highlevel.x: tbb/sortbench.h sortbench.cc
 	@mkdir -p build
-	icpc $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc tbb/sortbench.cc $(DEPS) -ltbb
+	icpc $(CXXFLAGS) $(INCS) $(LIBS) -L$(TBB_LIB) -ltbb -I$(TBB_INC) -o $@ -DUSE_TBB_HIGHLEVEL sortbench.cc tbb/sortbench.cc $(DEPS) -ltbb
 
 build/openmp.x: openmp/sortbench.h sortbench.cc
 	icpc $(CXXFLAGS) $(INCS) $(LIBS) -o $@ -DUSE_OPENMP -qopenmp sortbench.cc openmp/sortbench.cc $(DEPS)
