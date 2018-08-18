@@ -89,8 +89,12 @@ class BenchData {
 #ifdef USE_DASH
   using index_t           = dash::default_index_t;
   using pattern_t         = dash::BlockPattern<1, dash::ROW_MAJOR, index_t>;
+#ifdef ENABLE_MEMKIND
   using memory_space_t    = dash::HBWSpace;
   using storage_t         = dash::Array<T, index_t, pattern_t, memory_space_t>;
+#else
+  using storage_t         = dash::Array<T, index_t, pattern_t>;
+#endif
 
   using reference_t       = storage_t &;
   using const_reference_t = storage_t const&;
