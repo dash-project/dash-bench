@@ -190,12 +190,6 @@ int main(int argc, char* argv[])
     return 1;
   }
 
-#ifdef ENABLE_MEMKIND
-  auto const res = hbw_set_policy(HBW_POLICY_BIND);
-  assert(res == 0);
-#endif
-
-
   // Size in Bytes
   auto const nbytes = static_cast<size_t>(atoll(argv[1]));
   // This is only relevant for OpenMP / TBB
