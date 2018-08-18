@@ -19,6 +19,10 @@
 #include <mpi/sortbench.h>
 #endif
 
+#ifdef ENABLE_MEMKIND
+#include <memkind.h>
+#endif
+
 #include <intel/IndexedValue.h>
 
 #include <util/Logging.h>
@@ -26,7 +30,7 @@
 #include <util/Timer.h>
 #include <util/benchdata.h>
 
-#include <likwid.h>
+#include <util/likwid.h>
 
 #define GB (1 << 30)
 #define MB (1 << 20)
@@ -85,7 +89,8 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
   using dist_t = sortbench::UniformDistribution<key_t>;
 
   // dist_t dist{50, 10};
-  static dist_t dist{key_t{0}, key_t{(1 << 20)}};
+  //static dist_t dist{key_t{0}, key_t{(1 << 20)}};
+  static dist_t dist{key_t(-1E6), key_t(1E6)};
 
   LIKWID_MARKER_INIT;
 
@@ -105,6 +110,7 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     auto const last_iter = (iter == NITER + BURN_IN - 1);
+  LOG("parallel rand");
     parallel_rand(
         begin, end, [](size_t total, size_t index, std::mt19937& rng) {
           // return index;
@@ -114,28 +120,34 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
           // return std::rand();
         });
 
+    LOG("preprocess");
     preprocess(benchmarkData, iter, NITER + BURN_IN);
 
     auto const start = ChronoClockNow();
 
+    LOG("parallel sort");
 #ifdef USE_OPENMP
 #pragma omp parallel
 {
 #endif
-  if (last_iter)
+  if (last_iter) {
     LIKWID_MARKER_START("sort");
+  }
 
     parallel_sort(begin, end, std::less<key_t>());
 
-  if (last_iter)
+  if (last_iter) {
     LIKWID_MARKER_STOP("sort");
+  }
 #ifdef USE_OPENMP
 }
 #endif
 
     auto const duration = ChronoClockNow() - start;
 
+    LOG("parallel verify");
     auto const ret = parallel_verify(begin, end, std::less<key_t>());
+    LOG("postprocess");
     postprocess(benchmarkData, iter, NITER + BURN_IN);
 
     if (!ret) {
@@ -166,7 +178,7 @@ void Test(BenchData<T>& benchmarkData, std::string const& test_case)
 
 int main(int argc, char* argv[])
 {
-  using key_t = uint32_t;
+  using key_t = double;
 
   if (argc < 2) {
     std::cout << std::string(argv[0])
@@ -178,6 +190,11 @@ int main(int argc, char* argv[])
     return 1;
   }
 
+#ifdef ENABLE_MEMKIND
+  auto const res = hbw_set_policy(HBW_POLICY_BIND);
+  assert(res == 0);
+#endif
+
 
   // Size in Bytes
   auto const nbytes = static_cast<size_t>(atoll(argv[1]));
@@ -188,9 +205,11 @@ int main(int argc, char* argv[])
   // Number of local elements
   auto const nlocal = nbytes / sizeof(key_t);
 
+  LOG("init runtime");
   //Load Runtime
   init_runtime(argc, argv);
 
+  LOG("init benchmark data");
   // setup benchmark
   auto benchmarkData = init_benchmark<key_t>(nlocal, ntasks);
 
@@ -202,6 +221,7 @@ int main(int argc, char* argv[])
     print_header(*benchmarkData, base_filename);
   }
 
+  LOG("running benchmark");
   Test(*benchmarkData, base_filename);
 
   fini_runtime();

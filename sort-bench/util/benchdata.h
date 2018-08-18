@@ -4,6 +4,9 @@
 #include <cstring>
 
 #include <memory>
+#ifdef ENABLE_MEMKIND
+#include <hbwmalloc.h>
+#endif
 
 #ifdef USE_DASH
 #include <dash/Array.h>
@@ -15,7 +18,7 @@
 namespace detail {
 
 template <class T>
-static inline T* allocate_aligned(std::size_t nels)
+T* allocate_aligned(std::size_t nels)
 {
   void* mem = nullptr;
 
@@ -24,6 +27,8 @@ static inline T* allocate_aligned(std::size_t nels)
   alignment = ::nextPowerTwo(alignment);
 
   int error;
+
+  LOG("allocating memory: " << sizeof(T) * nels << " bytes");
 
   if ((error = posix_memalign(&mem, alignment, sizeof(T) * nels)) != 0) {
     LOG("posix_memalign failed (" << strerror(error)
@@ -39,18 +44,60 @@ static inline T* allocate_aligned(std::size_t nels)
   return reinterpret_cast<T*>(mem);
 }
 
+#ifdef ENABLE_MEMKIND
+template <class T>
+T * allocate_aligned_hbw(std::size_t nels) {
+  if (nels == 0) return nullptr;
+
+
+  if (::hbw_check_available()) {
+    LOG("allocating from HBM node");
+    T *ptr;
+
+    auto alignment = std::max(alignof(T), sizeof(void*));
+
+    auto const is_power_of_two = (alignment & (alignment - 1)) == 0;
+
+    if (!is_power_of_two) {
+      alignment = ::nextPowerTwo(alignment);
+    }
+
+    int ret = ::hbw_posix_memalign(reinterpret_cast<void**>(&ptr), alignment, sizeof(T) * nels);
+
+    if (ret == ENOMEM) {
+      throw std::bad_alloc();
+    }
+    else if (ret == EINVAL) {
+      throw std::invalid_argument(
+          "Invalid requirements for hbw_posix_memalign");
+    }
+    return ptr;
+  }
+  else {
+    LOG("falling back to malloc...");
+    return allocate_aligned<T>(nels);
+  }
+}
+#endif
+
+void deallocate(void * p);
+
 }  // namespace detail
 
 template <class T>
 class BenchData {
 #ifdef USE_DASH
-  using storage_t         = dash::Array<T>;
-  using reference_t       = dash::Array<T>&;
-  using const_reference_t = dash::Array<T> const&;
+  using index_t           = dash::default_index_t;
+  using pattern_t         = dash::BlockPattern<1, dash::ROW_MAJOR, index_t>;
+  using memory_space_t    = dash::HBWSpace;
+  using storage_t         = dash::Array<T, index_t, pattern_t, memory_space_t>;
+
+  using reference_t       = storage_t &;
+  using const_reference_t = storage_t const&;
 #else
   // Do not use std::vector since it calls the constructor for all elements
   // which, in turn, breaks some NUMA effects
-  using storage_t         = std::unique_ptr<T, decltype(std::free)*>;
+  using storage_t         = std::unique_ptr<T, decltype(detail::deallocate)*>;
   using reference_t       = T*;
   using const_reference_t = T const*;
 #endif
@@ -79,8 +126,10 @@ public:
 
 #ifdef USE_DASH
     , m_data(m_nglobal)
+#elif defined(ENABLE_MEMKIND)
+    , m_data(detail::allocate_aligned_hbw<T>(m_nlocal), detail::deallocate)
 #else
-    , m_data(detail::allocate_aligned<T>(m_nlocal), std::free)
+    , m_data(detail::allocate_aligned<T>(m_nlocal), detail::deallocate)
 #endif
 
   {
