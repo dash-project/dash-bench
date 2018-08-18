@@ -13,8 +13,7 @@ DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 
 #CXXFLAGS = -O0 -std=c++11 -ggdb3 -I./external -I. -Wall -DENABLE_LOGGING
 CXXFLAGS = -O3 -std=c++11 -I./external -I. -DNDEBUG
-ICCMIC=-xmic-avx512
-GCCMIC=-mavx512f -mavx512er -mavx512cd -mavx512pf
+
 
 SIZE ?= $$((500 * (2**20)))
 
@@ -43,6 +42,12 @@ ifeq ($(ENABLE_MEMKIND), 1)
 LIBS+=-lmemkind
 CXXFLAGS+=-DENABLE_MEMKIND
 endif
+
+ifeq ($(ENABLE_MIC), 1)
+ICCMIC=-xmic-avx512
+GCCMIC=-mavx512f -mavx512er -mavx512cd -mavx512pf
+endif
+
 
 DEPS=util/Math.cc util/benchdata.cc
 
