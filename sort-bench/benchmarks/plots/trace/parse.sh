@@ -4,6 +4,7 @@ DIR=$(dirname "$(readlink -f "$0")")
 
 for f in "$DIR"/*.out
 do
+  echo "file: $f"
   ## get filename without extension
   inFile="$(basename "$f" | sed 's/\.[a-z0-9]*$/\.in/')"
   ## grep only traces and pipe it to another file

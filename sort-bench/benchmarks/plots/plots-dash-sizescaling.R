@@ -51,15 +51,15 @@ plotLineChart <- function(data, title="") {
 # The errorbars overlapped, so use position_dodge to move them horizontally
     pd <- position_dodge(0.1) # move them .05 to the left and right
 
-    ggplot(data, aes(x=NTasks, y=Time, colour=Test.Case, group=Test.Case)) +
+    ggplot(data, aes(x=Size, y=Time, colour=Test.Case, group=Test.Case)) +
         geom_errorbar(aes(ymin=Time-ci, ymax=Time+ci), colour="black", width=.1, position=pd) +
         geom_line(position=pd) +
         geom_point(position=pd, size=3, shape=21, fill="white") + # 21 is filled circle
-        xlab("NTasks") +
+        xlab("Size (MB)") +
             ylab("Time") +
             scale_colour_hue(name="Implementation",    # Legend label, use darker colors
-                             breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
-                             labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP"),
+                             breaks=c("dash.shm.sort.x", "dash.shm.merge.x", "dash.a2a.sort.x", "dash.a2a.merge.x"),
+                             labels=c("DASH SHM Sort", "DASH SHM Merge", "DASH A2A Sort", "DASH A2A Merge"),
                              l=40) +                    # Use darker colors, lightness=40
     ggtitle(title) +
         expand_limits(y=0) +                        # Expand y range
@@ -67,14 +67,14 @@ plotLineChart <- function(data, title="") {
             theme_bw() +
                 theme(legend.justification=c(1,0),
                       legend.position=c(1,0))               # Position legend in bottom right
-}
 
+}
 
 plotBarChart <- function(data, title="") {
 
-    data$NTasks <- factor(data$NTasks)
+    data$Size <- factor(data$Size)
 
-    ggplot(data, aes(x=NTasks, y=Time, fill=Test.Case)) +
+    ggplot(data, aes(x=Size, y=Time, fill=Test.Case)) +
     geom_bar(position=position_dodge(), stat="identity",
              colour="black", # Use black outlines,
              size=.3) +      # Thinner lines
@@ -82,64 +82,52 @@ plotBarChart <- function(data, title="") {
                   size=.3,    # Thinner lines
                   width=.2,
                   position=position_dodge(.9)) +
-    xlab("NTasks") +
+    xlab("Size (MB)") +
     ylab("Time") +
-    #scale_fill_hue(name="Implementation", # Legend label, use darker colors
-    #               breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
-    #               labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP")) +
     scale_fill_brewer(name="Implementation", # Legend label, use darker colors
-                   breaks=c("dash.x", "tbb-lowlevel.x",  "mpi.x", "openmp.x","gomp.x"),
-                   labels=c("DASH", "TBB (Low)",  "MPI", "OpenMP","gomp"),
+                   breaks=c("dash.shm.sort.x", "dash.shm.merge.x", "dash.a2a.sort.x", "dash.a2a.merge.x"),
+                   labels=c("DASH SHM Sort", "DASH SHM Merge", "DASH A2A Sort", "DASH A2A Merge"),
                    palette="GnBu") +
     ggtitle(title) +
     scale_y_continuous(breaks=0:20*4) +
     theme_bw()
-
 }
 
-#args = commandArgs(trailingOnly=TRUE)
-#
-#if (length(args)==0) {
-#    stop("Usage: ./plots.R <infile> <outfile>", call.=FALSE)
-#} else if (length(args)==1) {
-#    filename <- basename(args[1])
-#    filename <- sub("^([^.]*).*", "\\1", filename)
-#    filename <- paste(filename, ".pdf", sep="")
-#    args[2] <- filename
-#}
-#
-#csvFile <- args[1]
-#outfile <- args[2]
+summarizeData <- function(rawData) {
+    agg <- summarySE(rawData,
+                        measurevar="Time",
+                        groupvars=c("Size", "Test.Case"),
+                        na.rm=TRUE)
 
-affinity.cores.data <- read.csv("../summary/shared-memory/affinity-no-ht.csv", header=TRUE, strip.white=TRUE)
-affinity.threads.data <- read.csv("../summary/shared-memory/affinity-ht.csv", header=TRUE, strip.white=TRUE)
+    view <- agg %>%
+        filter(Size < 25500 &
+               (Test.Case == "dash.x" |
+                Test.Case == "openmp.x" |
+                Test.Case == "tbb-lowlevel.x" |
+                Test.Case == "tbb-highlevel.x"))
 
-affinity.cores.title <-
-    paste("NUMA aware Sort Benchmark (Problem Size: ",
-          affinity.cores.data[1,3], " MB)", sep="")
+    return(view)
+}
 
-affinity.threads.title <-
-    paste("NUMA aware Sort Benchmark (Hyperthreading, Problem Size: ",
-          affinity.threads.data[1,3], " MB)", sep="")
+sizeScaling.cores.data <- read.csv("../summary/shared-memory/dash.sizescaling.csv", header=TRUE, strip.white=TRUE)
 
-affinity.cores.agg <- summarySE(affinity.cores.data,
+sizeScaling.cores.agg <- summarySE(sizeScaling.cores.data,
                     measurevar="Time",
-                    groupvars=c("NTasks", "Test.Case"),
+                    groupvars=c("Size", "Test.Case"),
                     na.rm=TRUE)
 
-affinity.threads.agg <- summarySE(affinity.threads.data,
-                    measurevar="Time",
-                    groupvars=c("NTasks", "Test.Case"),
-                    na.rm=TRUE)
+sizeScaling.cores.view <- sizeScaling.cores.agg %>%
+    filter((Size < 25000) &
+            (Test.Case == "dash.shm.sort.x" |
+            Test.Case == "dash.shm.merge.x" |
+            Test.Case == "dash.a2a.sort.x" |
+            Test.Case == "dash.a2a.merge.x"))
 
-pdf(file="numa-scaling.pdf")
+pdf(file="dash-scaling.pdf")
 
-plotLineChart(affinity.cores.agg, affinity.cores.title)
-plotBarChart(affinity.cores.agg, affinity.cores.title)
+plotLineChart(sizeScaling.cores.view, "DASH Sort Implementation Strategy Comparison")
+plotBarChart(sizeScaling.cores.view, "DASH Sort Implementation Strategy Comparison")
 
-plotLineChart(affinity.threads.agg, affinity.threads.title)
-plotBarChart(affinity.threads.agg, affinity.threads.title)
 dev.off()
-
 
 

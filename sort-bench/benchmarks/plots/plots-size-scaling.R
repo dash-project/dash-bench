@@ -1,5 +1,6 @@
 library(dplyr)
 library(ggplot2)
+library(RColorBrewer)
 
 ## Summarizes data.
 ## Gives count, mean, standard deviation, standard error of the mean, and
@@ -57,8 +58,8 @@ plotLineChart <- function(data, title="") {
         xlab("Size (MB)") +
             ylab("Time") +
             scale_colour_hue(name="Implementation",    # Legend label, use darker colors
-                             breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
-                             labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP"),
+                             breaks=c("dash.x", "tbb-lowlevel.x",  "mpi.x", "openmp.x","gomp.x"),
+                             labels=c("DASH", "TBB (Low)",  "MPI", "OpenMP","gomp"),
                              l=40) +                    # Use darker colors, lightness=40
     ggtitle(title) +
         expand_limits(y=0) +                        # Expand y range
@@ -83,9 +84,10 @@ plotBarChart <- function(data, title="") {
                   position=position_dodge(.9)) +
     xlab("Size (MB)") +
     ylab("Time") +
-    scale_fill_hue(name="Implementation", # Legend label, use darker colors
-                   breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
-                   labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP")) +
+    scale_fill_brewer(name="Implementation", # Legend label, use darker colors
+                   breaks=c("dash.x", "tbb-lowlevel.x",  "mpi.x", "openmp.x","gomp.x"),
+                   labels=c("DASH", "TBB (Low)",  "MPI", "OpenMP","gomp"),
+                   palette="GnBu") +
     ggtitle(title) +
     scale_y_continuous(breaks=0:20*4) +
     theme_bw()
@@ -97,18 +99,13 @@ summarizeData <- function(rawData) {
                         groupvars=c("Size", "Test.Case"),
                         na.rm=TRUE)
 
-    view <- agg %>%
-        filter(Size < 25500 &
-               (Test.Case == "dash.x" |
-                Test.Case == "openmp.x" |
-                Test.Case == "tbb-lowlevel.x" |
-                Test.Case == "tbb-highlevel.x"))
+    view <- agg
 
     return(view)
 }
 
-sizeScaling.cores.data <- read.csv("../summary/shared-memory/28tasks-size-scaling.csv", header=TRUE, strip.white=TRUE)
-sizeScaling.threads.data <- read.csv("../summary/shared-memory/56tasks-size-scaling.csv", header=TRUE, strip.white=TRUE)
+sizeScaling.cores.data <- read.csv("../../summary/shared-memory/28tasks-size-scaling.csv", header=TRUE, strip.white=TRUE)
+sizeScaling.threads.data <- read.csv("../../summary/shared-memory/56tasks-size-scaling.csv", header=TRUE, strip.white=TRUE)
 
 sizeScaling.cores.agg <- summarySE(sizeScaling.cores.data,
                     measurevar="Time",
@@ -117,10 +114,7 @@ sizeScaling.cores.agg <- summarySE(sizeScaling.cores.data,
 
 sizeScaling.cores.view <- sizeScaling.cores.agg %>%
     filter((Size < 25000) &
-            (Test.Case == "dash.x" |
-            Test.Case == "openmp.x" |
-            Test.Case == "tbb-lowlevel.x" |
-            Test.Case == "tbb-highlevel.x"))
+            (Test.Case != "gomp.x"))
 
 sizeScaling.threads.agg <- summarySE(sizeScaling.threads.data,
                     measurevar="Time",
@@ -131,13 +125,12 @@ sizeScaling.threads.agg
 
 sizeScaling.threads.view <- sizeScaling.threads.agg %>%
     filter((Size < 25000) &
-           (Test.Case == "dash.x" |
-            Test.Case == "openmp.x" |
-            Test.Case == "tbb-lowlevel.x" |
-            Test.Case == "tbb-highlevel.x"))
+           (Test.Case != "gomp.x"))
 
 
 pdf(file="size-scaling.pdf")
+
+sizeScaling.cores.view
 
 plotLineChart(sizeScaling.cores.view, "Shared Memory Sort Benchmark (NTasks = 28)")
 plotBarChart(sizeScaling.cores.view, "Shared Memory Sort Benchmark (NTasks = 28)")
