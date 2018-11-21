@@ -10,7 +10,7 @@ DASHNVCC=$(DASHROOT)/bin/dash-nvcc -dash:verbose
 
 #CXXFLAGS = -O3 -std=c++11 -I./external -I. -Wall -DENABLE_LOGGING
 DASHCXXFLAGS = -O3 -I./external -I. -DNDEBUG
-CXXFLAGS = $DASHCXXFLAGS -std=c++11
+CXXFLAGS = $DASHCXXFLAGS -std=c++14
 
 SIZE ?= $$((500 * (2**20)))
 

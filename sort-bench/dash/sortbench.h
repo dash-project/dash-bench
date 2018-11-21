@@ -17,8 +17,11 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
 
   auto const l_range = dash::local_index_range(begin, end);
 
-  auto       lbegin = begin.globmem().lbegin() + l_range.begin;
-  auto       lend   = begin.globmem().lbegin() + l_range.end;
+  using pointer = typename std::iterator_traits<RandomIt>::pointer;
+
+  auto* lbegin = dash::local_begin(
+      static_cast<pointer>(begin), begin.pattern().team().myid());
+  auto*      lend   = std::next(lbegin, l_range.end);
   auto const nl     = l_range.end - l_range.begin;
 
   auto const myid = begin.pattern().team().myid();
@@ -55,8 +58,11 @@ inline bool parallel_verify(RandomIt begin, RandomIt end, Cmp cmp)
 
   auto const l_range = dash::local_index_range(begin, end);
 
-  auto       lbegin = begin.globmem().lbegin() + l_range.begin;
-  auto       lend   = begin.globmem().lbegin() + l_range.end;
+  using pointer = typename std::iterator_traits<RandomIt>::pointer;
+
+  auto* lbegin = dash::local_begin(
+      static_cast<pointer>(begin), begin.pattern().team().myid());
+  auto*      lend   = std::next(lbegin, l_range.end);
   auto const nl     = l_range.end - l_range.begin;
 
   size_t nerror = 0;
