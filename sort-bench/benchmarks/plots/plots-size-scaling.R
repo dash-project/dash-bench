@@ -56,13 +56,13 @@ plotLineChart <- function(data, title="") {
         geom_point(position=pd, size=3, shape=21, fill="white") + # 21 is filled circle
         xlab("Size (MB)") +
             ylab("Time") +
-            scale_colour_hue(name="Implementation",    # Legend label, use darker colors
-                             breaks=c("dash.x", "tbb-lowlevel.x", "tbb-highlevel.x", "openmp.x"),
-                             labels=c("DASH", "TBB (Low)", "TBB (High)", "OpenMP"),
-                             l=40) +                    # Use darker colors, lightness=40
+            scale_colour_brewer(name="Implementation",    # Legend label, use darker colors
+                             labels=c("DASH", "TBB Tasking (Merge Sort)",  "MPI", "OpenMP","gomp"),
+                             palette="Set1") +
     ggtitle(title) +
         expand_limits(y=0) +                        # Expand y range
         scale_y_continuous(breaks=0:20*4) +         # Set tick every 4
+        scale_x_continuous() +         # Set tick every 4
             theme_bw() +
                 theme(legend.justification=c(1,0),
                       legend.position=c(1,0))               # Position legend in bottom right
