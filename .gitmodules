@@ -1,3 +1,6 @@
 [submodule "sort-bench/external/MP-sort"]
 	path = sort-bench/external/MP-sort
 	url = git@github.com:rkowalewski/MP-sort.git
+[submodule "sort-bench/external/usort"]
+	path = sort-bench/external/usort
+	url = git@github.com:rkowalewski/usort.git
