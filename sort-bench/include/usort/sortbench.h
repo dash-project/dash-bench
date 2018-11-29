@@ -3,32 +3,11 @@
 #include <iterator>
 #include <random>
 
-extern "C" {
-#ifndef MPI_COMM_WORLD
-#define MPI_COMM_WORLD
-#endif
-#include <MP-sort/mpsort.h>
-}
+#include <usort/include/binUtils.h>
+#include <usort/include/ompUtils.h>
+#include <usort/include/parUtils.h>
 
 #include <util/Logging.h>
-
-template <typename T>
-static void radix_value(const void* ptr, void* radix, void* arg)
-{
-  *reinterpret_cast<T*>(radix) = *reinterpret_cast<const T*>(ptr);
-}
-
-template <typename T>
-static int compar_value(const void *a, const void*b)
-{
-  T const val_a = *reinterpret_cast<T const*>(a);
-  T const val_b = *reinterpret_cast<T const*>(b);
-
-  if (val_a < val_b) return -1;
-  if (val_a > val_b) return 1;
-
-  return 0;
-}
 
 template <typename RandomIt, typename Gen>
 inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
@@ -60,19 +39,7 @@ inline void parallel_sort(Container & c, Cmp cmp)
 
   auto const mysize = static_cast<size_t>(std::distance(begin, end));
 
-  auto * ptr = std::addressof(*begin);
-
-  mpsort_mpi(
-      ptr,
-      mysize,
-      sizeof(value_t),
-      radix_value<value_t>,
-      compar_value<value_t>,
-      sizeof(value_t),
-      NULL,
-      MPI_COMM_WORLD);
-
-  LOG_TRACE_RANGE("Mp_sort", begin, end);
+  ::par::HyperQuickSort_kway(c, MPI_COMM_WORLD);
 }
 
 template <typename RandomIt, typename Cmp>

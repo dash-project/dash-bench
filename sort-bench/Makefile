@@ -8,8 +8,10 @@ DASHROOT?=$(HOME)/opt/dash-0.3.0
 DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 DASHNVCC=$(DASHROOT)/bin/dash-nvcc -dash:verbose
 
-DASHCXXFLAGS = -O3 -Iinclude -Iexternal -DNDEBUG
-CXXFLAGS = $(DASHCXXFLAGS) -std=c++14
+#CXXFLAGS = -O0 -ggdb3 -std=c++14 -Iinclude -Iexternal -DENABLE_LOGGING
+CXXFLAGS+= -O3 -Iinclude -Iexternal -DNDEBUG -std=c++14
+
+DASHCXXFLAGS = $(CXXFLAGS)
 
 SIZE ?= $$((500 * (2**20)))
 
@@ -63,11 +65,19 @@ build/mpi.x: include/mpi/sortbench.h sortbench.cc external/MP-sort/libmpsort-mpi
 	@mkdir -p build
 	$(MPICXX) $(CXXFLAGS) -Iexternal -o $@ -DUSE_MPI sortbench.cc external/MP-sort/libmpsort-mpi.a external/MP-sort/libradixsort.a
 
+# NOTE: for USORT we use a k-way Hypercube-Mergesort, they recommend to set CFLAGS="-DKWAY=4"
+build/usort.x: external/usort/binUtils.o external/usort/parUtils.o sortbench.cc
+	@mkdir -p build
+	$(MPICXX) $(CXXFLAGS) $(CFLAGS) -Iexternal -o $@ -fopenmp -DUSE_USORT sortbench.cc external/usort/binUtils.o external/usort/parUtils.o
+
 external/MP-sort/libmpsort-mpi.a:
 	make -C external/MP-sort libmpsort-mpi.a
 
 external/MP-sort/libradixsort.a:
 	make -C external/MP-sort libradixsort.a
+
+external/usort/%.o:
+	make -C external/usort CFLAGS="$(CFLAGS)" $*.o
 
 *.x: sortbench.cc
 
@@ -75,3 +85,4 @@ clean:
 	rm -f build/*.x
 	rm -f build/*.nv
 	make -C external/MP-sort clean
+	make -C external/usort clean

@@ -15,6 +15,8 @@
 #include <libdash.h>
 #elif defined(USE_MPI)
 #include <mpi/sortbench.h>
+#elif defined(USE_USORT)
+#include <usort/sortbench.h>
 #endif
 
 #include <intel/IndexedValue.h>
@@ -53,7 +55,7 @@ void print_header(std::string const& app, double mb, int P)
   std::cout << std::setw(20) << "NTasks: " << P << "\n";
   std::cout << std::setw(20) << "Size: " << std::fixed << std::setprecision(2)
             << mb << "\n";
-#if defined(USE_DASH) || defined(USE_MPI)
+#if defined(USE_DASH) || defined(USE_MPI) || defined(USE_USORT)
   std::cout << std::setw(20) << "Size per Unit (MB): " << std::fixed
             << std::setprecision(2) << mb / P;
 #endif
@@ -74,8 +76,6 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
   LOG("N :" << N);
 
   using key_t = typename Container::value_type;
-  auto begin = c.begin();
-  auto end = c.end();
 
   auto const mb = N * sizeof(key_t) / MB;
 
@@ -113,7 +113,7 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
-        begin, end, [](size_t total, size_t index, std::mt19937& rng) {
+        c.begin(), c.end(), [](size_t total, size_t index, std::mt19937& rng) {
           // return index;
           // return total - index;
           return dist(rng);
@@ -134,11 +134,11 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
     auto const start = ChronoClockNow();
 
-    parallel_sort(begin, end, std::less<key_t>());
+    parallel_sort(c, std::less<key_t>());
 
     auto const duration = ChronoClockNow() - start;
 
-    auto const ret = parallel_verify(begin, end, std::less<key_t>());
+    auto const ret = parallel_verify(c.begin(), c.end(), std::less<key_t>());
 
     if (!ret) {
       std::cerr << "validation failed! (n = " << N << ")\n";
@@ -163,7 +163,7 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
     }
 
 #ifdef USE_DASH
-    begin.pattern().team().barrier();
+    c.begin().pattern().team().barrier();
     if (iter == (NITER + BURN_IN - 1) &&
         // if the id of this task is included in samples
         (std::find(
@@ -181,11 +181,11 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
 int main(int argc, char* argv[])
 {
-  using key_t = int32_t;
+  using key_t = double;
 
   if (argc < 2) {
     std::cout << std::string(argv[0])
-#if defined(USE_DASH) || defined(USE_MPI)
+#if defined(USE_DASH) || defined(USE_MPI) || defined(USE_USORT)
               << " [nbytes per rank]\n";
 #else
               << " [nbytes]\n";
@@ -205,7 +205,7 @@ int main(int argc, char* argv[])
   auto const gsize_bytes = mysize * P;
   auto const N           = nl * P;
   auto const r    = dash::myid();
-#elif defined(USE_MPI)
+#elif defined(USE_MPI) || defined(USE_USORT)
   MPI_Init(&argc, &argv);
   int P;
   MPI_Comm_size(MPI_COMM_WORLD, &P);
@@ -256,7 +256,7 @@ int main(int argc, char* argv[])
 
 #if defined(USE_DASH)
   dash::finalize();
-#elif defined(USE_MPI)
+#elif defined(USE_MPI) || defined(USE_USORT)
   MPI_Finalize();
 #endif
 

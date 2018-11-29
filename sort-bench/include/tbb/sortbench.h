@@ -37,9 +37,11 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   });
 }
 
-template <typename RandomIt, typename Compare>
-inline void parallel_sort(RandomIt begin, RandomIt end, Compare cmp)
+template <typename Container, typename Cmp>
+inline void parallel_sort(Container & c, Cmp cmp)
 {
+  auto begin = c.begin();
+  auto end = c.end();
   pss::parallel_stable_sort(begin, end, cmp);
 }
 

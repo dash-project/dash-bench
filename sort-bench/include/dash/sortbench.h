@@ -37,9 +37,11 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   begin.pattern().team().barrier();
 }
 
-template <typename RandomIt, typename Cmp>
-inline void parallel_sort(RandomIt begin, RandomIt end, Cmp cmp)
+template <typename Container, typename Cmp>
+inline void parallel_sort(Container & c, Cmp cmp)
 {
+  auto begin = c.begin();
+  auto end = c.end();
   assert(!(end < begin));
 
   dash::sort(begin, end);
