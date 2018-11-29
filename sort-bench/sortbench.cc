@@ -45,17 +45,17 @@ void trace_histo(RandomIt begin, RandomIt end)
 static constexpr size_t BURN_IN = 1;
 static constexpr size_t NITER   = 10;
 
-void print_header(std::string const& app, double mb, int NTask)
+void print_header(std::string const& app, double mb, int P)
 {
   std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++\n";
   std::cout << "++              Sort Bench                     ++\n";
   std::cout << "+++++++++++++++++++++++++++++++++++++++++++++++++\n";
-  std::cout << std::setw(20) << "NTasks: " << NTask << "\n";
+  std::cout << std::setw(20) << "NTasks: " << P << "\n";
   std::cout << std::setw(20) << "Size: " << std::fixed << std::setprecision(2)
             << mb << "\n";
 #if defined(USE_DASH) || defined(USE_MPI)
   std::cout << std::setw(20) << "Size per Unit (MB): " << std::fixed
-            << std::setprecision(2) << mb / NTask;
+            << std::setprecision(2) << mb / P;
 #endif
   std::cout << "\n\n";
   // Print the header
@@ -68,24 +68,16 @@ void print_header(std::string const& app, double mb, int NTask)
 }
 
 //! Test sort for n items
-template <typename RandomIt>
-void Test(
-    RandomIt           begin,
-    RandomIt           end,
-    int                ThisTask,
-    int                NTask,
-    std::string const& test_case)
+template <class Container>
+void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 {
-  auto const n = static_cast<size_t>(std::distance(begin, end));
-  LOG("N :" << n);
+  LOG("N :" << N);
 
-  using key_t = typename std::iterator_traits<RandomIt>::value_type;
+  using key_t = typename Container::value_type;
+  auto begin = c.begin();
+  auto end = c.end();
 
-#ifdef USE_MPI
-  auto const mb = n * NTask * sizeof(key_t) / MB;
-#else
-  auto const mb = n * sizeof(key_t) / MB;
-#endif
+  auto const mb = N * sizeof(key_t) / MB;
 
   // using dist_t = sortbench::NormalDistribution<key_t>;
   using dist_t = sortbench::UniformDistribution<key_t>;
@@ -100,7 +92,7 @@ void Test(
   // The DASH Trace does not really scale, so we select at most nSamples units
   // which trace
   std::vector<dash::team_unit_t> trace_unit_samples(nSamples);
-  int                            id_stride = NTask / nSamples;
+  int                            id_stride = P / nSamples;
   if (id_stride < 2) {
     std::iota(
         std::begin(trace_unit_samples), std::end(trace_unit_samples), 0);
@@ -121,7 +113,7 @@ void Test(
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
-        begin, begin + n, [](size_t total, size_t index, std::mt19937& rng) {
+        begin, end, [](size_t total, size_t index, std::mt19937& rng) {
           // return index;
           // return total - index;
           return dist(rng);
@@ -129,9 +121,11 @@ void Test(
           // return std::rand();
         });
 
+#if 0
     if (iter == 0) {
-      trace_histo(begin, begin + n);
+      trace_histo(begin, end);
     }
+#endif
 
 #ifdef USE_DASH
     dash::util::TraceStore::on();
@@ -140,22 +134,22 @@ void Test(
 
     auto const start = ChronoClockNow();
 
-    parallel_sort(begin, begin + n, std::less<key_t>());
+    parallel_sort(begin, end, std::less<key_t>());
 
     auto const duration = ChronoClockNow() - start;
 
-    auto const ret = parallel_verify(begin, begin + n, std::less<key_t>());
+    auto const ret = parallel_verify(begin, end, std::less<key_t>());
 
     if (!ret) {
-      std::cerr << "validation failed! (n = " << n << ")\n";
+      std::cerr << "validation failed! (n = " << N << ")\n";
     }
 
-    if (iter >= BURN_IN && ThisTask == 0) {
+    if (iter >= BURN_IN && r == 0) {
       std::ostringstream os;
       // Iteration
       os << std::setw(3) << iter << ",";
       // Ntasks
-      os << std::setw(9) << NTask << ",";
+      os << std::setw(9) << P << ",";
       // Size
       os << std::setw(9) << std::fixed << std::setprecision(2) << mb;
       os << ",";
@@ -175,7 +169,7 @@ void Test(
         (std::find(
              std::begin(trace_unit_samples),
              std::end(trace_unit_samples),
-             dash::team_unit_t{ThisTask}) != std::end(trace_unit_samples))) {
+             dash::team_unit_t{r}) != std::end(trace_unit_samples))) {
       dash::util::TraceStore::write(std::cout, false);
     }
 
@@ -192,7 +186,7 @@ int main(int argc, char* argv[])
   if (argc < 2) {
     std::cout << std::string(argv[0])
 #if defined(USE_DASH) || defined(USE_MPI)
-              << " [nbytes per task]\n";
+              << " [nbytes per rank]\n";
 #else
               << " [nbytes]\n";
 #endif
@@ -207,31 +201,31 @@ int main(int argc, char* argv[])
 #if defined(USE_DASH)
   dash::init(&argc, &argv);
 
-  auto const NTask       = dash::size();
-  auto const gsize_bytes = mysize * NTask;
-  auto const N           = nl * NTask;
-  auto const ThisTask    = dash::myid();
+  auto const P       = dash::size();
+  auto const gsize_bytes = mysize * P;
+  auto const N           = nl * P;
+  auto const r    = dash::myid();
 #elif defined(USE_MPI)
   MPI_Init(&argc, &argv);
-  int NTask;
-  MPI_Comm_size(MPI_COMM_WORLD, &NTask);
-  auto const gsize_bytes = mysize * NTask;
-  auto const N           = nl;
-  int        ThisTask;
-  MPI_Comm_rank(MPI_COMM_WORLD, &ThisTask);
+  int P;
+  MPI_Comm_size(MPI_COMM_WORLD, &P);
+  auto const gsize_bytes = mysize * P;
+  auto const N           = nl * P;
+  int        r;
+  MPI_Comm_rank(MPI_COMM_WORLD, &r);
 #else
-  auto const NTask =
+  auto const P =
       (argc == 3) ? atoi(argv[2]) : std::thread::hardware_concurrency();
-  assert(NTask > 0);
+  assert(P > 0);
   auto const gsize_bytes = mysize;
   auto const N           = nl;
-  auto const ThisTask    = 0;
+  auto const r    = 0;
 #endif
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
-  tbb::task_scheduler_init init{static_cast<int>(NTask)};
+  tbb::task_scheduler_init init{static_cast<int>(P)};
 #elif defined(USE_OPENMP)
-  omp_set_num_threads(NTask);
+  omp_set_num_threads(P);
 #endif
 
   double mb = (gsize_bytes / MB);
@@ -242,13 +236,11 @@ int main(int argc, char* argv[])
 
 #if defined(USE_DASH)
   dash::Array<key_t> keys(N);
-  auto               begin = keys.begin();
 #else
-  key_t* keys  = new key_t[N];
-  auto   begin = keys;
+  std::vector<key_t> keys(nl);
 #endif
 
-  if (ThisTask == 0) {
+  if (r == 0) {
 #if defined(USE_DASH)
     dash::util::BenchmarkParams bench_params("bench.dash.sort");
     bench_params.set_output_width(72);
@@ -257,14 +249,10 @@ int main(int argc, char* argv[])
       bench_params.print_pinning();
     }
 #endif
-    print_header(base_filename, mb, NTask);
+    print_header(base_filename, mb, P);
   }
 
-  Test(begin, begin + N, ThisTask, NTask, base_filename);
-
-#ifndef USE_DASH
-  delete[] keys;
-#endif
+  Test(keys, N, r, P, base_filename);
 
 #if defined(USE_DASH)
   dash::finalize();
@@ -272,7 +260,7 @@ int main(int argc, char* argv[])
   MPI_Finalize();
 #endif
 
-  if (ThisTask == 0) {
+  if (r == 0) {
     std::cout << "\n";
   }
 

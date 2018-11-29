@@ -58,8 +58,10 @@ inline void parallel_sort(RandomIt begin, RandomIt end, Cmp cmp)
 
   auto const mysize = static_cast<size_t>(std::distance(begin, end));
 
+  auto * ptr = std::addressof(*begin);
+
   mpsort_mpi(
-      begin,
+      ptr,
       mysize,
       sizeof(value_t),
       radix_value<value_t>,

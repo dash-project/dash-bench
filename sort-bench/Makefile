@@ -9,7 +9,7 @@ DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 DASHNVCC=$(DASHROOT)/bin/dash-nvcc -dash:verbose
 
 DASHCXXFLAGS = -O3 -Iinclude -Iexternal -DNDEBUG
-CXXFLAGS = $DASHCXXFLAGS -std=c++14
+CXXFLAGS = $(DASHCXXFLAGS) -std=c++14
 
 SIZE ?= $$((500 * (2**20)))
 
