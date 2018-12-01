@@ -11,7 +11,11 @@
 #elif defined(USE_OPENMP)
 #include <openmp/sortbench.h>
 #elif defined(USE_DASH)
+#ifdef DASH_ENABLE_PSTL
+#include <tbb/task_scheduler_init.h>
+#endif
 #include <dash/sortbench.h>
+#include <omp.h>
 #include <libdash.h>
 #elif defined(USE_MPI)
 #include <mpi/sortbench.h>
@@ -197,6 +201,9 @@ int main(int argc, char* argv[])
   auto const mysize = static_cast<size_t>(atoll(argv[1]));
   // Number of local elements
   auto const nl = mysize / sizeof(key_t);
+  // Number of threads
+  auto const T =
+      (argc == 3) ? atoi(argv[2]) : 0;
 
 #if defined(USE_DASH)
   dash::init(&argc, &argv);
@@ -215,7 +222,7 @@ int main(int argc, char* argv[])
   MPI_Comm_rank(MPI_COMM_WORLD, &r);
 #else
   auto const P =
-      (argc == 3) ? atoi(argv[2]) : std::thread::hardware_concurrency();
+      T ? T : std::thread::hardware_concurrency();
   assert(P > 0);
   auto const gsize_bytes = mysize;
   auto const N           = nl;
@@ -224,7 +231,11 @@ int main(int argc, char* argv[])
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
   tbb::task_scheduler_init init{static_cast<int>(P)};
-#elif defined(USE_OPENMP)
+#elif defined(USE_DASH) && defined(DASH_ENABLE_PSTL)
+  tbb::task_scheduler_init init{omp_get_max_threads()};
+#endif
+
+#if defined(USE_OPENMP)
   omp_set_num_threads(P);
 #endif
 

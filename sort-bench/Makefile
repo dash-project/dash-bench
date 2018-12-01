@@ -1,3 +1,4 @@
+include make.defs.local
 SHELL=/bin/bash
 
 # Depending on the platform it may be also mpicxx --> specify as an environment
@@ -8,7 +9,7 @@ DASHROOT?=$(HOME)/opt/dash-0.3.0
 DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 DASHNVCC=$(DASHROOT)/bin/dash-nvcc -dash:verbose
 
-#CXXFLAGS = -O0 -ggdb3 -std=c++14 -Iinclude -Iexternal -DENABLE_LOGGING
+#CXXFLAGS = -O0 -g -std=c++14 -Iinclude -Iexternal -DENABLE_LOGGING
 CXXFLAGS+= -O3 -Iinclude -Iexternal -DNDEBUG -std=c++14
 
 DASHCXXFLAGS = $(CXXFLAGS)
@@ -55,7 +56,7 @@ build/gomp.x: include/openmp/sortbench.h sortbench.cc
 
 build/dash.x: include/dash/sortbench.h sortbench.cc
 	@mkdir -p build
-	$(DASHCXX) $(DASHCXXFLAGS) -o $@ -DUSE_DASH sortbench.cc
+	$(DASHCXX) $(DASHCXXFLAGS) -L$(TBB_LIB) -o $@ -DUSE_DASH sortbench.cc
 
 build/dash.nv: include/dash/sortbench.h sortbench.cc
 	@mkdir -p build
