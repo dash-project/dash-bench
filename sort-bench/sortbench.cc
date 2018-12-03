@@ -83,11 +83,11 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
   auto const mb = N * sizeof(key_t) / MB;
 
-  // using dist_t = sortbench::NormalDistribution<key_t>;
-  using dist_t = sortbench::UniformDistribution<key_t>;
+  using dist_t = sortbench::NormalDistribution<key_t>;
+  //using dist_t = sortbench::UniformDistribution<key_t>;
 
-  // dist_t dist{50, 10};
-  static dist_t dist{key_t{0}, key_t{(1 << 20)}};
+  //static dist_t dist{key_t{0}, key_t{(1 << 20)}};
+  static dist_t dist{};
 
 #ifdef USE_DASH
 
@@ -120,7 +120,7 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
         c.begin(), c.end(), [](size_t total, size_t index, std::mt19937& rng) {
           // return index;
           // return total - index;
-          return dist(rng);
+          return dist(rng) * 1E6;
           // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
           // return std::rand();
         });

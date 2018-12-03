@@ -36,7 +36,7 @@ public:
   }
 
 private:
-  dist_type dist_;
+  dist_type dist_{};
 };
 
 template <
@@ -61,7 +61,7 @@ public:
   }
 
 private:
-  dist_type dist_;
+  dist_type dist_{};
 };
 
 template <typename T>
@@ -88,7 +88,7 @@ public:
   }
 
 private:
-  dist_type dist_;
+  dist_type dist_{};
 };
 
 }  // namespace sortbench
