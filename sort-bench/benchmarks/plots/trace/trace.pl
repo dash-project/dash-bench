@@ -108,7 +108,7 @@ SVG
         my $w = sprintf "%0.1f", $x2 - $x1;
         my $h = sprintf "%0.1f", $y2 - $y1;
         $extra = defined $extra ? $extra : "";
-        $self->{svg} .= qq/<rect x="$x1" y="$y1" width="$w" height="$h" fill="$fill" $extra \/>\n/;
+        $self->{svg} .= qq/<rect x="$x1" y="$y1" width="$w" height="$h" stroke="black" fill="$fill" $extra \/>\n/;
     }
 
     sub stringTTF {
@@ -689,7 +689,6 @@ function handleMouseUp(evt) {
 </script>
 INCLUDE
 
-
 while(<>) {
     if( $csv->parse($_) ) {
         my ($state, $unit, $start, $end ) = $csv->fields();
@@ -750,6 +749,22 @@ $im->stringTTF($black, $fonttype, $fontsize, 0.0, $imagewidth - $xpad - 100,
     $fontsize * 2, "Search", "", 'id="search" onmouseover="searchover()" onmouseout="searchout()" onclick="search_prompt()" style="opacity:0.1;cursor:pointer"');
 $im->stringTTF($black, $fonttype, $fontsize, 0.0, $imagewidth - $xpad - 100, $imageheight - ($ypad2 / 2), " ", "", 'id="matched"');
 
+
+# black
+$colorhash{'barrier'} = "rgb(17,17,17)";
+#blue
+$colorhash{'sort'} = "rgb(0,116,217)";
+#aqua
+$colorhash{'merge'} = "rgb(127,219,255)";
+#olive
+#$colorhash{'exchange_data'} = "rgb(61,153,112)";
+#gray
+$colorhash{'all-to-all'} = "rgb(170,170,170)";
+$colorhash{'temporary'} = "rgb(255,133,27)";
+$colorhash{'global_min_max'} = "rgb(255,65,54)";
+$colorhash{'partition_borders'} = "rgb(1,255,112)";
+$colorhash{'target_displs'} = "rgb(255,220,0)";
+
 my $idx = 0;
 
 foreach my $unit (keys %trace) {
@@ -757,13 +772,24 @@ foreach my $unit (keys %trace) {
     {
         my $start = ${$trace{$unit}}[$i];
         my $stop  = ${$trace{$unit}}[$i+1];
+
         my $state = ${$trace{$unit}}[$i+2];
+        # remove leading numbers and colon
+        #$state =~ s/^[0-9]+:\s*(.*)$/$1/g;
+
         my $tooltip = $state;
 
         my $beg = sprintf("%.5f", 1000.0* ($start-$tmin )/($tmax-$tmin));
         my $end = sprintf("%.5f", 1000.0* ($stop -$tmin )/($tmax-$tmin));
 
-        my $color = $colorhash{"$state"};
+        my $color = "";
+        foreach my $key (keys %colorhash) {
+            if (index($state, $key) != -1) {
+                $color = $colorhash{"$key"};
+                last;
+            }
+        }
+
         if( !defined $color || $color eq "" ) {
             $color = color("rand");
             $colorhash{"$state"} = $color;

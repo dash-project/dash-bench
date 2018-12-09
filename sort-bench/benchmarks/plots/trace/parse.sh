@@ -19,12 +19,20 @@ do
   plotCsv="$(Rscript "$SCRIPT_DIR/polish.r" "$inFile" "$hasHeader" 2>/dev/null)"
   ## Use awk to trim leading and trailing whitespace
   plotCsv="$(echo "${plotCsv}" | awk '{gsub(/^ +| +$/,"")} {print $0}')"
+  # replace .csv with .svg
+  plotSvg="$(echo "$plotCsv" | sed 's/\.[a-z0-9]*$/\.svg/')"
   ## generate the flame graph
-  perl "$SCRIPT_DIR/trace.pl" "$plotCsv" > "${plotCsv}.svg"
+  perl "$SCRIPT_DIR/trace.pl" "$plotCsv" > "${plotSvg}"
+  ## output all to html
+  finalHtml="$(basename "$f" | sed 's/\.[a-z0-9]*$/\.html/')"
+  cat "$plotSvg" > "$finalHtml"
+  summaryHtml="$(echo "$plotSvg" | sed 's/-plot\.svg$/-summary\.html/')"
+  cat "$summaryHtml" >> "$finalHtml"
   ## success message
   [[ "$?" == "0" ]] && echo "plot generated for: $f"
 done;
 
 rm -f *.in
 rm -f *-plot.csv
+rm -f *-summary.html
 
