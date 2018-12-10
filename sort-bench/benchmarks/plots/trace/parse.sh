@@ -37,10 +37,10 @@ do
     sed -i "s/TITLE_PLACEHOLDER/${TITLE}/g"
   fi
 
-  sed -i -e "22r $plotSvg" "$finalHtml"
+  sed -i -e "12r $plotSvg" "$finalHtml"
 
   summaryHtml="$(echo "$plotSvg" | sed 's/-plot\.svg$/-summary\.html/')"
-  nl="$((22+$nlines+1))"
+  nl="$((14+$nlines+1))"
   sed -i -e "${nl}r $summaryHtml" "$finalHtml"
   ## success message
   [[ "$?" == "0" ]] && echo "plot generated for: $f"
