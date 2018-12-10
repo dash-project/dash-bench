@@ -2,6 +2,8 @@
 
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
+TITLE="$1"
+
 for f in *.out
 do
   ## get filename without extension
@@ -23,11 +25,22 @@ do
   plotSvg="$(echo "$plotCsv" | sed 's/\.[a-z0-9]*$/\.svg/')"
   ## generate the flame graph
   perl "$SCRIPT_DIR/trace.pl" "$plotCsv" > "${plotSvg}"
+  nlines="$(wc -l $plotSvg | awk '{print $1}')"
   ## output all to html
   finalHtml="$(basename "$f" | sed 's/\.[a-z0-9]*$/\.html/')"
-  cat "$plotSvg" > "$finalHtml"
+
+  cat "$SCRIPT_DIR/skeleton.html" > "$finalHtml"
+
+  if [[ -n "$TITLE" ]]
+  then
+    sed -i "s/TITLE_PLACEHOLDER/${TITLE}/g"
+  fi
+
+  sed -i -e "22r $plotSvg" "$finalHtml"
+
   summaryHtml="$(echo "$plotSvg" | sed 's/-plot\.svg$/-summary\.html/')"
-  cat "$summaryHtml" >> "$finalHtml"
+  nl="$((22+$nlines+1))"
+  sed -i -e "${nl}r $summaryHtml" "$finalHtml"
   ## success message
   [[ "$?" == "0" ]] && echo "plot generated for: $f"
 done;
