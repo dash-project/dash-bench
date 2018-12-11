@@ -2,8 +2,6 @@
 
 SCRIPT_DIR="$( cd "$( dirname "$0" )" && pwd )"
 
-TITLE="$1"
-
 for f in *.out
 do
   ## get filename without extension
@@ -32,10 +30,7 @@ do
 
   cat "$SCRIPT_DIR/skeleton.html" > "$finalHtml"
 
-  if [[ -n "$TITLE" ]]
-  then
-    sed -i "s/TITLE_PLACEHOLDER/${TITLE}/g"
-  fi
+  sed -i "s/TITLE_PLACEHOLDER/${name}/g" "$finalHtml"
 
   sed -i -e "12r $plotSvg" "$finalHtml"
 
