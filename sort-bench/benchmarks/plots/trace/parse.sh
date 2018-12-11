@@ -7,7 +7,8 @@ TITLE="$1"
 for f in *.out
 do
   ## get filename without extension
-  inFile="$(basename "$f" | sed 's/\.[a-z0-9]*$/\.in/')"
+  name="$(basename "$f" | sed 's/\.[a-z0-9]*$//')"
+  inFile="${name}.in"
   ## grep only traces and pipe it to another file
   grep '^-- \[TRACE' "$f" | sed 's/^\(--\s\[TRACE\]\s*\)\(.*\)/\2/' > "$inFile"
 
@@ -27,7 +28,7 @@ do
   perl "$SCRIPT_DIR/trace.pl" "$plotCsv" > "${plotSvg}"
   nlines="$(wc -l $plotSvg | awk '{print $1}')"
   ## output all to html
-  finalHtml="$(basename "$f" | sed 's/\.[a-z0-9]*$/\.html/')"
+  finalHtml="${name}.html"
 
   cat "$SCRIPT_DIR/skeleton.html" > "$finalHtml"
 
