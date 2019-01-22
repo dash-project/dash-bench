@@ -31,7 +31,8 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
 
   for (size_t idx = 0; idx < nl; ++idx) {
     auto it = lbegin + idx;
-    *it     = g(n, idx, rng);
+    auto gidx = begin.pattern().global(idx);
+    *it     = g(n, gidx, rng);
   }
 
   begin.pattern().team().barrier();

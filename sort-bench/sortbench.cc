@@ -27,6 +27,7 @@
 
 #include <util/Logging.h>
 #include <util/Random.h>
+#include <util/Generators.h>
 #include <util/Timer.h>
 
 #define GB (1 << 30)
@@ -83,12 +84,6 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
   auto const mb = N * sizeof(key_t) / MB;
 
-  using dist_t = sortbench::NormalDistribution<key_t>;
-  //using dist_t = sortbench::UniformDistribution<key_t>;
-
-  //static dist_t dist{key_t{0}, key_t{(1 << 20)}};
-  static dist_t dist{};
-
 #ifdef USE_DASH
 
   constexpr int nSamples = 250;
@@ -117,13 +112,7 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
-        c.begin(), c.end(), [](size_t total, size_t index, std::mt19937& rng) {
-          // return index;
-          // return total - index;
-          return dist(rng) * 1E6;
-          // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
-          // return std::rand();
-        });
+        c.begin(), c.end(), sortbench::normal<key_t>);
 
 #if 0
     if (iter == 0) {
