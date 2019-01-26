@@ -15,8 +15,8 @@
 #include <tbb/task_scheduler_init.h>
 #endif
 #include <dash/sortbench.h>
-#include <omp.h>
 #include <libdash.h>
+#include <omp.h>
 #elif defined(USE_MPI)
 #include <mpi/sortbench.h>
 #elif defined(USE_USORT)
@@ -75,7 +75,8 @@ void print_header(std::string const& app, double mb, int P)
 
 //! Test sort for n items
 template <class Container>
-void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
+void Test(
+    Container& c, size_t N, int r, size_t P, std::string const& test_case)
 {
   LOG("N :" << N);
 
@@ -83,11 +84,27 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
   auto const mb = N * sizeof(key_t) / MB;
 
+#if 1
   using dist_t = sortbench::NormalDistribution<key_t>;
-  //using dist_t = sortbench::UniformDistribution<key_t>;
-
-  //static dist_t dist{key_t{0}, key_t{(1 << 20)}};
-  static dist_t dist{};
+  static thread_local dist_t dist{};
+  auto                       g = [](auto total, auto index, auto& rng) {
+    // return index;
+    // return total - index;
+    return dist(rng) * 1E6;
+    // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
+    // return std::rand();
+  };
+#else
+  using dist_t = sortbench::UniformDistribution<key_t>;
+  static thread_local dist_t dist{key_t{-1E6}, key_t{1E6}};
+  auto                       g = [](auto total, auto index, auto& rng) {
+    // return index;
+    // return total - index;
+    return dist(rng);
+    // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
+    // return std::rand();
+  };
+#endif
 
 #ifdef USE_DASH
 
@@ -116,20 +133,7 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 #endif
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
-    parallel_rand(
-        c.begin(), c.end(), [](size_t total, size_t index, std::mt19937& rng) {
-          // return index;
-          // return total - index;
-          return dist(rng) * 1E6;
-          // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
-          // return std::rand();
-        });
-
-#if 0
-    if (iter == 0) {
-      trace_histo(begin, end);
-    }
-#endif
+    parallel_rand(c.begin(), c.end(), g);
 
 #ifdef USE_DASH
     dash::util::TraceStore::on();
@@ -202,16 +206,15 @@ int main(int argc, char* argv[])
   // Number of local elements
   auto const nl = mysize / sizeof(key_t);
   // Number of threads
-  auto const T =
-      (argc == 3) ? atoi(argv[2]) : 0;
+  auto const T = (argc == 3) ? atoi(argv[2]) : 0;
 
 #if defined(USE_DASH)
   dash::init(&argc, &argv);
 
-  auto const P       = dash::size();
+  auto const P           = dash::size();
   auto const gsize_bytes = mysize * P;
   auto const N           = nl * P;
-  auto const r    = dash::myid();
+  auto const r           = dash::myid();
 #elif defined(USE_MPI) || defined(USE_USORT)
   MPI_Init(&argc, &argv);
   int P;
@@ -221,22 +224,19 @@ int main(int argc, char* argv[])
   int        r;
   MPI_Comm_rank(MPI_COMM_WORLD, &r);
 #else
-  auto const P =
-      T ? T : std::thread::hardware_concurrency();
+  auto const P = T ? T : std::thread::hardware_concurrency();
   assert(P > 0);
   auto const gsize_bytes = mysize;
   auto const N           = nl;
-  auto const r    = 0;
+  auto const r           = 0;
 #endif
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
   tbb::task_scheduler_init init{static_cast<int>(P)};
-#elif defined(USE_DASH) && defined(DASH_ENABLE_PSTL)
-  tbb::task_scheduler_init init{omp_get_max_threads()};
-#endif
-
-#if defined(USE_OPENMP)
+#elif defined(USE_OPENMP)
   omp_set_num_threads(P);
+#elif defined(USE_USORT)
+  omp_set_num_threads(T);
 #endif
 
   double mb = (gsize_bytes / MB);
@@ -248,7 +248,7 @@ int main(int argc, char* argv[])
 #if defined(USE_DASH)
   dash::Array<key_t> keys(N);
 #else
-  std::vector<key_t> keys(nl);
+  std::vector<key_t>       keys(nl);
 #endif
 
   if (r == 0) {

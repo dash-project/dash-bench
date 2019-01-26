@@ -54,7 +54,7 @@ if(!exists("summarySE", mode="function")) {
     file.arg.name <- "--file="
     script.name <- sub(file.arg.name, "", initial.options[grep(file.arg.name, initial.options)])
     script.basename <- dirname(script.name)
-    other.name <- file.path(script.basename, "summary.R")
+    other.name <- file.path(script.basename, "../summary.R")
     source(other.name)
 }
 

@@ -56,7 +56,7 @@ build/gomp.x: include/openmp/sortbench.h sortbench.cc
 
 build/dash.x: include/dash/sortbench.h sortbench.cc
 	@mkdir -p build
-	$(DASHCXX) $(DASHCXXFLAGS) -L$(TBB_LIB) -o $@ -DUSE_DASH sortbench.cc
+	$(DASHCXX) $(DASHCXXFLAGS) -o $@ -DUSE_DASH sortbench.cc
 
 build/dash.nv: include/dash/sortbench.h sortbench.cc
 	@mkdir -p build

@@ -1,5 +1,4 @@
 library(dplyr)
-library(ggplot2)
 
 ## Summarizes data.
 ## Gives count, mean, standard deviation, standard error of the mean, and

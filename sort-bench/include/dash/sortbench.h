@@ -7,6 +7,7 @@
 #include <dash/algorithm/Sort.h>
 
 #include <util/Logging.h>
+#include <util/Random.h>
 
 template <typename RandomIt, typename Gen>
 inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
@@ -26,12 +27,12 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
 
   auto const myid = begin.pattern().team().myid();
 
-  std::seed_seq seed{std::random_device{}(), static_cast<unsigned>(myid)};
-  std::mt19937  rng(seed);
+  static thread_local std::mt19937_64 generator (
+      sortbench::random_seed_seq::get_instance());
 
   for (size_t idx = 0; idx < nl; ++idx) {
     auto it = lbegin + idx;
-    *it     = g(n, idx, rng);
+    *it     = g(n, begin.pattern().global(idx), generator);
   }
 
   begin.pattern().team().barrier();
