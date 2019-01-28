@@ -27,6 +27,7 @@
 
 #include <util/Logging.h>
 #include <util/Random.h>
+#include <util/Generators.h>
 #include <util/Timer.h>
 
 #define GB (1 << 30)
@@ -84,6 +85,7 @@ void Test(
 
   auto const mb = N * sizeof(key_t) / MB;
 
+#if 0
 #if 1
   using dist_t = sortbench::NormalDistribution<key_t>;
   static thread_local dist_t dist{};
@@ -104,6 +106,7 @@ void Test(
     // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
     // return std::rand();
   };
+#endif
 #endif
 
 #ifdef USE_DASH
@@ -133,7 +136,8 @@ void Test(
 #endif
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
-    parallel_rand(c.begin(), c.end(), g);
+    parallel_rand(
+        c.begin(), c.end(), sortbench::normal<key_t>);
 
 #ifdef USE_DASH
     dash::util::TraceStore::on();
