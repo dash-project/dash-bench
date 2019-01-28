@@ -236,7 +236,9 @@ int main(int argc, char* argv[])
 #elif defined(USE_OPENMP)
   omp_set_num_threads(P);
 #elif defined(USE_USORT)
-  omp_set_num_threads(T);
+  if (T) {
+    omp_set_num_threads(T);
+  }
 #endif
 
   double mb = (gsize_bytes / MB);
