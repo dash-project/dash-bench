@@ -23,16 +23,13 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
 
   auto const n = static_cast<size_t>(std::distance(begin, end));
 
-  std::seed_seq seed{std::random_device{}()};
-  std::mt19937  rng(seed);
-
   tbb::parallel_for(
     tbb::blocked_range<size_t>(0, n),
-    [begin, n, g, &rng](const tbb::blocked_range<size_t>& r)
+    [begin, n, g](const tbb::blocked_range<size_t>& r)
   {
     for (size_t idx = r.begin(); idx != r.end(); ++idx)
     {
-      *(begin + idx) = g(n, idx, rng);
+      *(begin + idx) = g(n, idx);
     }
   });
 }

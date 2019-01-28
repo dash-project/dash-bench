@@ -40,12 +40,9 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   int ThisTask;
   MPI_Comm_rank(MPI_COMM_WORLD, &ThisTask);
 
-  std::seed_seq seed{std::random_device{}(), static_cast<unsigned>(ThisTask)};
-  std::mt19937  rng(seed);
-
   for (size_t idx = 0; idx < n; ++idx) {
       auto it = begin + idx;
-      *it     = g(n, idx, rng);
+      *it     = g(n, idx);
   }
 }
 

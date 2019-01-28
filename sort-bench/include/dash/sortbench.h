@@ -25,14 +25,9 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   auto*      lend   = std::next(lbegin, l_range.end);
   auto const nl     = l_range.end - l_range.begin;
 
-  auto const myid = begin.pattern().team().myid();
-
-  static thread_local std::mt19937_64 generator (
-      sortbench::random_seed_seq::get_instance());
-
   for (size_t idx = 0; idx < nl; ++idx) {
     auto it = lbegin + idx;
-    *it     = g(n, begin.pattern().global(idx), generator);
+    *it     = g(n, begin.pattern().global(idx));
   }
 
   begin.pattern().team().barrier();

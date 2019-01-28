@@ -22,13 +22,10 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   {
     auto const tid = static_cast<unsigned>(omp_get_thread_num());
 
-    std::seed_seq seed{std::random_device{}(), tid};
-    std::mt19937  rng(seed);
-
 #pragma omp for
     for (std::size_t idx = 0; idx < n; ++idx) {
       auto it = begin + idx;
-      *it     = g(n, idx, rng);
+      *it     = g(n, idx);
     }
   }
 }
