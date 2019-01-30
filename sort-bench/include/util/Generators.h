@@ -5,6 +5,7 @@
 #include <type_traits>
 #include <fstream>
 #include <array>
+#include <vector>
 #include <util/Random.h>
 
 namespace sortbench {
@@ -94,11 +95,21 @@ private:
 template<class key_t>
 class gensort_binary {
 public:
-  gensort_binary(std::string const & filename)
-  : _filename(filename) {}
+  gensort_binary(size_t threads, std::string const & filename)
+  : _threads(threads), _filename(filename) {}
 
   key_t operator()(size_t total, size_t index, std::mt19937& rng) const {
+#if defined(USE_OPENMP)
+    static std::vector<std::ifstream> ifs_v(_threads);
+    auto & ifs = ifs_v.at(omp_get_thread_num());
+    if(!ifs.is_open()) {
+      ifs.open(_filename);
+    }
+#elif defined(USE_TBB_HIGHLEVEL) || defined (USE_TBB_LOWLEVEL)
     static std::ifstream ifs(_filename);
+#else
+    static std::ifstream ifs(_filename);
+#endif
     ifs.seekg(index*sizeof(key_t));
     key_t ret;
     ifs.read(ret.data(),ret.size());
@@ -106,6 +117,7 @@ public:
   }
 
 private:
+  size_t      const _threads;
   std::string const _filename;
 };
 
