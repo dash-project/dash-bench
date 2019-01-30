@@ -3,6 +3,8 @@
 
 #include <random>
 #include <type_traits>
+#include <fstream>
+#include <array>
 #include <util/Random.h>
 
 namespace sortbench {
@@ -70,6 +72,42 @@ key_t partial_sorted_in_place(size_t total, size_t index, std::mt19937& rng) {
     return dist_high(rng);
   }
 }
+
+template<class key_t>
+class gensort_ascii {
+public:
+  gensort_ascii(std::string const & filename)
+  : _filename(filename) {}
+
+  key_t operator()(size_t total, size_t index, std::mt19937& rng) const {
+    static std::ifstream ifs(_filename);
+    ifs.seekg(index*sizeof(key_t));
+    key_t ret;
+    ifs.getline(ret.data(),ret.size());
+    return std::move(ret);
+  }
+
+private:
+  std::string const _filename;
+};
+
+template<class key_t>
+class gensort_binary {
+public:
+  gensort_binary(std::string const & filename)
+  : _filename(filename) {}
+
+  key_t operator()(size_t total, size_t index, std::mt19937& rng) const {
+    static std::ifstream ifs(_filename);
+    ifs.seekg(index*sizeof(key_t));
+    key_t ret;
+    ifs.read(ret.data(),ret.size());
+    return std::move(ret);
+  }
+
+private:
+  std::string const _filename;
+};
 
 }  // namespace sortbench
 

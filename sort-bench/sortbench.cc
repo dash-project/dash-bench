@@ -4,6 +4,7 @@
 #include <map>
 #include <thread>
 #include <vector>
+#include <array>
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
 #include <tbb/sortbench.h>
@@ -76,7 +77,7 @@ void print_header(std::string const& app, double mb, int P)
 
 //! Test sort for n items
 template <class Container>
-void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
+void Test(Container & c, size_t N, int r, size_t P,std::string const& gensort_file,std::string const& test_case)
 {
   LOG("N :" << N);
 
@@ -112,7 +113,7 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
     parallel_rand(
-        c.begin(), c.end(), sortbench::normal<key_t>);
+        c.begin(), c.end(), sortbench::gensort_ascii<key_t>(gensort_file));
 
 #if 0
     if (iter == 0) {
@@ -174,25 +175,25 @@ void Test(Container & c, size_t N, int r, size_t P,std::string const& test_case)
 
 int main(int argc, char* argv[])
 {
-  using key_t = double;
+  using key_t = std::array<char,100>;
 
-  if (argc < 2) {
+  if (argc < 3) {
     std::cout << std::string(argv[0])
 #if defined(USE_DASH) || defined(USE_MPI) || defined(USE_USORT)
-              << " [nbytes per rank]\n";
+              << " [gensort file] [nbytes per rank]\n";
 #else
-              << " [nbytes]\n";
+              << " [gensort file] [nbytes]\n";
 #endif
     return 1;
   }
 
   // Size in Bytes
-  auto const mysize = static_cast<size_t>(atoll(argv[1]));
+  auto const mysize = static_cast<size_t>(atoll(argv[2]));
   // Number of local elements
   auto const nl = mysize / sizeof(key_t);
   // Number of threads
   auto const T =
-      (argc == 3) ? atoi(argv[2]) : 0;
+      (argc == 4) ? atoi(argv[3]) : 0;
 
 #if defined(USE_DASH)
   dash::init(&argc, &argv);
@@ -234,6 +235,8 @@ int main(int argc, char* argv[])
   auto const        base_filename =
       executable.substr(executable.find_last_of("/\\") + 1);
 
+  std::string const gensort_file(argv[1]);
+
 #if defined(USE_DASH)
   dash::Array<key_t> keys(N);
 #else
@@ -252,7 +255,7 @@ int main(int argc, char* argv[])
     print_header(base_filename, mb, P);
   }
 
-  Test(keys, N, r, P, base_filename);
+  Test(keys, N, r, P, gensort_file, base_filename);
 
 #if defined(USE_DASH)
   dash::finalize();
