@@ -1,3 +1,6 @@
+#ifndef SORTBENCH_H__INCLUDED
+#define SORTBENCH_H__INCLUDED
+
 #include <mpi.h>
 #include <cassert>
 #include <iterator>
@@ -12,6 +15,8 @@ extern "C" {
 
 #include <util/Logging.h>
 
+namespace sortbench {
+
 template <typename T>
 static void radix_value(const void* ptr, void* radix, void* arg)
 {
@@ -19,7 +24,7 @@ static void radix_value(const void* ptr, void* radix, void* arg)
 }
 
 template <typename T>
-static int compar_value(const void *a, const void*b)
+static int compar_value(const void* a, const void* b)
 {
   T const val_a = *reinterpret_cast<T const*>(a);
   T const val_b = *reinterpret_cast<T const*>(b);
@@ -41,23 +46,23 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
   MPI_Comm_rank(MPI_COMM_WORLD, &ThisTask);
 
   for (size_t idx = 0; idx < n; ++idx) {
-      auto it = begin + idx;
-      *it     = g(n, idx);
+    auto it = begin + idx;
+    *it     = g(n, idx);
   }
 }
 
 template <typename Container, typename Cmp>
-inline void parallel_sort(Container & c, Cmp cmp)
+inline void parallel_sort(Container& c, Cmp cmp)
 {
   auto begin = c.begin();
-  auto end = c.end();
+  auto end   = c.end();
   assert(!(end < begin));
 
   using value_t = typename Container::value_type;
 
   auto const mysize = static_cast<size_t>(std::distance(begin, end));
 
-  auto * ptr = std::addressof(*begin);
+  auto* ptr = std::addressof(*begin);
 
   mpsort_mpi(
       ptr,
@@ -89,5 +94,10 @@ inline bool parallel_verify(RandomIt begin, RandomIt end, Cmp cmp)
     }
   }
 
+  MPI_Barrier(MPI_COMM_WORLD);
+
   return nerror == 0;
 }
+
+}  // namespace sortbench
+#endif

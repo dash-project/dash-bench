@@ -4,6 +4,7 @@
 #include <map>
 #include <thread>
 #include <vector>
+#include <algorithm>
 
 #if defined(USE_TBB_HIGHLEVEL) || defined(USE_TBB_LOWLEVEL)
 #include <tbb/sortbench.h>
@@ -15,7 +16,7 @@
 #include <tbb/task_scheduler_init.h>
 #endif
 #include <dash/sortbench.h>
-#include <libdash.h>
+#include <dash/util/BenchmarkParams.h>
 #include <omp.h>
 #elif defined(USE_MPI)
 #include <mpi/sortbench.h>
@@ -25,10 +26,11 @@
 
 #include <intel/IndexedValue.h>
 
+#include <util/Generators.h>
 #include <util/Logging.h>
 #include <util/Random.h>
-#include <util/Generators.h>
 #include <util/Timer.h>
+#include <util/Trace.h>
 
 #define GB (1 << 30)
 #define MB (1 << 20)
@@ -74,6 +76,33 @@ void print_header(std::string const& app, double mb, int P)
   std::cout << "\n";
 }
 
+constexpr size_t max_samples = 250;
+auto             sample_units(size_t P)
+{
+  // The DASH Trace does not really scale, so we select at most nSamples units
+  auto nSamples = std::min(P, max_samples);
+
+  std::vector<unsigned> trace_unit_samples(nSamples);
+  int                   id_stride = P / nSamples;
+  if (id_stride < 2) {
+    std::iota(
+        std::begin(trace_unit_samples), std::end(trace_unit_samples), 0);
+  }
+  else {
+    unsigned v_init{0};
+    std::generate(
+        std::begin(trace_unit_samples),
+        std::end(trace_unit_samples),
+        [&v_init, id_stride]() {
+          auto val = v_init;
+          v_init += id_stride;
+          return val;
+        });
+  }
+
+  return trace_unit_samples;
+}
+
 //! Test sort for n items
 template <class Container>
 void Test(
@@ -85,75 +114,29 @@ void Test(
 
   auto const mb = N * sizeof(key_t) / MB;
 
-#if 0
-#if 1
-  using dist_t = sortbench::NormalDistribution<key_t>;
-  static thread_local dist_t dist{};
-  auto                       g = [](auto total, auto index, auto& rng) {
-    // return index;
-    // return total - index;
-    return dist(rng) * 1E6;
-    // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
-    // return std::rand();
-  };
-#else
-  using dist_t = sortbench::UniformDistribution<key_t>;
-  static thread_local dist_t dist{key_t{-1E6}, key_t{1E6}};
-  auto                       g = [](auto total, auto index, auto& rng) {
-    // return index;
-    // return total - index;
-    return dist(rng);
-    // return static_cast<key_t>(std::round(dist(rng) * SIZE_FACTOR));
-    // return std::rand();
-  };
-#endif
-#endif
-
-#ifdef USE_DASH
-
-  constexpr int nSamples = 250;
-
-  // The DASH Trace does not really scale, so we select at most nSamples units
-  // which trace
-  std::vector<dash::team_unit_t> trace_unit_samples(nSamples);
-  int                            id_stride = P / nSamples;
-  if (id_stride < 2) {
-    std::iota(
-        std::begin(trace_unit_samples), std::end(trace_unit_samples), 0);
-  }
-  else {
-    dash::team_unit_t v_init{0};
-    std::generate(
-        std::begin(trace_unit_samples),
-        std::end(trace_unit_samples),
-        [&v_init, id_stride]() {
-          auto val = v_init;
-          v_init += id_stride;
-          return val;
-        });
-  }
-
-#endif
+  auto trace_unit_samples = sample_units(P);
 
   for (size_t iter = 0; iter < NITER + BURN_IN; ++iter) {
-    parallel_rand(
-        c.begin(), c.end(), sortbench::normal<key_t>);
+    sortbench::reset_trace();
 
-#ifdef USE_DASH
-    dash::util::TraceStore::on();
-    dash::util::TraceStore::clear();
-#endif
+    sortbench::parallel_rand(c.begin(), c.end(), sortbench::normal<key_t>);
 
     auto const start = ChronoClockNow();
 
-    parallel_sort(c, std::less<key_t>());
+    sortbench::parallel_sort(c, std::less<key_t>());
 
     auto const duration = ChronoClockNow() - start;
 
-    auto const ret = parallel_verify(c.begin(), c.end(), std::less<key_t>());
+    auto const ret =
+        sortbench::parallel_verify(c.begin(), c.end(), std::less<key_t>());
 
     if (!ret) {
       std::cerr << "validation failed! (n = " << N << ")\n";
+    }
+
+    // c.begin().pattern().team().barrier();
+    if (iter == (NITER + BURN_IN - 1)) {
+      sortbench::flush_trace(trace_unit_samples, r);
     }
 
     if (iter >= BURN_IN && r == 0) {
@@ -173,21 +156,6 @@ void Test(
       os << "\n";
       std::cout << os.str();
     }
-
-#ifdef USE_DASH
-    c.begin().pattern().team().barrier();
-    if (iter == (NITER + BURN_IN - 1) &&
-        // if the id of this task is included in samples
-        (std::find(
-             std::begin(trace_unit_samples),
-             std::end(trace_unit_samples),
-             dash::team_unit_t{r}) != std::end(trace_unit_samples))) {
-      dash::util::TraceStore::write(std::cout, false);
-    }
-
-    dash::util::TraceStore::off();
-    dash::util::TraceStore::clear();
-#endif
   }
 }
 
@@ -224,8 +192,8 @@ int main(int argc, char* argv[])
   int P;
   MPI_Comm_size(MPI_COMM_WORLD, &P);
   auto const gsize_bytes = mysize * P;
-  auto const N           = nl * P;
-  int        r;
+  auto const N = nl * P;
+  int r;
   MPI_Comm_rank(MPI_COMM_WORLD, &r);
 #else
   auto const P = T ? T : std::thread::hardware_concurrency();
@@ -254,7 +222,7 @@ int main(int argc, char* argv[])
 #if defined(USE_DASH)
   dash::Array<key_t> keys(N);
 #else
-  std::vector<key_t>       keys(nl);
+  std::vector<key_t> keys(nl);
 #endif
 
   if (r == 0) {

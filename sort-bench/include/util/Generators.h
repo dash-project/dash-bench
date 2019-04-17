@@ -1,5 +1,5 @@
-#ifndef GENERATORS_H
-#define GENERATORS_H
+#ifndef GENERATORS_H__INCLUDED
+#define GENERATORS_H__INCLUDED
 
 #include <util/Random.h>
 #include <random>
@@ -74,7 +74,7 @@ key_t partial_sorted_in_place(size_t total, size_t index)
   const double THRESH = 0.5;
 
   if (index <= total * OFFS) {
-    static dist_t dist_low{key_t{0}, key_t{total * OFFS}};
+    static thread_local dist_t dist_low{key_t{0}, key_t{total * OFFS}};
     return dist_low(generator);
   }
   else if (index > total * OFFS && index < total * (OFFS + THRESH)) {

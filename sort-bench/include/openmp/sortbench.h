@@ -1,3 +1,6 @@
+#ifndef SORTBENCH_H__INCLUDED
+#define SORTBENCH_H__INCLUDED
+
 #include <cassert>
 #include <cstdlib>
 #include <iostream>
@@ -7,9 +10,10 @@
 
 #include <util/Logging.h>
 
-#include "omp.h"
 #include <intel/openmp/parallel_stable_sort.h>
+#include "omp.h"
 
+namespace sortbench {
 
 template <typename RandomIt, typename Gen>
 inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
@@ -31,10 +35,10 @@ inline void parallel_rand(RandomIt begin, RandomIt end, Gen const g)
 }
 
 template <typename Container, typename Cmp>
-inline void parallel_sort(Container & c, Cmp cmp)
+inline void parallel_sort(Container& c, Cmp cmp)
 {
   auto begin = c.begin();
-  auto end = c.end();
+  auto end   = c.end();
   if (rand() & 0x100) {
 #pragma omp parallel
 #pragma omp master
@@ -67,3 +71,5 @@ inline bool parallel_verify(RandomIt begin, RandomIt end, Compare cmp)
 
   return nerror == 0;
 }
+}  // namespace sortbench
+#endif
