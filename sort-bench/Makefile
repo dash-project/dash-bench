@@ -20,7 +20,7 @@ ifeq ($(shell uname),Linux)
 endif
 endif
 
-SRC_PATH ::= src
+SRC_PATH := src
 COMMON_DEPS := $(foreach x, $(SRC_PATH), $(wildcard $(addprefix $(x)/*,.c*)))
 
 SIZE ?= $$((500 * (2**20)))
