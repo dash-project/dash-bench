@@ -10,7 +10,7 @@ DASHCXX=$(DASHROOT)/bin/dash-mpic++ -dash:verbose
 DASHNVCC=$(DASHROOT)/bin/dash-nvcc -dash:verbose
 
 #CXXFLAGS = -O0 -g -std=c++14 -Iinclude -Iexternal -DENABLE_LOGGING
-CXXFLAGS+= -O3 -Iinclude -Iexternal -DNDEBUG -std=c++14
+CXXFLAGS+= -O3 -Iinclude -Iexternal -DNDEBUG -std=c++14 -xmic-avx512 -qno-offload
 
 DASHCXXFLAGS = $(CXXFLAGS)
 
@@ -54,7 +54,7 @@ build/gomp.x: $(COMMON_DEPS)
 
 build/dash.x: $(COMMON_DEPS)
 	@mkdir -p build
-	$(DASHCXX) $(DASHCXXFLAGS) -o $@ -DUSE_DASH $^
+	$(DASHCXX) $(DASHCXXFLAGS) -I$(TBB_INC) -o $@ -DUSE_DASH $^ $(TBB_SHLIB)
 
 build/dash.nv: $(COMMON_DEPS)
 	@mkdir -p build
